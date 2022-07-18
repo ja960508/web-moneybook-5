@@ -1,0 +1,14 @@
+.moneybook {
+	display: block;
+	width: 100px;
+	height: 100px;
+	background-color: yellow;
+}
+
+.calendar {
+	display: block;
+}
+
+.analytics {
+	display: block;
+}
