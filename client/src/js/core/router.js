@@ -1,6 +1,8 @@
+import renderHome from '../pages/home';
+
 export default (function () {
 	const routes = {
-		'/': () => {},
+		'/': renderHome,
 		'/calendar': () => {},
 		'/analytics': () => {},
 	};
