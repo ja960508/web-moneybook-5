@@ -31,7 +31,19 @@ function createStore(reducer) {
 		);
 	}
 
-	function notify() {}
+	function invokeListeners(key) {
+		listeners.forEach((listener) => {
+			if (listener.key === key) {
+				listener.callback();
+			}
+		});
+	}
+
+	function notify(changedKeys) {
+		changedKeys.forEach((key) => {
+			invokeListeners(key);
+		});
+	}
 
 	function dispatch(action) {
 		const newState = reducer(state, action);
@@ -39,7 +51,9 @@ function createStore(reducer) {
 			return;
 		}
 
-		notify(getChangedKeys(newState));
+		const changedKeys = getChangedKeys(newState);
+		state = newState;
+		notify(changedKeys);
 	}
 
 	return { subscribe, getState, dispatch };
