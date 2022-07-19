@@ -15,7 +15,11 @@ function createStore(reducer) {
 		return unsubscribe;
 	}
 
-	return { subscribe };
+	function getState(key) {
+		return state[key];
+	}
+
+	return { subscribe, getState };
 }
 
 export default createStore(reducer);
