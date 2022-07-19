@@ -23,6 +23,14 @@ function createStore(reducer) {
 		return state[key];
 	}
 
+	function getChangedKeys(newState) {
+		return Object.keys(newState).reduce(
+			(changedKeys, key) =>
+				state[key] !== newState[key] ? [...changedKeys, key] : changedKeys,
+			[]
+		);
+	}
+
 	function notify() {}
 
 	function dispatch(action) {
@@ -31,7 +39,7 @@ function createStore(reducer) {
 			return;
 		}
 
-		notify();
+		notify(getChangedKeys(newState));
 	}
 
 	return { subscribe, getState, dispatch };
