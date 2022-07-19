@@ -1,4 +1,5 @@
 import renderHome from '../pages/home';
+import store from '../store/store';
 
 export default (function () {
 	const routes = {
@@ -11,6 +12,7 @@ export default (function () {
 		const app = document.getElementById('app');
 		const currentPath = window.location.pathname;
 		const renderPage = routes[path];
+		store.resetListeners();
 
 		if (currentPath === path) {
 			return;

@@ -56,7 +56,11 @@ function createStore(reducer) {
 		notify(changedKeys);
 	}
 
-	return { subscribe, getState, dispatch };
+	function resetListeners() {
+		listeners = [];
+	}
+
+	return { subscribe, getState, dispatch, resetListeners };
 }
 
 export default createStore(reducer);
