@@ -9,3 +9,9 @@ export function addPaymentMethod(req, res) {
 
   res.status(201).json({ id: 1 });
 }
+
+export function removePaymentMethod(req, res) {
+  const { id } = req.params;
+
+  res.status(200).json({ message: '성공적으로 삭제했습니다.' });
+}

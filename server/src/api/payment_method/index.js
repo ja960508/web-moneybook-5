@@ -5,5 +5,6 @@ const router = express.Router();
 
 router.get('/', ctrl.getPaymentMethods);
 router.post('/', ctrl.addPaymentMethod);
+router.delete('/:id', ctrl.removePaymentMethod);
 
 export default router;
