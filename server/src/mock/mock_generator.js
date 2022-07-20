@@ -54,3 +54,9 @@ export function createRecentHistory(startTime) {
 
   return result;
 }
+
+export function createPaymentMethods() {
+  const methods = { 1: '비씨카드', 2: '현대카드', 3: '현금', 4: '우리카드' };
+
+  return methods;
+}
