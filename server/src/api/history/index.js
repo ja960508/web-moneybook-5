@@ -1,8 +1,8 @@
 import express from 'express';
-import historyRouter from './history/index.js';
+import * as ctrl from './history.ctrl.js';
 
 const router = express.Router();
 
-router.use('/history', historyRouter);
+router.get('/', ctrl.getHistoryList);
 
 export default router;
