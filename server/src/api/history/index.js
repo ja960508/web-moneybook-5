@@ -9,6 +9,6 @@ router.post('/', isValidHistory, ctrl.addHistory);
 router.delete('/:id', ctrl.removeHistory);
 router.patch('/:id', ctrl.updateHistory);
 
-router.get('/recentHistory', ctrl.getRecentHistory);
+router.get('/recent', ctrl.getRecentHistory);
 
 export default router;
