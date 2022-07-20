@@ -1,24 +1,21 @@
+import renderAnalytics from '../pages/analytics';
+import renderCalendar from '../pages/calendar';
 import renderHome from '../pages/home';
 import store from '../store/store';
 
 export default (function () {
 	const routes = {
 		'/': renderHome,
-		'/calendar': () => {},
-		'/analytics': () => {},
+		'/calendar': renderCalendar,
+		'/analytics': renderAnalytics,
 	};
 
 	function render(path) {
-		const app = document.getElementById('app');
-		const currentPath = window.location.pathname;
+		const main = document.querySelector('main');
 		const renderPage = routes[path];
 		store.resetListeners();
 
-		if (currentPath === path) {
-			return;
-		}
-
-		app.innerHTML = ``;
+		main.innerHTML = ``;
 		renderPage();
 	}
 
