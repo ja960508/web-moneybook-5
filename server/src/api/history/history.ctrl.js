@@ -1,4 +1,7 @@
-import { createBulkHistory, createRecentHistory } from '../../mock/history.js';
+import {
+  createBulkHistory,
+  createRecentHistory,
+} from '../../mock/mock_generator.js';
 
 export function getHistoryList(req, res) {
   const { month, year } = req.query;
