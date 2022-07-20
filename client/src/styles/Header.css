@@ -5,7 +5,7 @@
 }
 
 .wrapper {
-	padding: 40px;
+	padding: 40px 0;
 	max-width: 848px;
 	display: flex;
 	justify-content: space-between;
