@@ -1,4 +1,3 @@
-import '@styles/Header.css';
 import { getCurrentHistory } from '../api/request';
 import icons from '../constants/icons';
 import action from '../store/action';
@@ -32,12 +31,12 @@ class Header {
       <div class="wrapper"> 
         <a class="logo" is="custom-link" href="/"><h1 class="display-small">우아한 가계부</h1></a>
         <div class="month-controller">
-          <button class="month-controller__prev-button">${icons.arrow}</button>
+          <button type="button" class="month-controller__prev-button">${icons.arrow}</button>
           <div>
             <div class="display-large">${month}</div>
             <div class="display-small">${year}</div>
           </div> 
-          <button class="month-controller__next-button">${icons.arrow}</button>
+          <button type="button" class="month-controller__next-button">${icons.arrow}</button>
         </div>
         <nav>
           <a class="moneybook" is="custom-link" href="/">
