@@ -15,3 +15,9 @@ export function addHistory(req, res) {
 
   res.json({ id: 1, ...historyContent });
 }
+
+export function removeHistory(req, res) {
+  const { id } = req.query;
+
+  res.status(200);
+}

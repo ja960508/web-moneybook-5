@@ -6,5 +6,6 @@ const router = express.Router();
 
 router.get('/', ctrl.getHistoryList);
 router.post('/', isValidHistory, ctrl.addHistory);
+router.delete('/', ctrl.removeHistory);
 
 export default router;
