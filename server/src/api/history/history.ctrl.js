@@ -9,3 +9,9 @@ export function getHistoryList(req, res) {
 
   res.json(createBulkHistory(year, month));
 }
+
+export function addHistory(req, res) {
+  const historyContent = req.body;
+
+  res.json({ id: 1, ...historyContent });
+}
