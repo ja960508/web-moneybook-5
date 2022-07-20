@@ -21,7 +21,6 @@ export function addHistory(req, res) {
 
 export function removeHistory(req, res) {
   const { id } = req.params;
-  console.log(id);
 
   res.status(200).json({ message: '성공적으로 삭제했습니다.' });
 }
