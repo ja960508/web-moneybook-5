@@ -1,31 +1,69 @@
 import '@styles/Header.css';
+import { getCurrentHistory } from '../api/request';
+import icons from '../constants/icons';
+import action from '../store/action';
+import store from '../store/store';
+import { getNextYearAndMonth, getPrevYearAndMonth } from '../utils/date';
 
 class Header {
-	constructor(props) {
+	constructor() {
 		this.DOMElement = document.createElement('header');
+		this.DOMElement.classList.add('header');
+		store.subscribe('month', this.render.bind(this));
 		this.render();
+		this.setEvent();
 	}
 
 	template() {
+		const year = store.getState('year');
+		const month = store.getState('month');
+
 		return `
-      <a class="logo" is="custom-link" href="/"><h1>우아한 가계부</h1></a>
-      <div class="month-controller">
-        <button class="month-controller__prev-button"></button>
-        <div>
-          <div>7월</div>
-          <div>2021</div>
-        </div> 
-        <button class="month-controller__next-button"></button>
+      <div class="wrapper"> 
+        <a class="logo" is="custom-link" href="/"><h1 class="display-small">우아한 가계부</h1></a>
+        <div class="month-controller">
+          <button class="month-controller__prev-button">${icons.arrow}</button>
+          <div>
+            <div class="display-large">${month}</div>
+            <div class="display-small">${year}</div>
+          </div> 
+          <button class="month-controller__next-button">${icons.arrow}</button>
+        </div>
+        <nav>
+          <a class="moneybook active" is="custom-link" href="/">
+          ${icons.document}
+          </a> 
+          <a class="calendar" is="custom-link" href="/calendar">
+            ${icons.calendar}
+          </a>
+          <a class="analytics" is="custom-link" href="/analytics">
+          ${icons.chart}</a>
+        </nav>
       </div>
-      <nav>
-        <a class="moneybook" is="custom-link" href="/"></a> 
-        <a class="calendar" is="custom-link" href="/calendar"></a>
-        <a class="analytics" is="custom-link" href="/analytics"></a>
-      </nav>`;
+    `;
 	}
 
 	render() {
 		this.DOMElement.innerHTML = this.template();
+	}
+
+	setEvent() {
+		this.DOMElement.addEventListener('click', async (event) => {
+			const year = Number(store.getState('year'));
+			const month = Number(store.getState('month'));
+
+			if (event.target.closest('.month-controller__prev-button')) {
+				const [prevYear, prevMonth] = getPrevYearAndMonth(year, month);
+				const response = await getCurrentHistory(prevYear, prevMonth);
+
+				store.dispatch(action.getCurrentMonthData(response));
+			} else if (event.target.closest('.month-controller__next-button')) {
+				const [nextYear, nextMonth] = getNextYearAndMonth(year, month);
+				const response = await getCurrentHistory(nextYear, nextMonth);
+
+				store.dispatch(action.getCurrentMonthData(response));
+			}
+		});
 	}
 }
 
