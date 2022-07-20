@@ -1,4 +1,4 @@
-import { createBulkHistory } from '../../mock/history.js';
+import { createBulkHistory, createRecentHistory } from '../../mock/history.js';
 
 export function getHistoryList(req, res) {
   const { month, year } = req.query;
@@ -28,4 +28,30 @@ export function updateHistory(req, res) {
   const { id } = req.params;
 
   res.status(200).json({ id: 1, ...historyContent });
+}
+
+export function getRecentHistory(req, res) {
+  const { year, month, category } = req.query;
+  const startTime = getStartTime(year, month);
+  const history = createRecentHistory(startTime);
+
+  for (const year in history) {
+    for (const month in history[year]) {
+      history[year][month] = history[year][month].filter(
+        (item) => item.category === category
+      );
+    }
+  }
+
+  res.status(200).json(history);
+}
+
+function getStartTime(year, month) {
+  const startMonth = month - 6;
+
+  if (startMonth <= 0) {
+    return `${year - 1}-${startMonth + 12}`;
+  }
+
+  return `${year}-${startMonth < 10 ? '0' + startMonth : startMonth}`;
 }
