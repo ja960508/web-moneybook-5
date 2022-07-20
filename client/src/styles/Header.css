@@ -1,8 +1,29 @@
+.header {
+	font-family: 'Do Hyeon', sans-serif;
+	background-color: var(--color-primary-mint1);
+	color: var(--color-white);
+}
+
+.wrapper {
+	padding: 40px;
+	max-width: 848px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin: 0 auto;
+}
+
+.logo {
+	display: flex;
+	align-items: center;
+}
+
+.logo h1 {
+	margin: 0;
+}
+
 .moneybook {
 	display: block;
-	width: 100px;
-	height: 100px;
-	background-color: yellow;
 }
 
 .calendar {
@@ -11,4 +32,35 @@
 
 .analytics {
 	display: block;
+}
+
+.month-controller {
+	display: flex;
+	align-items: center;
+	text-align: center;
+}
+
+.month-controller > div {
+	margin: 0 3rem;
+}
+
+.month-controller > div .display-large {
+	margin-bottom: 0.5rem;
+}
+
+.header nav {
+	display: flex;
+	gap: 1.5rem;
+}
+
+.header nav path {
+	stroke: var(--color-primary-mint2);
+}
+
+.header nav .active path {
+	stroke: var(--color-white);
+}
+
+.month-controller__next-button {
+	transform: rotate(180deg);
 }

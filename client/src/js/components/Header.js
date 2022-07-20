@@ -1,27 +1,37 @@
 import '@styles/Header.css';
+import icons from '../constants/icons';
 
 class Header {
 	constructor(props) {
 		this.DOMElement = document.createElement('header');
+		this.DOMElement.classList.add('header');
 		this.render();
 	}
 
 	template() {
 		return `
-      <a class="logo" is="custom-link" href="/"><h1>우아한 가계부</h1></a>
-      <div class="month-controller">
-        <button class="month-controller__prev-button"></button>
-        <div>
-          <div>7월</div>
-          <div>2021</div>
-        </div> 
-        <button class="month-controller__next-button"></button>
+      <div class="wrapper"> 
+        <a class="logo" is="custom-link" href="/"><h1 class="display-small">우아한 가계부</h1></a>
+        <div class="month-controller">
+          <button class="month-controller__prev-button">${icons.arrow}</button>
+          <div>
+            <div class="display-large">7월</div>
+            <div class="display-small">2021</div>
+          </div> 
+          <button class="month-controller__next-button">${icons.arrow}</button>
+        </div>
+        <nav>
+          <a class="moneybook active" is="custom-link" href="/">
+          ${icons.document}
+          </a> 
+          <a class="calendar" is="custom-link" href="/calendar">
+            ${icons.calendar}
+          </a>
+          <a class="analytics" is="custom-link" href="/analytics">
+          ${icons.chart}</a>
+        </nav>
       </div>
-      <nav>
-        <a class="moneybook" is="custom-link" href="/"></a> 
-        <a class="calendar" is="custom-link" href="/calendar"></a>
-        <a class="analytics" is="custom-link" href="/analytics"></a>
-      </nav>`;
+    `;
 	}
 
 	render() {
