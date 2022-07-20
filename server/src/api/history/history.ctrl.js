@@ -21,3 +21,10 @@ export function removeHistory(req, res) {
 
   res.status(200);
 }
+
+export function updateHistory(req, res) {
+  const historyContent = req.body;
+  const { id } = req.params;
+
+  res.status(200).json({ id: 1, ...historyContent });
+}
