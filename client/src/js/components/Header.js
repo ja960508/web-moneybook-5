@@ -14,6 +14,16 @@ class Header {
 		this.setEvent();
 	}
 
+	setActive() {
+		const customLinks = this.DOMElement.querySelectorAll(
+			'nav [is=custom-link]'
+		);
+		const path = window.location.pathname;
+		customLinks.forEach((link) => {
+			link.getAttribute('href') === path && link.classList.add('active');
+		});
+	}
+
 	template() {
 		const year = store.getState('year');
 		const month = store.getState('month');
@@ -30,7 +40,7 @@ class Header {
           <button class="month-controller__next-button">${icons.arrow}</button>
         </div>
         <nav>
-          <a class="moneybook active" is="custom-link" href="/">
+          <a class="moneybook" is="custom-link" href="/">
           ${icons.document}
           </a> 
           <a class="calendar" is="custom-link" href="/calendar">
@@ -45,6 +55,7 @@ class Header {
 
 	render() {
 		this.DOMElement.innerHTML = this.template();
+		this.setActive();
 	}
 
 	setEvent() {

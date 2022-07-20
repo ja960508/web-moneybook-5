@@ -11,11 +11,11 @@ export default (function () {
 	};
 
 	function render(path) {
-		const main = document.querySelector('main');
+		const app = document.querySelector('#app');
 		const renderPage = routes[path];
 		store.resetListeners();
 
-		main.innerHTML = ``;
+		app.innerHTML = ``;
 		renderPage();
 	}
 
