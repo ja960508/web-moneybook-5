@@ -1,13 +1,17 @@
 import '@styles/Header.css';
+import { getCurrentHistory } from '../api/request';
 import icons from '../constants/icons';
+import action from '../store/action';
 import store from '../store/store';
+import { getNextYearAndMonth, getPrevYearAndMonth } from '../utils/date';
 
 class Header {
-	constructor(props) {
+	constructor() {
 		this.DOMElement = document.createElement('header');
 		this.DOMElement.classList.add('header');
 		store.subscribe('month', this.render.bind(this));
 		this.render();
+		this.setEvent();
 	}
 
 	template() {
@@ -41,6 +45,25 @@ class Header {
 
 	render() {
 		this.DOMElement.innerHTML = this.template();
+	}
+
+	setEvent() {
+		this.DOMElement.addEventListener('click', async (event) => {
+			const year = Number(store.getState('year'));
+			const month = Number(store.getState('month'));
+
+			if (event.target.closest('.month-controller__prev-button')) {
+				const [prevYear, prevMonth] = getPrevYearAndMonth(year, month);
+				const response = await getCurrentHistory(prevYear, prevMonth);
+
+				store.dispatch(action.getCurrentMonthData(response));
+			} else if (event.target.closest('.month-controller__next-button')) {
+				const [nextYear, nextMonth] = getNextYearAndMonth(year, month);
+				const response = await getCurrentHistory(nextYear, nextMonth);
+
+				store.dispatch(action.getCurrentMonthData(response));
+			}
+		});
 	}
 }
 

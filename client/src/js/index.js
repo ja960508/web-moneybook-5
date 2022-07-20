@@ -11,10 +11,10 @@ import { getCurrentHistory } from './api/request.js';
 	customElements.define('custom-link', CustomLink, { extends: 'a' });
 	const now = new Date();
 	const year = now.getFullYear();
-	const month = now.getMonth();
+	const month = now.getMonth() + 1;
 
-	const res = await getCurrentHistory(year, month);
-	store.dispatch(action.getCurrentMonthData(res));
+	const response = await getCurrentHistory(year, month);
+	store.dispatch(action.getCurrentMonthData(response));
 
 	window.addEventListener('popstate', () => {
 		Router.render(window.location.pathname);
