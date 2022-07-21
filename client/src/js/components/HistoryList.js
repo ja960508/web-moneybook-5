@@ -26,22 +26,33 @@ class HistoryList {
 				`;
 	}
 
+	getGroupedHistoryByDay(history) {
+		const result = {};
+
+		history.forEach((item) => {
+			if (!result[item.day]) {
+				result[item.day] = { history: [], incomeSum: 0, expenseSum: 0 };
+			}
+
+			result[item.day].history.push(item);
+			if (item.isIncome) {
+				result[item.day].incomeSum += item.price;
+			} else {
+				result[item.day].expenseSum += item.price;
+			}
+		});
+
+		return result;
+	}
+
+	getSortedDayList(groupedHistory) {
+		return Object.keys(groupedHistory).sort((a, b) => b - a);
+	}
+
 	template() {
 		const history = store.getState('history');
 		const month = store.getState('month');
-		const groupedHistory = {};
-		history.forEach((item) => {
-			if (!groupedHistory[item.day]) {
-				groupedHistory[item.day] = { history: [], incomeSum: 0, expenseSum: 0 };
-			}
-
-			groupedHistory[item.day].history.push(item);
-			if (item.isIncome) {
-				groupedHistory[item.day].incomeSum += item.price;
-			} else {
-				groupedHistory[item.day].expenseSum += item.price;
-			}
-		});
+		const groupedHistory = this.getGroupedHistoryByDay(history);
 
 		return `<div class="list-meta">
     <span>전체 내역 ${history.length}건</span>
@@ -57,8 +68,7 @@ class HistoryList {
     </div>
     </div>
     <ul>
-      ${Object.keys(groupedHistory)
-				.sort((a, b) => b - a)
+      ${this.getSortedDayList(groupedHistory)
 				.map(
 					(day) => `<li class="history__day bold-medium">
           <div class="history__day-meta">
