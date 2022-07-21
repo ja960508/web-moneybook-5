@@ -13,3 +13,20 @@ export async function insertHistory(history) {
     console.error(e);
   }
 }
+
+export async function readHistoryAtThisMonth(month, year) {
+  console.log(month, year);
+  try {
+    const res = await promisePool.execute(
+      `SELECT h.id, h.date, h.content, h.paymentMethod, h.price, c.name as category, c.isIncome FROM HISTORY AS h
+         LEFT JOIN CATEGORY AS c ON h.categoryId = c.id
+         WHERE MONTH(date) = ${month} AND YEAR(date) = ${year}
+         ORDER BY date DESC
+       `
+    );
+
+    return res[0];
+  } catch (e) {
+    console.error(e);
+  }
+}
