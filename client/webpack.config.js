@@ -3,11 +3,13 @@
 const HtmlPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const path = require('path');
+const isProduction = process.env.NODE_ENV === 'production';
 
 module.exports = {
 	// 파일을 읽어들이는 진입점 설정
-
+	mode: isProduction ? 'production' : 'development',
 	entry: './src/js/index.js',
+	watch: !isProduction,
 
 	// 결과물 반환 옵션
 	output: {
@@ -57,6 +59,7 @@ module.exports = {
 	plugins: [
 		new HtmlPlugin({
 			template: './index.html',
+			inject: false,
 		}),
 		new MiniCssExtractPlugin({ filename: 'css/style.css' }),
 	],
