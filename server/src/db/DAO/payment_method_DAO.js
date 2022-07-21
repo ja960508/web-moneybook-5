@@ -24,3 +24,16 @@ export async function insertPaymentMethod(value) {
     console.error(e);
   }
 }
+
+export async function deletePaymentMethodById(id) {
+  try {
+    const res = await promisePool.execute(`
+      DELETE FROM PAYMENT_METHOD
+      WHERE id = ${id}
+    `);
+
+    return res[0];
+  } catch (e) {
+    console.error(e);
+  }
+}
