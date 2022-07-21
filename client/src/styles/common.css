@@ -82,3 +82,53 @@
 	line-height: 24px;
 	text-transform: uppercase;
 }
+
+.category {
+	display: inline-block;
+	width: 92px;
+	padding: 8px 0;
+	text-align: center;
+	border-radius: 999px;
+	color: var(--color-white);
+	margin-right: 0.625rem;
+}
+
+.category.culture {
+	background-color: var(--color-light-violet);
+}
+
+.category.transport {
+	background-color: var(--color-green);
+}
+
+.category.unclassified {
+	background-color: var(--color-deep-violet);
+}
+
+.category.food {
+	background-color: var(--color-cyan);
+}
+
+.category.life {
+	background-color: var(--color-deep-cyan);
+}
+
+.category.salary {
+	background-color: var(--color-light-green);
+}
+
+.category.shopping {
+	background-color: var(--color-deep-green);
+}
+
+.category.health {
+	background-color: var(--color-light-cyan);
+}
+
+.category.pocketMoney {
+	background-color: var(--color-yellow);
+}
+
+.category.etcIncome {
+	background-color: var(--color-deep-yellow);
+}
