@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import 'dotenv/config';
 import apiRouter from './api/index.js';
+import './db/loader.js';
 
 const app = express();
 const port = process.env.PORT || 3000;
