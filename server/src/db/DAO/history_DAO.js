@@ -1,3 +1,4 @@
+import { addQuotesToString } from '../../utils/data_transformer.js';
 import pool from '../loader.js';
 const promisePool = pool.promise();
 
@@ -5,9 +6,7 @@ export async function insertHistory(history) {
   try {
     await promisePool.execute(
       `INSERT INTO HISTORY (${Object.keys(history).join()})
-      VALUES (${Object.values(history)
-        .map((value) => (typeof value === 'string' ? `"${value}"` : value))
-        .join()})`
+      VALUES (${Object.values(history).map(addQuotesToString).join()})`
     );
   } catch (e) {
     console.error(e);
@@ -24,6 +23,7 @@ export async function readHistoryByYearMonth(month, year) {
        `
     );
 
+    console.log(res[0]);
     return res[0];
   } catch (e) {
     console.error(e);
@@ -39,6 +39,23 @@ export async function deleteHistoryById(id) {
     );
 
     return res[0];
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+export async function undateHistoryById(history) {
+  const options = Object.entries(history)
+    .map(([key, value]) => `${key} = ${addQuotesToString(value)}`)
+    .join();
+
+  try {
+    const res = await promisePool.execute(`
+    UPDATE HISTORY
+    SET ${options}
+    WHERE id = ${history.id}`);
+
+    console.log(res);
   } catch (e) {
     console.error(e);
   }
