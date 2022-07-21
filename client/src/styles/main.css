@@ -16,22 +16,43 @@ main .list-meta {
 	gap: 1rem;
 }
 
+.list-meta__button-container button[data-checked='true'] {
+	color: var(--color-primary-mint1);
+}
+
+.list-meta__button-container button[data-checked='true'] div {
+	background-color: var(--color-primary-mint1);
+	border: none;
+}
+
+.list-meta__button-container button {
+	color: var(--color-gray-400);
+}
+
 .list-meta__button-container button div {
-	background: var(--color-primary-mint1);
-	border-radius: 5px;
-	padding: 2px;
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	background: transparent;
+	border-radius: 5px;
+	width: 1.25rem;
+	height: 1.25rem;
+	padding: 2px;
 	margin-right: 0.5rem;
+	border: 2px solid var(--color-gray-400);
+	border-radius: 5px;
 }
 
 .list-meta__button-container button div svg {
-	width: 1rem;
-	height: 1rem;
+	width: 1.25rem;
+	height: 1.25rem;
 }
 
 .list-meta__button-container button div path {
+	stroke: none;
+}
+
+.list-meta__button-container button[data-checked='true'] div path {
 	stroke: white;
 }
 
