@@ -1,3 +1,4 @@
+import category from '../constants/category';
 import icons from '../constants/icons';
 import store from '../store/store';
 
@@ -89,6 +90,23 @@ class HistoryList {
 		return result;
 	}
 
+	makeHistoryItems(item) {
+		return `<li class="history__item bold-medium">
+		<div>
+			<span class="category ${category[item.category]} bold-small">${
+			item.category
+		}</span>
+			<span>${item.content}</span>
+		</div>
+		<div>
+			${item.paymentMethod}
+		</div>
+		<div>
+			${item.isIncome ? '' : '-'}${item.price.toLocaleString()}원
+		</div>
+	</li>`;
+	}
+
 	template() {
 		const history = store.getState('history');
 		const month = store.getState('month');
@@ -111,7 +129,7 @@ class HistoryList {
       </button>
     </div>
     </div>
-    <ul>
+    <ol>
       ${this.getSortedDayList(filteredHistory)
 				.map(
 					(day) => `<li class="history__day bold-medium">
@@ -121,10 +139,15 @@ class HistoryList {
 							${this.props.hideTotal ? '' : this.getDailyTotalMoney(filteredHistory, day)}
 						</div>
           </div>
+					<ul>
+						${filteredHistory[day].history
+							.map((item) => this.makeHistoryItems(item))
+							.join('')}
+					</ul>
         </li>`
 				)
 				.join('')}
-    </ul>`;
+    </ol>`;
 	}
 
 	render() {
