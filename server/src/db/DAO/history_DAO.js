@@ -1,5 +1,9 @@
-import { addQuotesToString } from '../../utils/data_transformer.js';
+import {
+  addQuotesToString,
+  timeConverter,
+} from '../../utils/data_transformer.js';
 import pool from '../loader.js';
+
 const promisePool = pool.promise();
 
 export async function insertHistory(history) {
@@ -23,7 +27,6 @@ export async function readHistoryByYearMonth(month, year) {
        `
     );
 
-    console.log(res[0]);
     return res[0];
   } catch (e) {
     console.error(e);
@@ -56,6 +59,25 @@ export async function undateHistoryById(history) {
     WHERE id = ${history.id}`);
 
     console.log(res);
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+export async function getRecentHistory(year, month, categoryId) {
+  const RECENT_MONTH = 6;
+  const date = timeConverter(new Date(year, month - 1));
+
+  try {
+    const res = await promisePool.execute(
+      `SELECT h.id, h.date, h.content, h.paymentMethod, h.price, c.name as category, c.isIncome FROM HISTORY AS h
+      LEFT JOIN CATEGORY AS c ON h.categoryId = c.id
+      WHERE h.categoryId = ${categoryId} AND date > DATE_SUB("${date}", INTERVAL ${RECENT_MONTH} MONTH)
+      ORDER BY date DESC
+      `
+    );
+
+    return res[0];
   } catch (e) {
     console.error(e);
   }
