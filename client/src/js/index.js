@@ -14,6 +14,7 @@ import { getCurrentHistory } from './api/request.js';
 	const now = new Date();
 	const year = now.getFullYear();
 	const month = now.getMonth() + 1;
+	const path = window.location.pathname;
 
 	const response = await getCurrentHistory(year, month);
 	store.dispatch(action.getCurrentMonthData(response));
@@ -29,5 +30,5 @@ import { getCurrentHistory } from './api/request.js';
 		});
 	});
 
-	renderHome();
+	Router.render(path);
 })();
