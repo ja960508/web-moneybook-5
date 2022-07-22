@@ -1,6 +1,7 @@
 import category from '../constants/category';
 import icons from '../constants/icons';
 import store from '../store/store';
+import { getGroupedHistoryByDay } from '../utils/history';
 
 class HistoryList {
 	constructor(props = {}) {
@@ -30,25 +31,6 @@ class HistoryList {
 							: ''
 					}
 				`;
-	}
-
-	getGroupedHistoryByDay(history) {
-		const result = {};
-
-		history.forEach((item) => {
-			if (!result[item.day]) {
-				result[item.day] = { history: [], incomeSum: 0, expenseSum: 0 };
-			}
-
-			result[item.day].history.push(item);
-			if (item.isIncome) {
-				result[item.day].incomeSum += item.price;
-			} else {
-				result[item.day].expenseSum += item.price;
-			}
-		});
-
-		return result;
 	}
 
 	getSortedDayList(groupedHistory) {
@@ -110,8 +92,8 @@ class HistoryList {
 	template() {
 		const history = store.getState('history');
 		const month = store.getState('month');
-		const groupedHistory = this.getGroupedHistoryByDay(history);
-		const filteredHistory = this.getFilteredHistory(groupedHistory);
+		const groupedHistory = getGroupedHistoryByDay(history);
+		const filteredHistory = this.getFilteredHistory(groupedHistory, this.state);
 		const totalMoney = this.getMonthTotalMoney(groupedHistory);
 
 		return `<div class="list-meta">

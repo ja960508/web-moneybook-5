@@ -1,8 +1,10 @@
 import store from '../store/store';
 import {
 	getFirstDayFromYearMonth,
-	getLastDateFromYearMonth as getDateCountFromYearMonth,
+	getDateCountFromYearMonth,
+	isNowDate,
 } from '../utils/date';
+import { getGroupedHistoryByDay } from '../utils/history';
 
 class Calendar {
 	constructor() {
@@ -15,13 +17,76 @@ class Calendar {
 		this.render();
 	}
 
-	template() {
+	getTableBodyData({
+		dateCount,
+		groupedHistory,
+		firstDay,
+		weekIndex,
+		columnIndex,
+	}) {
 		const year = store.getState('year');
 		const month = store.getState('month');
+		const nowDate = weekIndex * 7 + columnIndex + 1 - firstDay;
+		const isNowDateValid = nowDate > 0 && nowDate <= dateCount;
+		if (!isNowDateValid) return '<td></td>';
+
+		const nowHistory = groupedHistory[nowDate];
+		const priceSum = nowHistory
+			? nowHistory.incomeSum - nowHistory.expenseSum
+			: undefined;
+
+		return ` 
+			<td ${isNowDate(year, month, nowDate) ? 'class="now"' : ''}">
+				${
+					nowHistory?.incomeSum
+						? `<div class="income">+${nowHistory.incomeSum.toLocaleString()}</div>`
+						: ''
+				}
+				${
+					nowHistory?.expenseSum
+						? `<div class="expense">-${nowHistory.expenseSum.toLocaleString()}</div>`
+						: ''
+				}
+				${priceSum !== undefined ? `<div>${priceSum.toLocaleString()}</div>` : ''}
+				<div class="date body-small">${nowDate}</div>
+			</td>
+		`;
+	}
+
+	getTableBodyRows() {
+		const year = store.getState('year');
+		const month = store.getState('month');
+		const history = store.getState('history');
+		const groupedHistory = getGroupedHistoryByDay(history);
 		const firstDay = getFirstDayFromYearMonth(year, month);
 		const dateCount = getDateCountFromYearMonth(year, month);
 		const rowCount = Math.ceil((firstDay + dateCount) / 7);
 
+		return `
+			${Array(rowCount)
+				.fill()
+				.map(
+					(_, weekIndex) =>
+						`<tr>
+							${Array(7)
+								.fill()
+								.map((_, columnIndex) =>
+									this.getTableBodyData({
+										dateCount,
+										groupedHistory,
+										firstDay,
+										weekIndex,
+										columnIndex,
+									})
+								)
+								.join('')}
+							</tr>`
+				)
+				.join('')}
+			`;
+	}
+
+	template() {
 		return `
 			<table>
 				<thead class="calendar__header body-regular">
@@ -36,31 +101,7 @@ class Calendar {
 					</tr>
 				</thead>
 				<tbody class="calendar__body">
-					${Array(rowCount)
-						.fill()
-						.map(
-							(_, weekIndex) =>
-								`<tr>
-									${Array(7)
-										.fill()
-										.map((_, i) => {
-											const nowDate = weekIndex * 7 + i + 1 - firstDay;
-											const isNowDateValid =
-												nowDate > 0 && nowDate <= dateCount;
-
-											return ` 
-													<td ${new Date().getDate() === nowDate ? 'class="now"' : ''}">
-														<div class="expense">-4,000</div>
-														<div class="income">+16,000</div>
-														<div>+12,000</div>
-														<div class="date body-small">${isNowDateValid ? nowDate : ''}</div>
-													</td>
-												`;
-										})
-										.join('')}
-									</tr>`
-						)
-						.join('')}
+					${this.getTableBodyRows()}
 				</tbody>
 			</table>
 			<div class="calendar__footer">

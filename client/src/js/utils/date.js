@@ -17,7 +17,18 @@ export function getFirstDayFromYearMonth(year, month) {
 	return firstDateOfMonth.getDay();
 }
 
-export function getLastDateFromYearMonth(year, month) {
+export function getDateCountFromYearMonth(year, month) {
 	const lastDateOfMonth = new Date(year, month, 0);
 	return lastDateOfMonth.getDate();
+}
+
+export function isNowDate(year, month, date) {
+	const targetDate = new Date(year, month - 1, date);
+	const now = new Date();
+
+	return (
+		now.getFullYear() === targetDate.getFullYear() &&
+		now.getMonth() === targetDate.getMonth() &&
+		now.getDate() === targetDate.getDate()
+	);
 }
