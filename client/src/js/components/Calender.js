@@ -36,7 +36,7 @@ class Calendar {
 			: undefined;
 
 		return ` 
-			<td ${isNowDate(year, month, nowDate) ? 'class="now"' : ''}">
+			<td class="bold-medium ${isNowDate(year, month, nowDate) ? ' now' : ''}">
 				${
 					nowHistory?.incomeSum
 						? `<div class="income">+${nowHistory.incomeSum.toLocaleString()}</div>`
@@ -47,8 +47,12 @@ class Calendar {
 						? `<div class="expense">-${nowHistory.expenseSum.toLocaleString()}</div>`
 						: ''
 				}
-				${priceSum !== undefined ? `<div>${priceSum.toLocaleString()}</div>` : ''}
-				<div class="date body-small">${nowDate}</div>
+				${
+					priceSum !== undefined
+						? `<div class="sum">${priceSum.toLocaleString()}</div>`
+						: ''
+				}
+				<div class="bold-small date body-small">${nowDate}</div>
 			</td>
 		`;
 	}
@@ -108,10 +112,10 @@ class Calendar {
 			</table>
 			<div class="calendar__footer">
 				<div>
-					<span class="total-income">총 수입: ${totalMoney.income.toLocaleString()}</span>
-					<span class="total-expense">총 지출: ${totalMoney.expense.toLocaleString()}</span>
+					<span>총 수입: ${totalMoney.income.toLocaleString()}</span>
+					<span>총 지출: ${totalMoney.expense.toLocaleString()}</span>
 				</div>
-				<span class="total_sum">총계: ${totalMoney.sum.toLocaleString()}</span>
+				<span>총계: ${totalMoney.sum.toLocaleString()}</span>
 			</div>
     `;
 	}

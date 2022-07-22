@@ -24,8 +24,9 @@
 	display: flex;
 	align-items: center;
 	text-align: center;
-	padding: 0.75rem 3rem;
+	padding: 0.75rem 3.25rem;
 	color: var(--color-gray-400);
+	font-weight: inherit;
 }
 
 .calendar__body {
@@ -46,7 +47,7 @@
 	position: relative;
 	width: 100%;
 	min-height: 120px;
-	padding: 1rem 1rem 2rem;
+	padding: 0.5rem 0.625rem 2rem;
 	background: var(--color-white);
 }
 
@@ -74,6 +75,10 @@
 	color: var(--color-magenta);
 }
 
+.calendar__body .sum {
+	color: var(--color-black);
+}
+
 .calendar__body .date {
 	position: absolute;
 	right: 0.5rem;
@@ -86,8 +91,8 @@
 	justify-content: space-between;
 	color: var(--color-gray-400);
 	width: 100%;
-	max-width: 750px;
-	padding-top: 1rem;
+	max-width: 800px;
+	padding-top: 1.5rem;
 }
 
 .calendar__footer div:first-child {
