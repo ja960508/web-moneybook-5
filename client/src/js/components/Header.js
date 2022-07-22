@@ -39,13 +39,13 @@ class Header {
           <button type="button" class="month-controller__next-button">${icons.arrow}</button>
         </div>
         <nav>
-          <a class="moneybook" is="custom-link" href="/">
+          <a class="moneybook-link" is="custom-link" href="/">
           ${icons.document}
           </a> 
-          <a class="calendar" is="custom-link" href="/calendar">
+          <a class="calendar-link" is="custom-link" href="/calendar">
             ${icons.calendar}
           </a>
-          <a class="analytics" is="custom-link" href="/analytics">
+          <a class="analytics-link" is="custom-link" href="/analytics">
           ${icons.chart}</a>
         </nav>
       </div>

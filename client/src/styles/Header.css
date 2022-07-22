@@ -22,18 +22,6 @@
 	margin: 0;
 }
 
-.moneybook {
-	display: block;
-}
-
-.calendar {
-	display: block;
-}
-
-.analytics {
-	display: block;
-}
-
 .month-controller {
 	display: flex;
 	align-items: center;
