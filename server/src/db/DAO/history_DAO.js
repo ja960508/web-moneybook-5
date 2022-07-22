@@ -6,7 +6,7 @@ import pool from '../loader.js';
 
 const promisePool = pool.promise();
 
-export async function insertHistory(history) {
+async function insertHistory(history) {
   try {
     await promisePool.execute(
       `INSERT INTO HISTORY (${Object.keys(history).join()})
@@ -17,7 +17,7 @@ export async function insertHistory(history) {
   }
 }
 
-export async function readHistoryByYearMonth(month, year) {
+async function readHistoryByYearMonth(month, year) {
   try {
     const res = await promisePool.execute(
       `SELECT h.id, h.date, h.content, h.paymentMethod, h.price, c.name as category, c.isIncome FROM HISTORY AS h
@@ -33,7 +33,7 @@ export async function readHistoryByYearMonth(month, year) {
   }
 }
 
-export async function deleteHistoryById(id) {
+async function deleteHistoryById(id) {
   try {
     const res = await promisePool.execute(
       `
@@ -47,7 +47,7 @@ export async function deleteHistoryById(id) {
   }
 }
 
-export async function undateHistoryById(history) {
+async function updateHistoryById(history) {
   const options = Object.entries(history)
     .map(([key, value]) => `${key} = ${addQuotesToString(value)}`)
     .join();
@@ -64,7 +64,7 @@ export async function undateHistoryById(history) {
   }
 }
 
-export async function getRecentHistory(year, month, categoryId) {
+async function getRecentHistory(year, month, categoryId) {
   const RECENT_MONTH = 6;
   const date = timeConverter(new Date(year, month - 1));
 
@@ -82,3 +82,11 @@ export async function getRecentHistory(year, month, categoryId) {
     console.error(e);
   }
 }
+
+export default {
+  insertHistory,
+  readHistoryByYearMonth,
+  deleteHistoryById,
+  updateHistoryById,
+  getRecentHistory,
+};

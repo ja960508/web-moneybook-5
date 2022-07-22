@@ -1,16 +1,23 @@
+import historyDAO from '../../db/DAO/history_DAO.js';
 import {
   createBulkHistory,
   createRecentHistory,
 } from '../../mock/mock_generator.js';
 
-export function getHistoryList(req, res) {
+export async function getHistoryList(req, res) {
   const { month, year } = req.query;
 
   if (!(month && year)) {
     res.status(400).json({ message: 'month와 year가 모두 있어야 합니다.' });
   }
 
-  res.status(200).json(createBulkHistory(year, month));
+  const history = await historyDAO.readHistoryByYearMonth(month, year);
+
+  res.status(200).json({
+    year,
+    month,
+    history: history.map((item) => ({ ...item, day: item.date.getDate() })),
+  });
 }
 
 export function addHistory(req, res) {
