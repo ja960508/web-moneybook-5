@@ -1,0 +1,136 @@
+.history__form {
+	position: relative;
+	top: -2rem;
+	display: flex;
+	align-items: center;
+	background: var(--color-white);
+	padding: 1rem 0;
+	border: 1px solid var(--color-gray-300);
+	box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1), 0px 4px 20px rgba(0, 0, 0, 0.1);
+	border-radius: 10px;
+	color: var(--color-primary-mint3);
+	width: 984px;
+	margin: 0 auto;
+}
+
+.box23 {
+	flex: 1 1 23%;
+}
+
+.box18 {
+	flex: 1 1 18%;
+}
+
+.history__form--submit {
+	align-self: flex-end;
+	padding: 0.25rem;
+	border: 1px solid var(--color-primary-mint1);
+	border-radius: 5px;
+	height: 1.5rem;
+	width: 1.5rem;
+	margin: 0 0.5rem;
+}
+
+.history__form--submit path {
+	stroke: var(--color-primary-mint1);
+}
+
+.history__form label {
+	display: flex;
+	flex-direction: column;
+	cursor: pointer;
+	position: relative;
+	border-right: 1px solid var(--color-gray-300);
+	padding: 0 1.5rem;
+}
+
+.history__form input {
+	cursor: pointer;
+	width: 100%;
+}
+.history__form input::-webkit-calendar-picker-indicator {
+	cursor: pointer;
+}
+
+.history__form label[for='historyPaymentMethod'],
+.history__form label[for='historyCategory'] {
+	position: relative;
+}
+
+.history__form label .history__form-dropdown {
+	position: absolute;
+	display: none;
+	width: 100%;
+	top: 5rem;
+	left: 0;
+	background: var(--color-white);
+	border: 1px solid var(--color-gray-200);
+	box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1), 0px 4px 20px rgba(0, 0, 0, 0.1);
+	border-radius: 10px;
+	padding: 1rem 1.5rem;
+}
+
+.history__form label .history__form-dropdown li {
+	position: relative;
+	padding-bottom: 1rem;
+	margin-bottom: 1rem;
+	border-bottom: 1px solid var(--color-gray-200);
+	color: var(--color-black);
+}
+
+.history__form label .history__form-dropdown li::after {
+	position: absolute;
+	right: -0.5rem;
+	content: '\00d7';
+	color: var(--color-gray-500);
+}
+
+.history__form label input {
+	background: var(--color-white);
+}
+
+.history__form label .arrow {
+	position: absolute;
+	right: 2rem;
+	bottom: 0.25rem;
+	display: block;
+	width: 1rem;
+	height: 1rem;
+	transform: rotate(-90deg);
+	margin: 0;
+}
+
+.history__form label .arrow svg {
+	width: 100%;
+	height: 100%;
+}
+
+.history__form label .arrow path {
+	stroke: var(--color-gray-400);
+}
+
+.history__form label > span {
+	margin-bottom: 0.5rem;
+}
+
+.history__form label:last-of-type {
+	border: none;
+	padding-right: 0;
+	margin-right: 0;
+}
+
+.history__form-price-container {
+	display: flex;
+}
+
+.history__form-price-container {
+	color: var(--color-black);
+}
+
+.history__form-income-toggle[data-mode='minus']::after {
+	content: '';
+	width: 0.5rem;
+	height: 0.1rem;
+	background-color: var(--color-black);
+	margin-right: 1rem;
+}
