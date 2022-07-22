@@ -16,3 +16,15 @@ export function getGroupedHistoryByDay(history) {
 
 	return result;
 }
+
+export function getMonthTotalMoney(groupedHistory) {
+	const result = { income: 0, expense: 0 };
+
+	for (const day in groupedHistory) {
+		result.income += groupedHistory[day].incomeSum;
+		result.expense += groupedHistory[day].expenseSum;
+	}
+	result.sum = result.income - result.expense;
+
+	return result;
+}

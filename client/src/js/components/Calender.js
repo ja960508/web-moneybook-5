@@ -4,7 +4,7 @@ import {
 	getDateCountFromYearMonth,
 	isNowDate,
 } from '../utils/date';
-import { getGroupedHistoryByDay } from '../utils/history';
+import { getGroupedHistoryByDay, getMonthTotalMoney } from '../utils/history';
 
 class Calendar {
 	constructor() {
@@ -53,11 +53,9 @@ class Calendar {
 		`;
 	}
 
-	getTableBodyRows() {
+	getTableBodyRows(groupedHistory) {
 		const year = store.getState('year');
 		const month = store.getState('month');
-		const history = store.getState('history');
-		const groupedHistory = getGroupedHistoryByDay(history);
 		const firstDay = getFirstDayFromYearMonth(year, month);
 		const dateCount = getDateCountFromYearMonth(year, month);
 		const rowCount = Math.ceil((firstDay + dateCount) / 7);
@@ -87,6 +85,10 @@ class Calendar {
 	}
 
 	template() {
+		const history = store.getState('history');
+		const groupedHistory = getGroupedHistoryByDay(history);
+		const totalMoney = getMonthTotalMoney(groupedHistory);
+
 		return `
 			<table>
 				<thead class="calendar__header body-regular">
@@ -101,15 +103,15 @@ class Calendar {
 					</tr>
 				</thead>
 				<tbody class="calendar__body">
-					${this.getTableBodyRows()}
+					${this.getTableBodyRows(groupedHistory)}
 				</tbody>
 			</table>
 			<div class="calendar__footer">
 				<div>
-					<span class="total-income">총 수입: 1,822,480</span>
-					<span class="total-expense">총 지출: 834,640</span>
+					<span class="total-income">총 수입: ${totalMoney.income.toLocaleString()}</span>
+					<span class="total-expense">총 지출: ${totalMoney.expense.toLocaleString()}</span>
 				</div>
-				<span class="total_sum">총계: 834,640</span>
+				<span class="total_sum">총계: ${totalMoney.sum.toLocaleString()}</span>
 			</div>
     `;
 	}

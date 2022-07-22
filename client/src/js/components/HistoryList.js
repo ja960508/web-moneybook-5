@@ -1,7 +1,7 @@
 import category from '../constants/category';
 import icons from '../constants/icons';
 import store from '../store/store';
-import { getGroupedHistoryByDay } from '../utils/history';
+import { getGroupedHistoryByDay, getMonthTotalMoney } from '../utils/history';
 
 class HistoryList {
 	constructor(props = {}) {
@@ -62,16 +62,6 @@ class HistoryList {
 		);
 	}
 
-	getMonthTotalMoney(groupedHistory) {
-		const result = { income: 0, expense: 0 };
-
-		for (const day in groupedHistory) {
-			result.income += groupedHistory[day].incomeSum;
-			result.expense += groupedHistory[day].expenseSum;
-		}
-		return result;
-	}
-
 	makeHistoryItems(item) {
 		return `<li class="history__item bold-medium">
 		<div>
@@ -94,7 +84,7 @@ class HistoryList {
 		const month = store.getState('month');
 		const groupedHistory = getGroupedHistoryByDay(history);
 		const filteredHistory = this.getFilteredHistory(groupedHistory, this.state);
-		const totalMoney = this.getMonthTotalMoney(groupedHistory);
+		const totalMoney = getMonthTotalMoney(groupedHistory);
 
 		return `<div class="list-meta">
     <span>전체 내역 ${this.getTotalLength(filteredHistory)}건</span>
