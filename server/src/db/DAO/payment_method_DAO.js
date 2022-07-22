@@ -2,7 +2,7 @@ import pool from '../loader.js';
 
 const promisePool = pool.promise();
 
-export async function readPaymentMethod() {
+async function readPaymentMethod() {
   try {
     const res = await promisePool.execute(`SELECT * FROM PAYMENT_METHOD`);
 
@@ -12,7 +12,7 @@ export async function readPaymentMethod() {
   }
 }
 
-export async function insertPaymentMethod(value) {
+async function insertPaymentMethod(value) {
   try {
     const res = await promisePool.execute(
       `INSERT INTO PAYMENT_METHOD (name)
@@ -25,7 +25,7 @@ export async function insertPaymentMethod(value) {
   }
 }
 
-export async function deletePaymentMethodById(id) {
+async function deletePaymentMethodById(id) {
   try {
     const res = await promisePool.execute(`
       DELETE FROM PAYMENT_METHOD
@@ -37,3 +37,9 @@ export async function deletePaymentMethodById(id) {
     console.error(e);
   }
 }
+
+export default {
+  readPaymentMethod,
+  insertPaymentMethod,
+  deletePaymentMethodById,
+};
