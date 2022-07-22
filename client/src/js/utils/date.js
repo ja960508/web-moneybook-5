@@ -11,3 +11,13 @@ export function getNextYearAndMonth(year, month) {
 	const nextYear = nextMonth === 1 ? year + 1 : year;
 	return [nextYear, nextMonth];
 }
+
+export function getFirstDayFromYearMonth(year, month) {
+	const firstDateOfMonth = new Date(year, month - 1, 1);
+	return firstDateOfMonth.getDay();
+}
+
+export function getLastDateFromYearMonth(year, month) {
+	const lastDateOfMonth = new Date(year, month, 0);
+	return lastDateOfMonth.getDate();
+}
