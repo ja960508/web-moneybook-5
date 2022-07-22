@@ -25,6 +25,7 @@
 	align-self: flex-end;
 	padding: 0.25rem;
 	border: 1px solid var(--color-primary-mint1);
+	background-color: var(--color-primary-mint1);
 	border-radius: 5px;
 	height: 1.5rem;
 	width: 1.5rem;
@@ -32,6 +33,13 @@
 }
 
 .history__form--submit path {
+	stroke: var(--color-white);
+}
+
+.history__form--submit:disabled {
+	background-color: transparent;
+}
+.history__form--submit:disabled path {
 	stroke: var(--color-primary-mint1);
 }
 
@@ -67,22 +75,30 @@
 	border: 1px solid var(--color-gray-200);
 	box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1), 0px 4px 20px rgba(0, 0, 0, 0.1);
 	border-radius: 10px;
-	padding: 1rem 1.5rem;
+}
+
+.history__form label .history__form-dropdown.show {
+	display: block;
 }
 
 .history__form label .history__form-dropdown li {
-	position: relative;
-	padding-bottom: 1rem;
-	margin-bottom: 1rem;
+	display: flex;
+	align-items: center;
+	padding: 1rem;
 	border-bottom: 1px solid var(--color-gray-200);
 	color: var(--color-black);
 }
 
-.history__form label .history__form-dropdown li::after {
-	position: absolute;
-	right: -0.5rem;
-	content: '\00d7';
-	color: var(--color-gray-500);
+.history__form label .history__form-dropdown li:hover {
+	background-color: var(--color-gray-100);
+}
+
+.history__form label .history__form-dropdown li:last-child {
+	border: none;
+}
+
+.history__form label .history__form-dropdown li span {
+	flex: 1 1 100%;
 }
 
 .history__form label input {
@@ -121,16 +137,35 @@
 
 .history__form-price-container {
 	display: flex;
-}
-
-.history__form-price-container {
+	align-items: center;
 	color: var(--color-black);
 }
 
-.history__form-income-toggle[data-mode='minus']::after {
+.history__form-income-toggle {
+	position: relative;
+	width: 1.5rem;
+	height: 1.5rem;
+	margin-right: 0.5rem;
+}
+
+.history__form-income-toggle::after {
 	content: '';
-	width: 0.5rem;
-	height: 0.1rem;
+	position: absolute;
+	transform: translate(-50%, -50%);
+	width: 0.75rem;
+	height: 2px;
+	top: 50%;
+	left: 50%;
 	background-color: var(--color-black);
-	margin-right: 1rem;
+}
+
+.history__form-income-toggle[data-mode='plus']::before {
+	content: '';
+	position: absolute;
+	transform: translate(-50%, -50%);
+	width: 2px;
+	height: 0.75rem;
+	top: 50%;
+	left: 50%;
+	background-color: var(--color-black);
 }

@@ -1,9 +1,44 @@
+import { setPriceFormat } from '../utils/input_value_transfomer';
+
 class HistoryForm {
 	constructor() {
 		this.DOMElement = document.createElement('form');
 		this.DOMElement.className = 'history__form';
 
+		this.setFormEvent();
 		this.render();
+		this.setEvent();
+	}
+
+	setFormEvent() {
+		this.DOMElement.addEventListener('input', () => {
+			if (
+				checkAllInputs(Array.from(this.DOMElement.querySelectorAll('input')))
+			) {
+				this.DOMElement.querySelector(
+					'.history__form--submit'
+				).disabled = false;
+			}
+		});
+
+		this.DOMElement.addEventListener('submit', (event) => {
+			event.preventDefault();
+			const {
+				historyDate,
+				historyCategory,
+				historyContent,
+				historyPaymentMethod,
+				historyPrice,
+			} = event.target;
+
+			console.log(
+				historyDate,
+				historyCategory,
+				historyContent,
+				historyPaymentMethod,
+				historyPrice
+			);
+		});
 	}
 
 	template() {
@@ -38,12 +73,7 @@ class HistoryForm {
 						/>
 					</svg>
 				</span>
-				<ul class="history__form-dropdown">
-					<li>1</li>
-					<li>2</li>
-					<li>3</li>
-					<li>4</li>
-				</ul>
+				${setDropdownElement()}
 			</label>
 			<label for="historyContent" class="box23">
 				<span class="bold-small">내용</span>
@@ -82,17 +112,13 @@ class HistoryForm {
 						/>
 					</svg>
 				</span>
-				<ul class="history__form-dropdown">
-					<li>1</li>
-					<li>2</li>
-					<li>3</li>
-					<li>4</li>
-				</ul>
+				${setDropdownElement(true)}
 			</label>
 			<label for="historyPrice" class="box23">
 				<span class="bold-small">금액</span>
 				<div class="history__form-price-container">
 					<button
+						type="button"
 						class="history__form-income-toggle"
 						data-mode="minus"
 					></button>
@@ -101,11 +127,12 @@ class HistoryForm {
 						type="text"
 						placeholder="입력하세요"
 						class="body-regular"
+						autocomplete="off"
 					/>
 					<span class="body-regular">원</span>
 				</div>
 			</label>
-			<button type="submit" class="history__form--submit">
+			<button type="submit" class="history__form--submit" disabled>
 				<svg
 					width="24"
 					height="24"
@@ -128,6 +155,113 @@ class HistoryForm {
 	render() {
 		this.DOMElement.innerHTML = this.template();
 	}
+
+	setEvent() {
+		const categoryLabel = this.DOMElement.querySelector(
+			'label[for="historyCategory"]'
+		);
+		const paymentMethodLabel = this.DOMElement.querySelector(
+			'label[for="historyPaymentMethod"]'
+		);
+		const categroyDropdown = categoryLabel.querySelector(
+			'.history__form-dropdown'
+		);
+		const paymentMethodDropdown = paymentMethodLabel.querySelector(
+			'.history__form-dropdown'
+		);
+		const incomeToggleButton = this.DOMElement.querySelector(
+			'.history__form-income-toggle'
+		);
+		const priceInput = this.DOMElement.querySelector('#historyPrice');
+
+		categoryLabel.addEventListener('click', () =>
+			toggleDropdownElement(categoryLabel)
+		);
+
+		paymentMethodLabel.addEventListener('click', () =>
+			toggleDropdownElement(paymentMethodLabel)
+		);
+
+		categroyDropdown.addEventListener('click', ({ target }) => {
+			const dropdownItem = target;
+			addCategoryToInput(categoryLabel, dropdownItem);
+		});
+
+		paymentMethodDropdown.addEventListener('click', ({ target }) => {
+			const dropdownItem = target;
+			addPaymentMethodToInput(paymentMethodLabel, dropdownItem);
+		});
+
+		incomeToggleButton.addEventListener('click', ({ target }) => {
+			const dataset = target.dataset;
+			dataset.mode = dataset.mode === 'plus' ? 'minus' : 'plus';
+		});
+
+		priceInput.addEventListener('input', ({ target }) => {
+			setPriceFormat(target);
+		});
+	}
+}
+
+function checkAllInputs(inputs) {
+	return inputs.reduce((prev, input) => (!input.value ? false : prev), true);
+}
+
+function addCategoryToInput(label, dropdownItem) {
+	const input = label.querySelector('input');
+
+	input.value = dropdownItem.innerText || '';
+
+	input.closest('form').dispatchEvent(new Event('input'));
+	toggleDropdownElement(label);
+}
+
+function addPaymentMethodToInput(label, dropdownItem) {
+	if (dropdownItem.tagName === 'BUTTON') {
+		return;
+	} else {
+		const input = label.querySelector('input');
+
+		if (dropdownItem.tagName === 'SPAN') {
+			input.value = dropdownItem.innerText || '';
+		} else {
+			input.value = dropdownItem.querySelector('span').innerText || '';
+		}
+
+		input.closest('form').dispatchEvent(new Event('input'));
+		toggleDropdownElement(label);
+	}
+}
+
+function toggleDropdownElement(label) {
+	if (
+		label.htmlFor === 'historyCategory' ||
+		label.htmlFor === 'historyPaymentMethod'
+	) {
+		label.querySelector('.history__form-dropdown').classList.toggle('show');
+	}
+}
+
+function setDropdownElement(isPaymentMethod) {
+	return `
+	<ul class="history__form-dropdown">
+		<li>
+			<span>1</span>
+			${isPaymentMethod ? `<button type="button">X</button>` : ''}
+		</li>
+		<li>
+			<span>2</span>
+			${isPaymentMethod ? `<button type="button">X</button>` : ''}
+		</li>
+		<li>
+			<span>3</span>
+			${isPaymentMethod ? `<button type="button">X</button>` : ''}
+		</li>
+		<li>
+			<span>4</span>
+			${isPaymentMethod ? `<button type="button">X</button>` : ''}
+		</li>
+	</ul>`;
 }
 
 export default HistoryForm;
