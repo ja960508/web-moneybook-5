@@ -52,7 +52,11 @@
 }
 
 .calendar__body td.now {
-	background: var(--color-gray-100);
+	background: var(--color-primary-mint2);
+}
+
+.calendar__body td.now .date {
+	color: var(--color-gray-500);
 }
 
 .calendar__body .income {

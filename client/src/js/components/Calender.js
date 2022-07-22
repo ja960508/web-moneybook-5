@@ -49,7 +49,7 @@ class Calendar {
 												nowDate > 0 && nowDate <= dateCount;
 
 											return ` 
-													<td>
+													<td ${new Date().getDate() === nowDate ? 'class="now"' : ''}">
 														<div class="expense">-4,000</div>
 														<div class="income">+16,000</div>
 														<div>+12,000</div>
