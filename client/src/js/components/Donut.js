@@ -6,6 +6,7 @@ import { getGroupedHistoryByExpense } from '../utils/history';
 class Donut {
 	constructor() {
 		this.DOMElement = document.createElement('div');
+		this.DOMElement.className = 'donut';
 		store.subscribe('history', this.render.bind(this));
 		this.render();
 	}
@@ -14,18 +15,45 @@ class Donut {
 		return this.DOMElement.querySelector('canvas');
 	}
 
-	template() {
-		return `<canvas>`;
+	template(groupedHistory) {
+		const { totalExpense, categoryAndExpenseSumList } = groupedHistory;
+		if (!totalExpense) return `<div></div>`;
+
+		return `
+			<canvas></canvas>
+			<div class="donut__right">
+				<h3 class="body-large">이번 달 지출 금액 ${totalExpense.toLocaleString()}</h3>
+				<ul class="donut__history">
+					${categoryAndExpenseSumList
+						.map(
+							(item) => `
+						<li>
+							<div>
+								<div class="category ${categoryObj[item.category]} bold-medium">${
+								item.category
+							}</div>
+								<div class="body-medium">${((item.expenseSum / totalExpense) * 100).toFixed(
+									0
+								)}%</div>
+							</div>
+							<div class="body-medium">${item.expenseSum.toLocaleString()}</div>
+						</li>
+					`
+						)
+						.join('')}
+				</ul>
+			</div>
+		`;
 	}
 
 	setInitialCanvasSize() {
-		const SIZE = 400;
+		const SIZE = 450;
 		this.canvasElement.width = SIZE;
 		this.canvasElement.height = SIZE;
 	}
 
 	setStrokeWidth(ctx) {
-		ctx.lineWidth = 45;
+		ctx.lineWidth = 48;
 	}
 
 	setStrokeColor({ ctx, category }) {
@@ -41,16 +69,17 @@ class Donut {
 		ctx.stroke();
 	}
 
-	drawDonutChart() {
+	drawDonutChart(groupedHistory) {
 		const MAX_ANGLE = 2 * Math.PI;
-		const history = store.getState('history');
-		const groupedHistory = getGroupedHistoryByExpense(history);
-		const { totalExpense, categoryAndExpenseSumList } = groupedHistory;
 
+		const { totalExpense, categoryAndExpenseSumList } = groupedHistory;
+		if (!totalExpense) return;
+
+		this.setInitialCanvasSize();
 		const ctx = this.canvasElement.getContext('2d');
 		this.setStrokeWidth(ctx);
 
-		let startAngle = 0;
+		let startAngle = -MAX_ANGLE / 4;
 		categoryAndExpenseSumList.forEach(({ expenseSum, category }) => {
 			const angle = (expenseSum / totalExpense) * MAX_ANGLE;
 			this.drawDonutChartPartial({ ctx, startAngle, angle, category });
@@ -59,9 +88,10 @@ class Donut {
 	}
 
 	render() {
-		this.DOMElement.innerHTML = this.template();
-		this.setInitialCanvasSize();
-		this.drawDonutChart();
+		const history = store.getState('history');
+		const groupedHistory = getGroupedHistoryByExpense(history);
+		this.DOMElement.innerHTML = this.template(groupedHistory);
+		this.drawDonutChart(groupedHistory);
 	}
 }
 
