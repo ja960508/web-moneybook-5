@@ -3,7 +3,7 @@ import store from '../store/store';
 import {
 	getFirstDayFromYearMonth,
 	getDateCountFromYearMonth,
-	isNowDate,
+	isToday,
 } from '../utils/date';
 import { getGroupedHistoryByDay, getMonthTotalMoney } from '../utils/history';
 
@@ -28,8 +28,8 @@ class Calendar {
 		const year = store.getState('year');
 		const month = store.getState('month');
 		const nowDate = weekIndex * MAX_WEEK + columnIndex + 1 - firstDay;
-		const isNowDateValid = nowDate > 0 && nowDate <= dateCount;
-		if (!isNowDateValid) return '<td></td>';
+		const isNowDateInCurrentMonth = nowDate > 0 && nowDate <= dateCount;
+		if (!isNowDateInCurrentMonth) return '<td></td>';
 
 		const nowHistory = groupedHistory[nowDate];
 		const priceSum = nowHistory
@@ -37,7 +37,7 @@ class Calendar {
 			: undefined;
 
 		return ` 
-			<td class="bold-medium ${isNowDate(year, month, nowDate) ? ' now' : ''}">
+			<td class="bold-medium ${isToday(year, month, nowDate) ? ' now' : ''}">
 				${
 					nowHistory?.incomeSum
 						? `<div class="income">+${nowHistory.incomeSum.toLocaleString()}</div>`

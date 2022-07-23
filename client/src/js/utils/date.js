@@ -22,7 +22,7 @@ export function getDateCountFromYearMonth(year, month) {
 	return lastDateOfMonth.getDate();
 }
 
-export function isNowDate(year, month, date) {
+export function isToday(year, month, date) {
 	const targetDate = new Date(year, month - 1, date);
 	const now = new Date();
 
