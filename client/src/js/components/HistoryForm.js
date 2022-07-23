@@ -1,3 +1,4 @@
+import store from '../store/store';
 import { setPriceFormat } from '../utils/input_value_transfomer';
 
 class HistoryForm {
@@ -30,20 +31,12 @@ class HistoryForm {
 				historyPaymentMethod,
 				historyPrice,
 			} = event.target;
-
-			console.log(
-				historyDate,
-				historyCategory,
-				historyContent,
-				historyPaymentMethod,
-				historyPrice
-			);
 		});
 	}
 
 	template() {
 		return `
-				<label for="historyDate" class="box18">
+			<label for="historyDate" class="box18">
 				<span class="bold-small">일자</span>
 				<input id="historyDate" type="date" class="body-regular" />
 			</label>
@@ -73,7 +66,7 @@ class HistoryForm {
 						/>
 					</svg>
 				</span>
-				${setDropdownElement()}
+				${setDropdownElement.call(this)}
 			</label>
 			<label for="historyContent" class="box23">
 				<span class="bold-small">내용</span>
@@ -112,7 +105,7 @@ class HistoryForm {
 						/>
 					</svg>
 				</span>
-				${setDropdownElement(true)}
+				${setDropdownElement.call(this, true)}
 			</label>
 			<label for="historyPrice" class="box23">
 				<span class="bold-small">금액</span>
@@ -243,24 +236,20 @@ function toggleDropdownElement(label) {
 }
 
 function setDropdownElement(isPaymentMethod) {
+	const state = isPaymentMethod ? 'paymentMethod' : 'category';
+
+	const dropdownContent = store.getState(state);
+
 	return `
 	<ul class="history__form-dropdown">
-		<li>
-			<span>1</span>
+		${dropdownContent
+			.map(
+				(item) => `<li data-id=${item.id}>
+			<span>${item.name}</span>
 			${isPaymentMethod ? `<button type="button">X</button>` : ''}
-		</li>
-		<li>
-			<span>2</span>
-			${isPaymentMethod ? `<button type="button">X</button>` : ''}
-		</li>
-		<li>
-			<span>3</span>
-			${isPaymentMethod ? `<button type="button">X</button>` : ''}
-		</li>
-		<li>
-			<span>4</span>
-			${isPaymentMethod ? `<button type="button">X</button>` : ''}
-		</li>
+		</li>`
+			)
+			.join('')}
 	</ul>`;
 }
 
