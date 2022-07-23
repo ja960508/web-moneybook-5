@@ -5,6 +5,14 @@ function getCurrentMonthData(payload) {
 	};
 }
 
+function getAllCategory(payload) {
+	return {
+		type: 'GET_ALL_CATEGORY',
+		payload,
+	};
+}
+
 export default {
 	getCurrentMonthData,
+	getAllCategory,
 };
