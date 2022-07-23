@@ -1,6 +1,7 @@
 import category from '../constants/category';
 import icons from '../constants/icons';
 import store from '../store/store';
+import { getGroupedHistoryByDay, getMonthTotalMoney } from '../utils/history';
 
 class HistoryList {
 	constructor(props = {}) {
@@ -32,25 +33,6 @@ class HistoryList {
 				`;
 	}
 
-	getGroupedHistoryByDay(history) {
-		const result = {};
-
-		history.forEach((item) => {
-			if (!result[item.day]) {
-				result[item.day] = { history: [], incomeSum: 0, expenseSum: 0 };
-			}
-
-			result[item.day].history.push(item);
-			if (item.isIncome) {
-				result[item.day].incomeSum += item.price;
-			} else {
-				result[item.day].expenseSum += item.price;
-			}
-		});
-
-		return result;
-	}
-
 	getSortedDayList(groupedHistory) {
 		return Object.keys(groupedHistory).sort((a, b) => b - a);
 	}
@@ -80,16 +62,6 @@ class HistoryList {
 		);
 	}
 
-	getMonthTotalMoney(groupedHistory) {
-		const result = { income: 0, expense: 0 };
-
-		for (const day in groupedHistory) {
-			result.income += groupedHistory[day].incomeSum;
-			result.expense += groupedHistory[day].expenseSum;
-		}
-		return result;
-	}
-
 	makeHistoryItems(item) {
 		return `<li class="history__item bold-medium">
 		<div>
@@ -110,9 +82,9 @@ class HistoryList {
 	template() {
 		const history = store.getState('history');
 		const month = store.getState('month');
-		const groupedHistory = this.getGroupedHistoryByDay(history);
-		const filteredHistory = this.getFilteredHistory(groupedHistory);
-		const totalMoney = this.getMonthTotalMoney(groupedHistory);
+		const groupedHistory = getGroupedHistoryByDay(history);
+		const filteredHistory = this.getFilteredHistory(groupedHistory, this.state);
+		const totalMoney = getMonthTotalMoney(groupedHistory);
 
 		return `<div class="list-meta">
     <span>전체 내역 ${this.getTotalLength(filteredHistory)}건</span>
