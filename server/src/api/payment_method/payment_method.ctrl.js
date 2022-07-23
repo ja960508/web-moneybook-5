@@ -1,7 +1,8 @@
-import { createPaymentMethods } from '../../mock/mock_generator.js';
+import paymentMethodDAO from '../../db/DAO/payment_method_DAO.js';
 
-export function getPaymentMethods(req, res) {
-  res.status(200).json(createPaymentMethods());
+export async function getPaymentMethods(req, res) {
+  const paymentMethod = await paymentMethodDAO.readPaymentMethod();
+  res.status(200).json(paymentMethod);
 }
 
 export function addPaymentMethod(req, res) {
