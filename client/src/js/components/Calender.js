@@ -1,3 +1,4 @@
+import { MAX_MONTH, MAX_WEEK } from '../constants/date';
 import store from '../store/store';
 import {
 	getFirstDayFromYearMonth,
@@ -26,7 +27,7 @@ class Calendar {
 	}) {
 		const year = store.getState('year');
 		const month = store.getState('month');
-		const nowDate = weekIndex * 7 + columnIndex + 1 - firstDay;
+		const nowDate = weekIndex * MAX_WEEK + columnIndex + 1 - firstDay;
 		const isNowDateValid = nowDate > 0 && nowDate <= dateCount;
 		if (!isNowDateValid) return '<td></td>';
 
@@ -62,7 +63,7 @@ class Calendar {
 		const month = store.getState('month');
 		const firstDay = getFirstDayFromYearMonth(year, month);
 		const dateCount = getDateCountFromYearMonth(year, month);
-		const rowCount = Math.ceil((firstDay + dateCount) / 7);
+		const rowCount = Math.ceil((firstDay + dateCount) / MAX_WEEK);
 
 		return `
 			${Array(rowCount)
@@ -70,7 +71,7 @@ class Calendar {
 				.map(
 					(_, weekIndex) =>
 						`<tr>
-							${Array(7)
+							${Array(MAX_WEEK)
 								.fill()
 								.map((_, columnIndex) =>
 									this.getTableBodyData({
