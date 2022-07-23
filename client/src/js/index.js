@@ -27,8 +27,6 @@ import {
 	store.dispatch(action.getAllCategory(category));
 	store.dispatch(action.getAllPaymentMethod(paymentMethod));
 
-	console.log(store.getState('paymentMethod'));
-
 	window.addEventListener('popstate', () => {
 		const path = window.location.pathname;
 		Router.render(path);
