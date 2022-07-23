@@ -7,7 +7,11 @@ import '@styles/history_form.css';
 import Router from './core/router.js';
 import store from './store/store.js';
 import action from './store/action.js';
-import { getAllCategory, getCurrentHistory } from './api/request.js';
+import {
+	getAllCategory,
+	getAllPaymentMethod,
+	getCurrentHistory,
+} from './api/request.js';
 
 (async function () {
 	customElements.define('custom-link', CustomLink, { extends: 'a' });
@@ -18,8 +22,12 @@ import { getAllCategory, getCurrentHistory } from './api/request.js';
 
 	const history = await getCurrentHistory(year, month);
 	const category = await getAllCategory();
+	const paymentMethod = await getAllPaymentMethod();
 	store.dispatch(action.getCurrentMonthData(history));
 	store.dispatch(action.getAllCategory(category));
+	store.dispatch(action.getAllPaymentMethod(paymentMethod));
+
+	console.log(store.getState('paymentMethod'));
 
 	window.addEventListener('popstate', () => {
 		const path = window.location.pathname;
