@@ -1,9 +1,12 @@
 import categoryObj from '../constants/category';
 import { getBgColorFromCSSClass } from '../utils/get_css_style';
+import store from '../store/store';
+import { getGroupedHistoryByExpense } from '../utils/history';
 
 class Donut {
 	constructor() {
 		this.DOMElement = document.createElement('div');
+		store.subscribe('history', this.render.bind(this));
 		this.render();
 	}
 
@@ -40,19 +43,15 @@ class Donut {
 
 	drawDonutChart() {
 		const MAX_ANGLE = 2 * Math.PI;
-
-		const totalExpense = 100000;
-		const mock = [
-			{ expenseSum: 50000, category: '생활' },
-			{ expenseSum: 30000, category: '의료/건강' },
-			{ expenseSum: 20000, category: '쇼핑/뷰티' },
-		];
+		const history = store.getState('history');
+		const groupedHistory = getGroupedHistoryByExpense(history);
+		const { totalExpense, categoryAndExpenseSumList } = groupedHistory;
 
 		const ctx = this.canvasElement.getContext('2d');
 		this.setStrokeWidth(ctx);
 
 		let startAngle = 0;
-		mock.forEach(({ expenseSum, category }) => {
+		categoryAndExpenseSumList.forEach(({ expenseSum, category }) => {
 			const angle = (expenseSum / totalExpense) * MAX_ANGLE;
 			this.drawDonutChartPartial({ ctx, startAngle, angle, category });
 			startAngle += angle;
