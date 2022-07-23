@@ -1,14 +1,15 @@
+import icons from '../constants/icons';
 import store from '../store/store';
-import { setPriceFormat } from '../utils/input_value_transfomer';
+import { setPriceFormat } from '../utils/input_value_transformer';
 
 class HistoryForm {
 	constructor() {
 		this.DOMElement = document.createElement('form');
 		this.DOMElement.className = 'history__form';
-
+		store.subscribe('paymentMethod', this.render.bind(this));
+		store.subscribe('category', this.render.bind(this));
 		this.setFormEvent();
 		this.render();
-		this.setEvent();
 	}
 
 	setFormEvent() {
@@ -19,6 +20,8 @@ class HistoryForm {
 				this.DOMElement.querySelector(
 					'.history__form--submit'
 				).disabled = false;
+			} else {
+				this.DOMElement.querySelector('.history__form--submit').disabled = true;
 			}
 		});
 
@@ -50,23 +53,9 @@ class HistoryForm {
 					class="body-regular"
 				/>
 				<span class="arrow">
-					<svg
-						width="24"
-						height="24"
-						viewBox="0 0 24 24"
-						fill="none"
-						xmlns="http://www.w3.org/2000/svg"
-					>
-						<path
-							d="M16 20L8 12L16 4"
-							stroke="#FCFCFC"
-							stroke-width="2"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-						/>
-					</svg>
+					${icons.arrow}
 				</span>
-				${setDropdownElement.call(this)}
+				${setDropdownElement()}
 			</label>
 			<label for="historyContent" class="box23">
 				<span class="bold-small">내용</span>
@@ -89,23 +78,9 @@ class HistoryForm {
 					class="body-regular"
 				/>
 				<span class="arrow">
-					<svg
-						width="24"
-						height="24"
-						viewBox="0 0 24 24"
-						fill="none"
-						xmlns="http://www.w3.org/2000/svg"
-					>
-						<path
-							d="M16 20L8 12L16 4"
-							stroke="#FCFCFC"
-							stroke-width="2"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-						/>
-					</svg>
+					${icons.arrow}
 				</span>
-				${setDropdownElement.call(this, true)}
+				${setDropdownElement(true)}
 			</label>
 			<label for="historyPrice" class="box23">
 				<span class="bold-small">금액</span>
@@ -147,6 +122,7 @@ class HistoryForm {
 
 	render() {
 		this.DOMElement.innerHTML = this.template();
+		this.setEvent();
 	}
 
 	setEvent() {
@@ -167,16 +143,25 @@ class HistoryForm {
 		);
 		const priceInput = this.DOMElement.querySelector('#historyPrice');
 
-		categoryLabel.addEventListener('click', () =>
-			toggleDropdownElement(categoryLabel)
-		);
+		categoryLabel.addEventListener('click', (e) => {
+			e.preventDefault();
 
-		paymentMethodLabel.addEventListener('click', () =>
-			toggleDropdownElement(paymentMethodLabel)
-		);
+			if (e.target.closest('.history__form-dropdown')) {
+				return;
+			}
+			toggleDropdownElement(categoryLabel);
+		});
 
-		categroyDropdown.addEventListener('click', ({ target }) => {
-			const dropdownItem = target;
+		paymentMethodLabel.addEventListener('click', (e) => {
+			e.preventDefault();
+			if (e.target.closest('.history__form-dropdown')) {
+				return;
+			}
+			toggleDropdownElement(paymentMethodLabel);
+		});
+
+		categroyDropdown.addEventListener('click', (event) => {
+			const dropdownItem = event.target;
 			addCategoryToInput(categoryLabel, dropdownItem);
 		});
 
