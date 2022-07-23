@@ -1,4 +1,4 @@
-import { MAX_MONTH, MAX_WEEK } from '../constants/date';
+import { MAX_WEEK } from '../constants/date';
 import store from '../store/store';
 import {
 	getFirstDayFromYearMonth,
@@ -6,6 +6,7 @@ import {
 	isToday,
 } from '../utils/date';
 import { getGroupedHistoryByDay, getMonthTotalMoney } from '../utils/history';
+import { getEmptyArray } from '../utils/array';
 
 class Calendar {
 	constructor() {
@@ -18,44 +19,56 @@ class Calendar {
 		this.render();
 	}
 
+	makeHistoryByNowHistory(nowHistory) {
+		const { incomeSum, expenseSum } = nowHistory;
+		const priceSum = incomeSum - expenseSum;
+
+		return `
+			${incomeSum ? `<div class="income">+${incomeSum.toLocaleString()}</div>` : ''}
+			${
+				expenseSum
+					? `<div class="expense">-${expenseSum.toLocaleString()}</div>`
+					: ''
+			}
+				<div class="sum">${priceSum.toLocaleString()}</div>
+			`;
+	}
+
 	getTableBodyData({
 		dateCount,
 		groupedHistory,
 		firstDay,
-		weekIndex,
+		rowIndex,
 		columnIndex,
 	}) {
 		const year = store.getState('year');
 		const month = store.getState('month');
-		const nowDate = weekIndex * MAX_WEEK + columnIndex + 1 - firstDay;
+		const nowDate = rowIndex * MAX_WEEK + columnIndex + 1 - firstDay;
 		const isNowDateInCurrentMonth = nowDate > 0 && nowDate <= dateCount;
 		if (!isNowDateInCurrentMonth) return '<td></td>';
 
 		const nowHistory = groupedHistory[nowDate];
-		const priceSum = nowHistory
-			? nowHistory.incomeSum - nowHistory.expenseSum
-			: undefined;
 
 		return ` 
 			<td class="bold-medium ${isToday(year, month, nowDate) ? ' now' : ''}">
-				${
-					nowHistory?.incomeSum
-						? `<div class="income">+${nowHistory.incomeSum.toLocaleString()}</div>`
-						: ''
-				}
-				${
-					nowHistory?.expenseSum
-						? `<div class="expense">-${nowHistory.expenseSum.toLocaleString()}</div>`
-						: ''
-				}
-				${
-					priceSum !== undefined
-						? `<div class="sum">${priceSum.toLocaleString()}</div>`
-						: ''
-				}
+				${nowHistory ? this.makeHistoryByNowHistory(nowHistory) : ''}
 				<div class="bold-small date body-small">${nowDate}</div>
 			</td>
 		`;
+	}
+
+	getTableBodyRowCells({ rowIndex, firstDay, dateCount, groupedHistory }) {
+		return getEmptyArray(MAX_WEEK)
+			.map((_, columnIndex) =>
+				this.getTableBodyData({
+					dateCount,
+					groupedHistory,
+					firstDay,
+					rowIndex,
+					columnIndex,
+				})
+			)
+			.join('');
 	}
 
 	getTableBodyRows(groupedHistory) {
@@ -65,28 +78,15 @@ class Calendar {
 		const dateCount = getDateCountFromYearMonth(year, month);
 		const rowCount = Math.ceil((firstDay + dateCount) / MAX_WEEK);
 
-		return `
-			${Array(rowCount)
-				.fill()
-				.map(
-					(_, weekIndex) =>
-						`<tr>
-							${Array(MAX_WEEK)
-								.fill()
-								.map((_, columnIndex) =>
-									this.getTableBodyData({
-										dateCount,
-										groupedHistory,
-										firstDay,
-										weekIndex,
-										columnIndex,
-									})
-								)
-								.join('')}
-							</tr>`
-				)
-				.join('')}
-			`;
+		return getEmptyArray(rowCount)
+			.map(
+				(_, rowIndex) => `
+					<tr>
+						${this.getTableBodyRowCells({ rowIndex, firstDay, dateCount, groupedHistory })}
+					</tr>
+				`
+			)
+			.join('');
 	}
 
 	template() {
