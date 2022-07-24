@@ -1,0 +1,57 @@
+.modal-overlay {
+	position: absolute;
+	top: 0;
+	width: 100vw;
+	height: 100vh;
+	background: rgba(0, 0, 0, 0.4);
+}
+
+.modal {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	padding: 2.5rem;
+	background-color: var(--color-white);
+	box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1), 0px 4px 20px rgba(0, 0, 0, 0.1);
+	border-radius: 10px;
+	display: flex;
+	flex-direction: column;
+}
+
+.modal p {
+	margin: 0;
+	margin-bottom: 1.5rem;
+}
+
+.modal input {
+	width: 20rem;
+	padding: 10px 20px;
+	border: 1px solid var(--color-gray-200);
+	border-radius: 10px;
+	margin-bottom: 40px;
+}
+
+.modal__submit-container {
+	display: flex;
+}
+
+.modal__submit-container button {
+	width: 50%;
+	display: flex;
+}
+
+.modal__submit-container button.cancle {
+	color: var(--color-gray-500);
+	justify-content: flex-start;
+}
+
+.modal__submit-container button.delete {
+	color: var(--color-magenta);
+	justify-content: flex-end;
+}
+
+.modal__submit-container button.regist {
+	color: var(--color-primary-mint3);
+	justify-content: flex-end;
+}
