@@ -10,6 +10,10 @@ export default function reducer(state = initialState, action) {
 	switch (action.type) {
 		case 'GET_CURRENT_MONTH_DATA':
 			return action.payload;
+		case 'GET_ALL_CATEGORY':
+			return { ...state, category: action.payload };
+		case 'GET_ALL_PAYMENT_METHOD':
+			return { ...state, paymentMethod: action.payload };
 		default:
 			return state;
 	}

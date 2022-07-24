@@ -3,12 +3,17 @@ import '@styles/reset.css';
 import '@styles/common.css';
 import '@styles/main.css';
 import '@styles/Header.css';
+import '@styles/history_form.css';
 import '@styles/Calendar.css';
 import renderHome from './pages/home.js';
 import Router from './core/router.js';
 import store from './store/store.js';
 import action from './store/action.js';
-import { getCurrentHistory } from './api/request.js';
+import {
+	getAllCategory,
+	getAllPaymentMethod,
+	getCurrentHistory,
+} from './api/request.js';
 
 (async function () {
 	customElements.define('custom-link', CustomLink, { extends: 'a' });
@@ -17,8 +22,12 @@ import { getCurrentHistory } from './api/request.js';
 	const month = now.getMonth() + 1;
 	const path = window.location.pathname;
 
-	const response = await getCurrentHistory(year, month);
-	store.dispatch(action.getCurrentMonthData(response));
+	const history = await getCurrentHistory(year, month);
+	const category = await getAllCategory();
+	const paymentMethod = await getAllPaymentMethod();
+	store.dispatch(action.getCurrentMonthData(history));
+	store.dispatch(action.getAllCategory(category));
+	store.dispatch(action.getAllPaymentMethod(paymentMethod));
 
 	window.addEventListener('popstate', () => {
 		const path = window.location.pathname;
