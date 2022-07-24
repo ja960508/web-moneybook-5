@@ -1,7 +1,7 @@
 import categoryObj from '../constants/category';
-import { getBgColorFromCSSClass } from '../utils/get_css_style';
 import store from '../store/store';
 import { getGroupedHistoryByExpense } from '../utils/history';
+import { categoryBgColors } from '../constants/colors';
 
 class Donut {
 	constructor() {
@@ -58,7 +58,7 @@ class Donut {
 
 	setStrokeColor({ ctx, category }) {
 		const categoryLabel = categoryObj[category];
-		ctx.strokeStyle = getBgColorFromCSSClass(['category', categoryLabel]);
+		ctx.strokeStyle = categoryBgColors[categoryLabel];
 	}
 
 	drawDonutChartPartial({ ctx, startAngle, angle, category }) {

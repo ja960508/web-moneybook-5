@@ -1,6 +1,6 @@
 import CustomLink from './custom_elements/CustomLink.js';
 import '@styles/reset.css';
-import '@styles/common.css';
+import '@styles/common.scss';
 import '@styles/main.css';
 import '@styles/Header.css';
 import '@styles/Calendar.css';
