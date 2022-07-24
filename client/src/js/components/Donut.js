@@ -11,7 +11,7 @@ class Donut {
 		this.render();
 	}
 
-	get canvasElement() {
+	getCanvasElement() {
 		return this.DOMElement.querySelector('canvas');
 	}
 
@@ -48,8 +48,9 @@ class Donut {
 
 	setInitialCanvasSize() {
 		const SIZE = 450;
-		this.canvasElement.width = SIZE;
-		this.canvasElement.height = SIZE;
+		const canvasElement = this.getCanvasElement();
+		canvasElement.width = SIZE;
+		canvasElement.height = SIZE;
 	}
 
 	setStrokeWidth(ctx) {
@@ -63,7 +64,7 @@ class Donut {
 
 	drawDonutChartPartial({ ctx, startAngle, angle, category }) {
 		ctx.beginPath();
-		const { width, height } = this.canvasElement;
+		const { width, height } = this.getCanvasElement();
 		ctx.arc(width / 2, height / 2, 120, startAngle, startAngle + angle);
 		this.setStrokeColor({ ctx, category });
 		ctx.stroke();
@@ -76,7 +77,7 @@ class Donut {
 		if (!totalExpense) return;
 
 		this.setInitialCanvasSize();
-		const ctx = this.canvasElement.getContext('2d');
+		const ctx = this.getCanvasElement().getContext('2d');
 		this.setStrokeWidth(ctx);
 
 		let startAngle = -MAX_ANGLE / 4;
