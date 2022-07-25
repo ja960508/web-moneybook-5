@@ -11,16 +11,6 @@
 	--color-gray-100: #f5f5f5;
 	--color-white: #fcfcfc;
 
-	--color-light-cyan: #6ed5eb;
-	--color-deep-green: #4cb8b8;
-	--color-green: #94d3cc;
-	--color-cyan: #4ca1de;
-	--color-light-violet: #d092e2;
-	--color-deep-violet: #817dce;
-	--color-deep-cyan: #4a6cc3;
-	--color-light-green: #b9d58c;
-	--color-yellow: #e6d267;
-	--color-deep-yellow: #e2b765;
 	--color-magenta: #f45452;
 }
 
@@ -94,41 +84,41 @@
 }
 
 .category.culture {
-	background-color: var(--color-light-violet);
+	background-color: $color-culture;
 }
 
 .category.transport {
-	background-color: var(--color-green);
+	background-color: $color-transport;
 }
 
 .category.unclassified {
-	background-color: var(--color-deep-violet);
+	background-color: $color-unclassified;
 }
 
 .category.food {
-	background-color: var(--color-cyan);
+	background-color: $color-food;
 }
 
 .category.life {
-	background-color: var(--color-deep-cyan);
+	background-color: $color-life;
 }
 
 .category.salary {
-	background-color: var(--color-light-green);
+	background-color: $color-salary;
 }
 
 .category.shopping {
-	background-color: var(--color-deep-green);
+	background-color: $color-shopping;
 }
 
 .category.health {
-	background-color: var(--color-light-cyan);
+	background-color: $color-health;
 }
 
 .category.pocketMoney {
-	background-color: var(--color-yellow);
+	background-color: $color-pocketMoney;
 }
 
 .category.etcIncome {
-	background-color: var(--color-deep-yellow);
+	background-color: $color-etcIncome;
 }

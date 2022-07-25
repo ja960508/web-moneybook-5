@@ -1,10 +1,11 @@
 import CustomLink from './custom_elements/CustomLink.js';
 import '@styles/reset.css';
-import '@styles/common.css';
+import '@styles/common.scss';
 import '@styles/main.css';
 import '@styles/Header.css';
 import '@styles/history_form.css';
 import '@styles/Calendar.css';
+import '@styles/Donut.css';
 import renderHome from './pages/home.js';
 import Router from './core/router.js';
 import store from './store/store.js';
