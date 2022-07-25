@@ -16,16 +16,22 @@ class HistoryForm {
 		this.render();
 	}
 
+	enalbeSubmitButton() {
+		this.DOMElement.querySelector('.history__form--submit').disabled = false;
+	}
+
+	disalbeSubmitButton() {
+		this.DOMElement.querySelector('.history__form--submit').disabled = true;
+	}
+
 	setFormEvent() {
 		this.DOMElement.addEventListener('input', () => {
 			if (
 				checkAllInputs(Array.from(this.DOMElement.querySelectorAll('input')))
 			) {
-				this.DOMElement.querySelector(
-					'.history__form--submit'
-				).disabled = false;
+				this.enalbeSubmitButton();
 			} else {
-				this.DOMElement.querySelector('.history__form--submit').disabled = true;
+				this.disalbeSubmitButton();
 			}
 		});
 
@@ -55,6 +61,9 @@ class HistoryForm {
 				paymentMethod,
 				price,
 			});
+
+			this.DOMElement.reset();
+			this.disalbeSubmitButton();
 
 			const [_year, _month, day] = date.split('-');
 
