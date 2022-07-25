@@ -1,4 +1,4 @@
-import { MAX_PRICE } from '../constants/date';
+import { MAX_PRICE } from '../constants/history';
 
 function setOnlyNumber(value) {
 	return Number(value.replace(/[^0-9]/g, ''));
