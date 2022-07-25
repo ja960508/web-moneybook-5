@@ -18,7 +18,6 @@ class Donut {
 	template(groupedHistory) {
 		const { totalExpense, categoryAndExpenseSumList } = groupedHistory;
 		if (!totalExpense) return `<div></div>`;
-
 		return `
 			<canvas></canvas>
 			<div class="donut__right">
@@ -27,7 +26,7 @@ class Donut {
 					${categoryAndExpenseSumList
 						.map(
 							(item) => `
-						<li>
+						<li data-category-id=${item.categoryId}>
 							<div>
 								<div class="category ${categoryObj[item.category]} bold-medium">${
 								item.category
@@ -44,6 +43,10 @@ class Donut {
 				</ul>
 			</div>
 		`;
+	}
+
+	setEvent() {
+		const donutHistory = this.DOMElement.querySelector('.donut__history');
 	}
 
 	setInitialCanvasSize() {
