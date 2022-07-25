@@ -1,3 +1,4 @@
+import commonDAO from '../../db/DAO/common_DAO.js';
 import paymentMethodDAO from '../../db/DAO/payment_method_DAO.js';
 
 export async function getPaymentMethods(req, res) {
@@ -7,9 +8,10 @@ export async function getPaymentMethods(req, res) {
 
 export async function addPaymentMethod(req, res) {
   const { value } = req.body;
-  const id = await paymentMethodDAO.insertPaymentMethod(value);
+  await paymentMethodDAO.insertPaymentMethod(value);
+  const id = await commonDAO.getLastId('PAYMENT_METHOD');
 
-  res.status(201).json({ id: id[0]['LAST_INSERT_ID()'] });
+  res.status(201).json({ id });
 }
 
 export async function removePaymentMethod(req, res) {
