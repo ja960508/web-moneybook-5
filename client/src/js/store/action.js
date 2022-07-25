@@ -19,8 +19,24 @@ function getAllPaymentMethod(payload) {
 	};
 }
 
+function addPaymentMethod(payload) {
+	return {
+		type: 'ADD_PAYMENT_METHOD',
+		payload,
+	};
+}
+
+function deletePaymentMethod(payload) {
+	return {
+		type: 'DELETE_PAYMENT_METHOD',
+		payload,
+	};
+}
+
 export default {
 	getCurrentMonthData,
 	getAllCategory,
 	getAllPaymentMethod,
+	addPaymentMethod,
+	deletePaymentMethod,
 };

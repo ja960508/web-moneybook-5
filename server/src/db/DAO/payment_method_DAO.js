@@ -14,10 +14,11 @@ async function readPaymentMethod() {
 
 async function insertPaymentMethod(value) {
   try {
-    const res = await promisePool.execute(
+    await promisePool.execute(
       `INSERT INTO PAYMENT_METHOD (name)
       VALUES ("${value}")`
     );
+    const res = await promisePool.execute(`SELECT LAST_INSERT_ID()`);
 
     return res[0];
   } catch (e) {

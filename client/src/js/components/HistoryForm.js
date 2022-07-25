@@ -1,6 +1,8 @@
 import icons from '../constants/icons';
 import store from '../store/store';
+import paymentMethodType from '../constants/payment_method';
 import { setPriceFormat } from '../utils/input_value_transformer';
+import PaymentMethodModal from './PaymentMethodModal';
 
 class HistoryForm {
 	constructor() {
@@ -153,7 +155,29 @@ class HistoryForm {
 
 		paymentMethodDropdown.addEventListener('click', ({ target }) => {
 			const dropdownItem = target;
-			addPaymentMethodToInput(paymentMethodLabel, dropdownItem);
+
+			if (dropdownItem.className === 'payment-method-add') {
+				this.showPaymentMethodModal(
+					'추가하실 결제수단을 적어주세요.',
+					{ content: '' },
+					paymentMethodType.add
+				);
+			} else if (dropdownItem.className === 'payment-method-delete') {
+				const li = dropdownItem.closest('li');
+				const id = li.dataset.id;
+				const content = li.querySelector('span').innerText;
+
+				this.showPaymentMethodModal(
+					'해당 결제수단을 삭제하시겠습니까?',
+					{
+						content,
+						id,
+					},
+					paymentMethodType.remove
+				);
+			} else {
+				addPaymentMethodToInput(paymentMethodLabel, dropdownItem);
+			}
 		});
 
 		incomeToggleButton.addEventListener('click', ({ target }) => {
@@ -164,6 +188,10 @@ class HistoryForm {
 		priceInput.addEventListener('input', ({ target }) => {
 			setPriceFormat(target);
 		});
+	}
+
+	showPaymentMethodModal(title = '', paymentMethod, paymentMethodType) {
+		new PaymentMethodModal({ title, paymentMethod, paymentMethodType });
 	}
 }
 
@@ -217,10 +245,15 @@ function setDropdownElement(isPaymentMethod) {
 			.map(
 				(item) => `<li data-id=${item.id}>
 			<span>${item.name}</span>
-			${isPaymentMethod ? `<button type="button">X</button>` : ''}
+			${
+				isPaymentMethod
+					? `<button class="payment-method-delete" type="button">X</button>`
+					: ''
+			}
 		</li>`
 			)
 			.join('')}
+		${isPaymentMethod ? `<li class="payment-method-add">추가하기</li>` : ''}
 	</ul>`;
 }
 
