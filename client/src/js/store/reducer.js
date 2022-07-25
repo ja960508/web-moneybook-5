@@ -14,6 +14,18 @@ export default function reducer(state = initialState, action) {
 			return { ...state, category: action.payload };
 		case 'GET_ALL_PAYMENT_METHOD':
 			return { ...state, paymentMethod: action.payload };
+		case 'ADD_PAYMENT_METHOD':
+			return {
+				...state,
+				paymentMethod: state.paymentMethod.concat(action.payload),
+			};
+		case 'DELETE_PAYMENT_METHOD':
+			return {
+				...state,
+				paymentMethod: state.paymentMethod.filter(
+					(item) => item.id !== Number(action.payload.id)
+				),
+			};
 		default:
 			return state;
 	}
