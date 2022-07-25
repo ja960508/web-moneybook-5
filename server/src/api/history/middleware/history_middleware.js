@@ -1,13 +1,10 @@
 export function isValidHistory(req, res, next) {
   const historyContent = req.body;
   const requiredKeys = [
-    'month',
-    'year',
-    'day',
-    'category',
+    'date',
+    'categoryId',
     'content',
     'paymentMethod',
-    'isIncome',
     'price',
   ];
   const isValid = requiredKeys.every((key) => historyContent[key]);

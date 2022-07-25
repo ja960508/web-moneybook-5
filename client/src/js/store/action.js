@@ -33,10 +33,18 @@ function deletePaymentMethod(payload) {
 	};
 }
 
+function addHistory(payload) {
+	return {
+		type: 'ADD_HISTORY',
+		payload,
+	};
+}
+
 export default {
 	getCurrentMonthData,
 	getAllCategory,
 	getAllPaymentMethod,
 	addPaymentMethod,
 	deletePaymentMethod,
+	addHistory,
 };

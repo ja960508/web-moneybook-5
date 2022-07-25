@@ -8,10 +8,12 @@ const promisePool = pool.promise();
 
 async function insertHistory(history) {
   try {
-    await promisePool.execute(
+    const res = await promisePool.execute(
       `INSERT INTO HISTORY (${Object.keys(history).join()})
       VALUES (${Object.values(history).map(addQuotesToString).join()})`
     );
+
+    return res[0];
   } catch (e) {
     console.error(e);
   }

@@ -16,6 +16,27 @@ export async function getCurrentHistory(year, month) {
 	}
 }
 
+export async function addHistory(history) {
+	try {
+		const response = await fetch(`${API_ENDPOINT}/history`, {
+			headers: {
+				Accept: 'application/json',
+				'Content-Type': 'application/json',
+			},
+			method: 'POST',
+			body: JSON.stringify(history),
+		});
+
+		if (!response.ok) {
+			throw new Error(`Request is not OK ${response.status}`);
+		}
+
+		return await response.json();
+	} catch (e) {
+		return e;
+	}
+}
+
 export async function getAllCategory() {
 	try {
 		const response = await fetch(`${API_ENDPOINT}/category`);
