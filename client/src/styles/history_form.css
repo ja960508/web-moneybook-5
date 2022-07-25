@@ -51,6 +51,9 @@
 
 .history__form input {
 	cursor: pointer;
+}
+
+.history__form input:not(.history__form-income-toggle) {
 	width: 100%;
 }
 .history__form input::-webkit-calendar-picker-indicator {
@@ -139,10 +142,10 @@
 }
 
 .history__form-income-toggle {
+	appearance: none;
 	position: relative;
-	width: 1.5rem;
+	width: 2.5rem;
 	height: 1.5rem;
-	margin-right: 0.5rem;
 }
 
 .history__form-income-toggle::after {
@@ -156,7 +159,7 @@
 	background-color: var(--color-black);
 }
 
-.history__form-income-toggle[data-mode='plus']::before {
+.history__form-income-toggle:checked::before {
 	content: '';
 	position: absolute;
 	transform: translate(-50%, -50%);
@@ -165,4 +168,13 @@
 	top: 50%;
 	left: 50%;
 	background-color: var(--color-black);
+}
+
+.history__form-price-container span {
+	padding-bottom: 4px;
+}
+
+#historyPrice {
+	text-align: right;
+	padding-right: 0.5rem;
 }

@@ -87,11 +87,12 @@ class HistoryForm {
 			<label for="historyPrice" class="box23">
 				<span class="bold-small">금액</span>
 				<div class="history__form-price-container">
-					<button
-						type="button"
+					<input
+						id="historyIsIncome"
+						type="checkbox"
 						class="history__form-income-toggle"
 						data-mode="minus"
-					></button>
+					></input>
 					<input
 						id="historyPrice"
 						type="text"
