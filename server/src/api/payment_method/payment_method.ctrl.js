@@ -9,12 +9,12 @@ export async function addPaymentMethod(req, res) {
   const { value } = req.body;
   const id = await paymentMethodDAO.insertPaymentMethod(value);
 
-  res.status(201).json({ id: id[0] });
+  res.status(201).json({ id: id[0]['LAST_INSERT_ID()'] });
 }
 
-export function removePaymentMethod(req, res) {
+export async function removePaymentMethod(req, res) {
   const { id } = req.params;
-  paymentMethodDAO.deletePaymentMethodById(id);
+  await paymentMethodDAO.deletePaymentMethodById(id);
 
   res.status(200).json({ id });
 }

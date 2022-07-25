@@ -1,4 +1,5 @@
 import { addPaymentMethod, deletePaymentMethod } from '../api/request';
+import paymentMethodType from '../constants/payment_method';
 import action from '../store/action';
 import store from '../store/store.js';
 
@@ -7,7 +8,9 @@ class PaymentMethodModal {
 		this.DOMElement = document.createElement('div');
 		this.DOMElement.className = 'modal-overlay';
 		this.props = props;
-		this.isDelete = Boolean(this.props.paymentMethod.content);
+		this.isDelete = Boolean(
+			this.props.paymentMethodType === paymentMethodType.remove
+		);
 
 		document.body.appendChild(this.DOMElement);
 		this.render();
@@ -23,7 +26,7 @@ class PaymentMethodModal {
 					this.props.paymentMethod.content
 				}" placeholder="입력하세요" ${
 			this.isDelete ? 'readOnly' : ''
-		} maxlength=10 />
+		} maxlength=10 autocomplete="off" />
 				<div class="modal__submit-container">
 					<button type="button" class="body-medium cancle">취소</button>
 					<button type="submit" class="body-medium ${
@@ -59,7 +62,7 @@ class PaymentMethodModal {
 				const res = await addPaymentMethod(value);
 				store.dispatch(
 					action.addPaymentMethod({
-						id: res.id[0]['LAST_INSERT_ID()'],
+						id: res.id,
 						name: value,
 					})
 				);

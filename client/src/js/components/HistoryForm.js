@@ -1,5 +1,6 @@
 import icons from '../constants/icons';
 import store from '../store/store';
+import paymentMethodType from '../constants/payment_method';
 import { setPriceFormat } from '../utils/input_value_transformer';
 import PaymentMethodModal from './PaymentMethodModal';
 
@@ -156,16 +157,24 @@ class HistoryForm {
 			const dropdownItem = target;
 
 			if (dropdownItem.className === 'payment-method-add') {
-				this.showPaymentMethodModal('추가하실 결제수단을 적어주세요.');
+				this.showPaymentMethodModal(
+					'추가하실 결제수단을 적어주세요.',
+					{ content: '' },
+					paymentMethodType.add
+				);
 			} else if (dropdownItem.className === 'payment-method-delete') {
 				const li = dropdownItem.closest('li');
 				const id = li.dataset.id;
 				const content = li.querySelector('span').innerText;
 
-				this.showPaymentMethodModal('해당 결제수단을 삭제하시겠습니까?', {
-					content,
-					id,
-				});
+				this.showPaymentMethodModal(
+					'해당 결제수단을 삭제하시겠습니까?',
+					{
+						content,
+						id,
+					},
+					paymentMethodType.remove
+				);
 			} else {
 				addPaymentMethodToInput(paymentMethodLabel, dropdownItem);
 			}
@@ -181,8 +190,8 @@ class HistoryForm {
 		});
 	}
 
-	showPaymentMethodModal(title = '', paymentMethod = { content: '' }) {
-		new PaymentMethodModal({ title, paymentMethod });
+	showPaymentMethodModal(title = '', paymentMethod, paymentMethodType) {
+		new PaymentMethodModal({ title, paymentMethod, paymentMethodType });
 	}
 }
 
