@@ -5,14 +5,16 @@ export async function getPaymentMethods(req, res) {
   res.status(200).json(paymentMethod);
 }
 
-export function addPaymentMethod(req, res) {
+export async function addPaymentMethod(req, res) {
   const { value } = req.body;
+  const id = await paymentMethodDAO.insertPaymentMethod(value);
 
-  res.status(201).json({ id: 1 });
+  res.status(201).json({ id: id[0] });
 }
 
 export function removePaymentMethod(req, res) {
   const { id } = req.params;
+  paymentMethodDAO.deletePaymentMethodById(id);
 
-  res.status(200).json({ message: '성공적으로 삭제했습니다.' });
+  res.status(200).json({ id });
 }

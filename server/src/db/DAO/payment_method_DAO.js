@@ -18,8 +18,9 @@ async function insertPaymentMethod(value) {
       `INSERT INTO PAYMENT_METHOD (name)
       VALUES ("${value}")`
     );
+    const id = await promisePool.execute(`SELECT LAST_INSERT_ID()`);
 
-    return res[0];
+    return id;
   } catch (e) {
     console.error(e);
   }
