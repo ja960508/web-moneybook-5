@@ -3,6 +3,7 @@
 const HtmlPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const path = require('path');
+const { categoryBgColors } = require('./src/js/constants/colors');
 const isProduction = process.env.NODE_ENV === 'production';
 
 module.exports = {
@@ -42,6 +43,21 @@ module.exports = {
 				],
 				exclude: /node_modules/,
 				// 순서 중요, 뒤에서부터 로드
+			},
+			{
+				test: /\.scss$/,
+				use: [
+					MiniCssExtractPlugin.loader,
+					'css-loader',
+					{
+						loader: 'sass-loader',
+						options: {
+							additionalData: Object.entries(categoryBgColors)
+								.map(([key, value]) => `$color-${key}: ${value};`)
+								.join(''),
+						},
+					},
+				],
 			},
 			{
 				test: /\.js$/,
