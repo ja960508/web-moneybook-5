@@ -9,7 +9,7 @@ const initialState = {};
 export default function reducer(state = initialState, action) {
 	switch (action.type) {
 		case 'GET_CURRENT_MONTH_DATA':
-			return action.payload;
+			return { ...state, ...action.payload };
 		case 'GET_ALL_CATEGORY':
 			return { ...state, category: action.payload };
 		case 'GET_ALL_PAYMENT_METHOD':
