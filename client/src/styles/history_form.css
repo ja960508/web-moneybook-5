@@ -81,6 +81,20 @@
 	display: block;
 }
 
+.history__form:not(.income-mode)
+	label
+	.history__form-dropdown
+	li[data-is-income='1'] {
+	display: none;
+}
+
+.history__form.income-mode
+	label
+	.history__form-dropdown
+	li[data-is-income='0'] {
+	display: none;
+}
+
 .history__form label .history__form-dropdown li {
 	display: flex;
 	align-items: center;
@@ -174,7 +188,7 @@
 	padding-bottom: 4px;
 }
 
-#historyPrice {
+.history__form-price {
 	text-align: right;
 	padding-right: 0.5rem;
 }
