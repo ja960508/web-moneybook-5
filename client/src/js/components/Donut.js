@@ -64,16 +64,18 @@ class Donut {
 			}
 
 			const categoryId = Number(donutHistoryItem.dataset.categoryId);
-			const history = await getRecentHistory(year, month, categoryId);
+			const recentHistory = await getRecentHistory(year, month, categoryId);
 			const chart = this.DOMElement.parentNode.querySelector(
 				'.line-chart__container'
 			);
 
 			if (chart) {
-				chart.replaceWith(new LineChart({ categoryId, history }).DOMElement);
+				chart.replaceWith(
+					new LineChart({ categoryId, recentHistory }).DOMElement
+				);
 			} else {
 				this.DOMElement.parentNode.appendChild(
-					new LineChart({ categoryId, history }).DOMElement
+					new LineChart({ categoryId, recentHistory }).DOMElement
 				);
 			}
 		});

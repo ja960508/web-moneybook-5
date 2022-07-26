@@ -1,4 +1,12 @@
 import store from '../store/store';
+import {
+	NUM_OF_COLOUMNS,
+	NUM_OF_ROWS,
+	CELL_HEIGHT,
+	CELL_WIDTH,
+	X_PADDING,
+	Y_PADDING,
+} from '../constants/line_chart.js';
 
 class LineChart {
 	constructor(props) {
@@ -16,7 +24,9 @@ class LineChart {
 	}
 
 	template() {
-		return `<canvas class="line-chart"></canvas>`;
+		return `
+		<canvas class="line-chart"></canvas>
+		`;
 	}
 
 	render() {
@@ -24,8 +34,20 @@ class LineChart {
 		this.drawLineChart();
 	}
 
+	getMonthsColumnLabel(months) {
+		const lastMonth = Number(months[months.length - 1]);
+		const result = new Array(12 - months.length)
+			.fill(0)
+			.map((_, i) =>
+				lastMonth + i + 1 > 12 ? lastMonth + i + 1 - 12 : lastMonth + i + 1
+			);
+
+		return months.concat(result);
+	}
+
 	getExpenseValues() {
-		const result = [];
+		const values = [];
+		const months = [];
 		const { totalExpense } = this;
 
 		Object.keys(totalExpense)
@@ -34,38 +56,15 @@ class LineChart {
 				Object.keys(totalExpense[year])
 					.sort((a, b) => a - b)
 					.forEach((month) => {
-						result.push(totalExpense[year][month]);
+						values.push(totalExpense[year][month]);
+						months.push(month);
 					})
 			);
 
-		return result;
+		return [values, this.getMonthsColumnLabel(months)];
 	}
 
-	drawLineChart() {
-		const canvas = this.DOMElement.querySelector('.line-chart');
-		const context = canvas.getContext('2d'); // 배경 렌더링
-		const [NUM_OF_COLOUMNS, NUM_OF_ROWS] = [24, 12];
-		const [CELL_WIDTH, CELL_HEIGHT] = [33, 26];
-		const [X_PADDING, Y_PADDING] = [32, 30];
-		const values = this.getExpenseValues();
-		canvas.width = NUM_OF_COLOUMNS * CELL_WIDTH + 2 * X_PADDING;
-		canvas.height = NUM_OF_ROWS * CELL_HEIGHT + 2 * Y_PADDING;
-		const chartWidth = canvas.width - X_PADDING;
-		const chartHeight = canvas.height - Y_PADDING;
-
-		context.fillStyle = '#FCFCFC';
-		context.fillRect(0, 0, canvas.width, canvas.height);
-
-		context.beginPath();
-
-		// draw Row
-		for (let row = 0; row <= NUM_OF_ROWS; row++) {
-			const y = row * CELL_HEIGHT + Y_PADDING;
-			context.moveTo(X_PADDING, y);
-			context.lineTo(chartWidth, y);
-		}
-
-		// draw Column
+	drawLineChartColumns(context, chartHeight, months) {
 		context.fillStyle = '#8D9393';
 		context.textAlign = 'center';
 		context.font = '10pt Do Hyeon';
@@ -74,28 +73,45 @@ class LineChart {
 			const x = col * CELL_WIDTH + X_PADDING;
 			context.moveTo(x, Y_PADDING);
 			context.lineTo(x, chartHeight);
-
-			if (col > 0 && col % 2) {
-				context.fillText(
-					'month',
-					CELL_WIDTH * col + X_PADDING,
-					canvas.height - 10
-				);
-			}
 		}
+
+		months.forEach((value, idx) =>
+			context.fillText(
+				value,
+				CELL_WIDTH * (idx * 2 + 1) + X_PADDING,
+				chartHeight + 20
+			)
+		);
+	}
+
+	drawLineChartRows(context, chartWidth) {
+		for (let row = 0; row <= NUM_OF_ROWS; row++) {
+			const y = row * CELL_HEIGHT + Y_PADDING;
+			context.moveTo(X_PADDING, y);
+			context.lineTo(chartWidth, y);
+		}
+	}
+
+	drawLineChartAxes({ context, chartHeight, chartWidth, months }) {
+		this.drawLineChartRows(context, chartWidth);
+		this.drawLineChartColumns(context, chartHeight, months);
 
 		context.lineWidth = 1;
 		context.strokeStyle = '#c0c0c0';
 		context.stroke();
+	}
 
+	getMaxValueForScaling(values) {
 		let maxVal = 0;
 
 		for (let i = 0; i < values.length; i++) {
 			if (values[i] > maxVal) maxVal = values[i];
-		} // 비율 계산을 위해 최대값 구하기
+		}
 
-		maxVal = maxVal * 1.2; // 최대값 기준 스케일링
+		return maxVal * 1.2;
+	}
 
+	getLineChartPointsLocation(values, chartHeight, maxVal) {
 		const points = [];
 
 		for (let i = 0; i < values.length; i++) {
@@ -105,10 +121,13 @@ class LineChart {
 			points.push({ x: px, y: py });
 		} // 점 좌표 계산
 
+		return points;
+	}
+
+	drawLine(context, points) {
 		context.beginPath();
 		context.moveTo(points[0].x, points[0].y);
 
-		// 0번으로 Move후 각 point에 따라 선 그리기
 		for (let i = 1; i < points.length; i++) {
 			context.lineTo(points[i].x, points[i].y);
 		}
@@ -116,7 +135,9 @@ class LineChart {
 		context.lineWidth = 2;
 		context.strokeStyle = '#A0E1E0';
 		context.stroke();
+	}
 
+	drawPoints(context, values, points) {
 		context.textAlign = 'center';
 		context.font = '10pt Do Hyeon';
 
@@ -129,26 +150,50 @@ class LineChart {
 			context.beginPath();
 			context.arc(point.x, point.y, 4, 0, 2 * Math.PI);
 			context.fill();
-		} // 점, 숫자 그리기
+		}
+	}
+
+	drawLineChart() {
+		const canvas = this.DOMElement.querySelector('.line-chart');
+		const context = canvas.getContext('2d'); // 배경 렌더링
+		const [values, months] = this.getExpenseValues();
+		canvas.width = NUM_OF_COLOUMNS * CELL_WIDTH + 2 * X_PADDING;
+		canvas.height = NUM_OF_ROWS * CELL_HEIGHT + 2 * Y_PADDING;
+		const chartWidth = canvas.width - X_PADDING;
+		const chartHeight = canvas.height - Y_PADDING;
+		context.beginPath();
+		context.fillStyle = '#FCFCFC';
+		context.fillRect(0, 0, canvas.width, canvas.height);
+
+		this.drawLineChartAxes({ chartWidth, chartHeight, months, context });
+
+		const maxVal = this.getMaxValueForScaling(values);
+		const points = this.getLineChartPointsLocation(values, chartHeight, maxVal);
+
+		this.drawLine(context, points);
+		this.drawPoints(context, values, points);
 	}
 
 	getTotalExpenseByMonth() {
 		const result = {};
-		const history = this.props.history;
+		const recentHistory = this.props.recentHistory;
 
-		for (const year in history) {
+		for (const year in recentHistory) {
 			if (!result[year]) {
 				result[year] = {};
 			}
 
-			for (const month in history[year]) {
+			for (const month in recentHistory[year]) {
 				if (!result[year][month]) {
 					result[year][month] = 0;
 				}
 
-				result[year][month] += history[year][month].reduce((total, item) => {
-					return total + item.price;
-				}, 0);
+				result[year][month] += recentHistory[year][month].reduce(
+					(total, item) => {
+						return total + item.price;
+					},
+					0
+				);
 			}
 		}
 
