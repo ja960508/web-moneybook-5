@@ -7,6 +7,7 @@ import {
 	X_PADDING,
 	Y_PADDING,
 } from '../constants/line_chart.js';
+import { MAX_MONTH } from '../constants/date';
 
 class LineChart {
 	constructor(props) {
@@ -36,10 +37,12 @@ class LineChart {
 
 	getMonthsColumnLabel(months) {
 		const lastMonth = Number(months[months.length - 1]);
-		const result = new Array(12 - months.length)
+		const result = new Array(MAX_MONTH - months.length)
 			.fill(0)
 			.map((_, i) =>
-				lastMonth + i + 1 > 12 ? lastMonth + i + 1 - 12 : lastMonth + i + 1
+				lastMonth + i + 1 > MAX_MONTH
+					? lastMonth + i + 1 - MAX_MONTH
+					: lastMonth + i + 1
 			);
 
 		return months.concat(result);
@@ -49,7 +52,6 @@ class LineChart {
 		const values = [];
 		const months = [];
 		const { totalExpense } = this;
-
 		Object.keys(totalExpense)
 			.sort((a, b) => a - b)
 			.forEach((year) =>
@@ -105,7 +107,9 @@ class LineChart {
 		let maxVal = 0;
 
 		for (let i = 0; i < values.length; i++) {
-			if (values[i] > maxVal) maxVal = values[i];
+			if (values[i] > maxVal) {
+				maxVal = values[i];
+			}
 		}
 
 		return maxVal * 1.2;
@@ -189,9 +193,7 @@ class LineChart {
 				}
 
 				result[year][month] += recentHistory[year][month].reduce(
-					(total, item) => {
-						return total + item.price;
-					},
+					(total, item) => total + item.price,
 					0
 				);
 			}
