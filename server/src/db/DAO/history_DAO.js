@@ -8,10 +8,12 @@ const promisePool = pool.promise();
 
 async function insertHistory(history) {
   try {
-    await promisePool.execute(
+    const [rows] = await promisePool.execute(
       `INSERT INTO HISTORY (${Object.keys(history).join()})
       VALUES (${Object.values(history).map(addQuotesToString).join()})`
     );
+
+    return rows;
   } catch (e) {
     console.error(e);
   }
@@ -19,7 +21,7 @@ async function insertHistory(history) {
 
 async function readHistoryByYearMonth(month, year) {
   try {
-    const res = await promisePool.execute(
+    const [rows] = await promisePool.execute(
       `SELECT h.id, h.date, h.content, h.paymentMethod, h.price, c.name as category, c.isIncome FROM HISTORY AS h
          LEFT JOIN CATEGORY AS c ON h.categoryId = c.id
          WHERE MONTH(date) = ${month} AND YEAR(date) = ${year}
@@ -27,7 +29,7 @@ async function readHistoryByYearMonth(month, year) {
        `
     );
 
-    return res[0];
+    return rows;
   } catch (e) {
     console.error(e);
   }
@@ -35,13 +37,13 @@ async function readHistoryByYearMonth(month, year) {
 
 async function deleteHistoryById(id) {
   try {
-    const res = await promisePool.execute(
+    const [rows] = await promisePool.execute(
       `
       DELETE FROM HISTORY WHERE id = ${id}
       `
     );
 
-    return res[0];
+    return rows;
   } catch (e) {
     console.error(e);
   }
@@ -53,12 +55,10 @@ async function updateHistoryById(history) {
     .join();
 
   try {
-    const res = await promisePool.execute(`
-    UPDATE HISTORY
-    SET ${options}
-    WHERE id = ${history.id}`);
-
-    console.log(res);
+    await promisePool.execute(`
+      UPDATE HISTORY
+      SET ${options}
+      WHERE id = ${history.id}`);
   } catch (e) {
     console.error(e);
   }
@@ -69,7 +69,7 @@ async function getRecentHistory(year, month, categoryId) {
   const date = timeConverter(new Date(year, month - 1));
 
   try {
-    const res = await promisePool.execute(
+    const [rows] = await promisePool.execute(
       `SELECT h.id, h.date, h.content, h.paymentMethod, h.price, c.name as category, c.isIncome FROM HISTORY AS h
       LEFT JOIN CATEGORY AS c ON h.categoryId = c.id
       WHERE h.categoryId = ${categoryId} AND date > DATE_SUB("${date}", INTERVAL ${RECENT_MONTH} MONTH)
@@ -77,7 +77,7 @@ async function getRecentHistory(year, month, categoryId) {
       `
     );
 
-    return res[0];
+    return rows;
   } catch (e) {
     console.error(e);
   }

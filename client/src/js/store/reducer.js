@@ -26,6 +26,11 @@ export default function reducer(state = initialState, action) {
 					(item) => item.id !== Number(action.payload.id)
 				),
 			};
+		case 'ADD_HISTORY':
+			return {
+				...state,
+				history: [action.payload, ...state.history],
+			};
 		default:
 			return state;
 	}

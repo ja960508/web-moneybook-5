@@ -1,8 +1,5 @@
 import historyDAO from '../../db/DAO/history_DAO.js';
-import {
-  createBulkHistory,
-  createRecentHistory,
-} from '../../mock/mock_generator.js';
+import { createRecentHistory } from '../../mock/mock_generator.js';
 
 export async function getHistoryList(req, res) {
   const { month, year } = req.query;
@@ -20,10 +17,11 @@ export async function getHistoryList(req, res) {
   });
 }
 
-export function addHistory(req, res) {
-  const historyContent = req.body;
+export async function addHistory(req, res) {
+  const history = req.body;
+  const { insertId } = await historyDAO.insertHistory(history);
 
-  res.status(201).json({ id: 1, ...historyContent });
+  res.status(201).json({ id: insertId, ...history });
 }
 
 export function removeHistory(req, res) {

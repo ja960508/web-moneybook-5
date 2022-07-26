@@ -3,6 +3,8 @@ import store from '../store/store';
 import paymentMethodType from '../constants/payment_method';
 import { setPriceFormat } from '../utils/input_value_transformer';
 import PaymentMethodModal from './PaymentMethodModal';
+import { addHistory } from '../api/request';
+import action from '../store/action';
 
 class HistoryForm {
 	constructor() {
@@ -14,28 +16,68 @@ class HistoryForm {
 		this.render();
 	}
 
+	enalbeSubmitButton() {
+		this.DOMElement.querySelector('.history__form--submit').disabled = false;
+	}
+
+	disalbeSubmitButton() {
+		this.DOMElement.querySelector('.history__form--submit').disabled = true;
+	}
+
 	setFormEvent() {
 		this.DOMElement.addEventListener('input', () => {
 			if (
 				checkAllInputs(Array.from(this.DOMElement.querySelectorAll('input')))
 			) {
-				this.DOMElement.querySelector(
-					'.history__form--submit'
-				).disabled = false;
+				this.enalbeSubmitButton();
 			} else {
-				this.DOMElement.querySelector('.history__form--submit').disabled = true;
+				this.disalbeSubmitButton();
 			}
 		});
 
-		this.DOMElement.addEventListener('submit', (event) => {
+		this.DOMElement.addEventListener('submit', async (event) => {
 			event.preventDefault();
 			const {
 				historyDate,
 				historyCategory,
 				historyContent,
 				historyPaymentMethod,
+				historyIsIncome,
 				historyPrice,
 			} = event.target;
+
+			const date = historyDate.value;
+			const category = historyCategory.value;
+			const categoryId = historyCategory.dataset.categoryId;
+			const content = historyContent.value;
+			const isIncome = historyIsIncome.checked;
+			const paymentMethod = historyPaymentMethod.value;
+			const price = Number(historyPrice.value.replace(/,/g, ''));
+
+			const newHistory = await addHistory({
+				date,
+				categoryId,
+				content,
+				paymentMethod,
+				price,
+			});
+
+			this.DOMElement.reset();
+			this.disalbeSubmitButton();
+
+			const [_year, _month, day] = date.split('-');
+
+			store.dispatch(
+				action.addHistory({
+					id: newHistory.id,
+					day: Number(day),
+					category,
+					content,
+					paymentMethod,
+					isIncome,
+					price,
+				})
+			);
 		});
 	}
 
@@ -87,11 +129,11 @@ class HistoryForm {
 			<label for="historyPrice" class="box23">
 				<span class="bold-small">금액</span>
 				<div class="history__form-price-container">
-					<button
-						type="button"
+					<input
+						id="historyIsIncome"
+						type="checkbox"
 						class="history__form-income-toggle"
-						data-mode="minus"
-					></button>
+					></input>
 					<input
 						id="historyPrice"
 						type="text"
@@ -126,9 +168,6 @@ class HistoryForm {
 		const paymentMethodDropdown = paymentMethodLabel.querySelector(
 			'.history__form-dropdown'
 		);
-		const incomeToggleButton = this.DOMElement.querySelector(
-			'.history__form-income-toggle'
-		);
 		const priceInput = this.DOMElement.querySelector('#historyPrice');
 
 		categoryLabel.addEventListener('click', (e) => {
@@ -149,7 +188,7 @@ class HistoryForm {
 		});
 
 		categroyDropdown.addEventListener('click', (event) => {
-			const dropdownItem = event.target;
+			const dropdownItem = event.target.closest('li');
 			addCategoryToInput(categoryLabel, dropdownItem);
 		});
 
@@ -180,11 +219,6 @@ class HistoryForm {
 			}
 		});
 
-		incomeToggleButton.addEventListener('click', ({ target }) => {
-			const dataset = target.dataset;
-			dataset.mode = dataset.mode === 'plus' ? 'minus' : 'plus';
-		});
-
 		priceInput.addEventListener('input', ({ target }) => {
 			setPriceFormat(target);
 		});
@@ -203,6 +237,7 @@ function addCategoryToInput(label, dropdownItem) {
 	const input = label.querySelector('input');
 
 	input.value = dropdownItem.innerText || '';
+	input.dataset.categoryId = dropdownItem.dataset.id;
 
 	input.closest('form').dispatchEvent(new Event('input'));
 	toggleDropdownElement(label);
