@@ -72,6 +72,7 @@ class HistoryForm {
 					id: newHistory.id,
 					day: Number(day),
 					category,
+					categoryId,
 					content,
 					paymentMethod,
 					isIncome,
