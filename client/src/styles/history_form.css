@@ -66,6 +66,7 @@
 }
 
 .history__form label .history__form-dropdown {
+	overflow: hidden;
 	position: absolute;
 	display: none;
 	width: 100%;
