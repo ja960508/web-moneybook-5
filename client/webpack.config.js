@@ -4,6 +4,7 @@ const HtmlPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const path = require('path');
 const { categoryBgColors } = require('./src/js/constants/colors');
+const Dotenv = require('dotenv-webpack');
 const isProduction = process.env.NODE_ENV === 'production';
 
 module.exports = {
@@ -78,5 +79,6 @@ module.exports = {
 			inject: false,
 		}),
 		new MiniCssExtractPlugin({ filename: 'css/style.css' }),
+		new Dotenv(),
 	],
 };
