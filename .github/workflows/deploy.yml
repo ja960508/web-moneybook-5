@@ -12,6 +12,9 @@ jobs:
         uses: fifsky/ssh-action@master
         with:
           command: |
+            cd ~/web-moneybook-5
+            git reset --hard
+            git pull origin dev
             cd ~/web-moneybook-5/client
             npm install
             npm run build
