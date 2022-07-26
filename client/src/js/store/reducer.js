@@ -29,7 +29,7 @@ export default function reducer(state = initialState, action) {
 		case 'ADD_HISTORY':
 			return {
 				...state,
-				history: [...state.history, action.payload],
+				history: [action.payload, ...state.history],
 			};
 		default:
 			return state;
