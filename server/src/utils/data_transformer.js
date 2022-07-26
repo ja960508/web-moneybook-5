@@ -3,7 +3,7 @@ function isString(value) {
 }
 
 export function timeConverter(date) {
-  return date.toLocaleDateString().split('. ').join('-').slice(0, -1);
+  return date.toLocaleDateString('ko-KR').split('. ').join('-').slice(0, -1);
 }
 
 export function addQuotesToString(value) {
