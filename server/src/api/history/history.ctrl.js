@@ -1,5 +1,4 @@
 import historyDAO from '../../db/DAO/history_DAO.js';
-import { createRecentHistory } from '../../mock/mock_generator.js';
 
 export async function getHistoryList(req, res) {
   const { month, year } = req.query;
@@ -10,11 +9,7 @@ export async function getHistoryList(req, res) {
 
   const history = await historyDAO.readHistoryByYearMonth(month, year);
 
-  res.status(200).json({
-    year,
-    month,
-    history: history.map((item) => ({ ...item, day: item.date.getDate() })),
-  });
+  res.status(200).json({ history });
 }
 
 export async function addHistory(req, res) {

@@ -19,6 +19,13 @@ function getAllPaymentMethod(payload) {
 	};
 }
 
+function changeDate(payload) {
+	return {
+		type: 'CHANGE_DATE',
+		payload,
+	};
+}
+
 function addPaymentMethod(payload) {
 	return {
 		type: 'ADD_PAYMENT_METHOD',
@@ -44,6 +51,7 @@ export default {
 	getCurrentMonthData,
 	getAllCategory,
 	getAllPaymentMethod,
+	changeDate,
 	addPaymentMethod,
 	deletePaymentMethod,
 	addHistory,

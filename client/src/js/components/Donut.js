@@ -3,7 +3,7 @@ import store from '../store/store';
 import { getGroupedHistoryByExpense } from '../utils/history';
 import { categoryBgColors } from '../constants/colors';
 import LineChart from './LineChart';
-import { getRecentHistory } from '../api/request';
+import { getRecentHistory } from '../api/history';
 
 class Donut {
 	constructor() {
@@ -54,8 +54,7 @@ class Donut {
 			return;
 		}
 
-		const year = store.getState('year');
-		const month = store.getState('month');
+		const { year, month } = store.getState('date');
 
 		donutHistory.addEventListener('click', async (event) => {
 			const donutHistoryItem = event.target.closest('.donut__history-item');

@@ -1,4 +1,4 @@
-import { addPaymentMethod, deletePaymentMethod } from '../api/request';
+import { addPaymentMethod, deletePaymentMethod } from '../api/payment_method';
 import paymentMethodType from '../constants/payment_method';
 import action from '../store/action';
 import store from '../store/store.js';

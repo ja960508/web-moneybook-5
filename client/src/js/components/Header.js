@@ -1,4 +1,4 @@
-import { getCurrentHistory } from '../api/request';
+import { getCurrentHistory } from '../api/history';
 import icons from '../constants/icons';
 import action from '../store/action';
 import store from '../store/store';
@@ -8,7 +8,7 @@ class Header {
 	constructor() {
 		this.DOMElement = document.createElement('header');
 		this.DOMElement.classList.add('header');
-		store.subscribe('month', this.render.bind(this));
+		store.subscribe('date', this.render.bind(this));
 		this.render();
 		this.setEvent();
 	}
@@ -24,8 +24,7 @@ class Header {
 	}
 
 	template() {
-		const year = store.getState('year');
-		const month = store.getState('month');
+		const date = store.getState('date');
 
 		return `
       <div class="wrapper"> 
@@ -33,8 +32,8 @@ class Header {
         <div class="month-controller">
           <button type="button" class="month-controller__prev-button">${icons.arrow}</button>
           <div>
-            <div class="display-large">${month}</div>
-            <div class="display-small">${year}</div>
+            <div class="display-large">${date.month}</div>
+            <div class="display-small">${date.year}</div>
           </div> 
           <button type="button" class="month-controller__next-button">${icons.arrow}</button>
         </div>
@@ -59,19 +58,20 @@ class Header {
 
 	setEvent() {
 		this.DOMElement.addEventListener('click', async (event) => {
-			const year = Number(store.getState('year'));
-			const month = Number(store.getState('month'));
+			const { year, month } = store.getState('date');
 
 			if (event.target.closest('.month-controller__prev-button')) {
 				const [prevYear, prevMonth] = getPrevYearAndMonth(year, month);
 				const response = await getCurrentHistory(prevYear, prevMonth);
 
 				store.dispatch(action.getCurrentMonthData(response));
+				store.dispatch(action.changeDate({ year: prevYear, month: prevMonth }));
 			} else if (event.target.closest('.month-controller__next-button')) {
 				const [nextYear, nextMonth] = getNextYearAndMonth(year, month);
 				const response = await getCurrentHistory(nextYear, nextMonth);
 
 				store.dispatch(action.getCurrentMonthData(response));
+				store.dispatch(action.changeDate({ year: nextYear, month: nextMonth }));
 			}
 		});
 	}
