@@ -17,12 +17,10 @@ import { getCurrentHistory } from './api/history';
 
 (async function () {
 	customElements.define('custom-link', CustomLink, { extends: 'a' });
-	const now = new Date();
-	const year = now.getFullYear();
-	const month = now.getMonth() + 1;
+	const currentDate = store.getState('date');
 	const path = window.location.pathname;
 
-	const history = await getCurrentHistory(year, month);
+	const history = await getCurrentHistory(currentDate.year, currentDate.month);
 	const category = await getAllCategory();
 	const paymentMethod = await getAllPaymentMethod();
 	store.dispatch(action.getCurrentMonthData(history));

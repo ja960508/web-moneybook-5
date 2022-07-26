@@ -13,8 +13,7 @@ class Calendar {
 		this.DOMElement = document.createElement('div');
 		this.DOMElement.className = 'calendar';
 		store.subscribe('history', this.render.bind(this));
-		store.subscribe('year', this.render.bind(this));
-		store.subscribe('month', this.render.bind(this));
+		store.subscribe('date', this.render.bind(this));
 
 		this.render();
 	}
@@ -41,8 +40,8 @@ class Calendar {
 		rowIndex,
 		columnIndex,
 	}) {
-		const year = store.getState('year');
-		const month = store.getState('month');
+		const { year, month } = store.getState('date');
+
 		const nowDate = rowIndex * MAX_WEEK + columnIndex + 1 - firstDay;
 		const isNowDateInCurrentMonth = nowDate > 0 && nowDate <= dateCount;
 		if (!isNowDateInCurrentMonth) return '<td></td>';
@@ -72,8 +71,8 @@ class Calendar {
 	}
 
 	getTableBodyRows(groupedHistory) {
-		const year = store.getState('year');
-		const month = store.getState('month');
+		const { year, month } = store.getState('date');
+
 		const firstDay = getFirstDayFromYearMonth(year, month);
 		const dateCount = getDateCountFromYearMonth(year, month);
 		const rowCount = Math.ceil((firstDay + dateCount) / MAX_WEEK);

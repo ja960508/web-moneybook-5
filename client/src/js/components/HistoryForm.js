@@ -53,7 +53,7 @@ class HistoryForm {
 			const isIncome = historyIsIncome.checked;
 			const paymentMethod = historyPaymentMethod.value;
 			const price = Number(historyPrice.value.replace(/,/g, ''));
-			const currentMonth = store.getState('month');
+			const currentMonth = store.getState('date').month;
 
 			const newHistory = await addHistory({
 				date,
@@ -66,13 +66,13 @@ class HistoryForm {
 			this.DOMElement.reset();
 			this.disalbeSubmitButton();
 
-			const [_year, month, day] = date.split('-');
+			const [_year, month] = date.split('-');
 
 			if (Number(month) === Number(currentMonth)) {
 				store.dispatch(
 					action.addHistory({
 						id: newHistory.id,
-						day: Number(day),
+						date,
 						category,
 						categoryId,
 						content,

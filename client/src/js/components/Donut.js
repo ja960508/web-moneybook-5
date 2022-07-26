@@ -54,8 +54,7 @@ class Donut {
 			return;
 		}
 
-		const year = store.getState('year');
-		const month = store.getState('month');
+		const { year, month } = store.getState('date');
 
 		donutHistory.addEventListener('click', async (event) => {
 			const donutHistoryItem = event.target.closest('.donut__history-item');

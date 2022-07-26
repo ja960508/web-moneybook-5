@@ -5,7 +5,7 @@ class HistoryList {
 	constructor(props) {
 		this.props = props;
 		this.DOMElement = document.createElement('ol');
-		store.subscribe('month', this.render.bind(this));
+		store.subscribe('date', this.render.bind(this));
 		this.render();
 	}
 
@@ -46,7 +46,7 @@ class HistoryList {
 	}
 
 	template() {
-		const month = store.getState('month');
+		const { month } = store.getState('date');
 		const { filteredHistory } = this.props;
 
 		return `

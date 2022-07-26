@@ -2,15 +2,17 @@ export function getGroupedHistoryByDay(history) {
 	const result = {};
 
 	history.forEach((item) => {
-		if (!result[item.day]) {
-			result[item.day] = { history: [], incomeSum: 0, expenseSum: 0 };
+		const day = new Date(item.date).getDate();
+
+		if (!result[day]) {
+			result[day] = { history: [], incomeSum: 0, expenseSum: 0 };
 		}
 
-		result[item.day].history.push(item);
+		result[day].history.push(item);
 		if (item.isIncome) {
-			result[item.day].incomeSum += item.price;
+			result[day].incomeSum += item.price;
 		} else {
-			result[item.day].expenseSum += item.price;
+			result[day].expenseSum += item.price;
 		}
 	});
 
