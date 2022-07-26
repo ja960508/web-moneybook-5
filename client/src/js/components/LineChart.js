@@ -8,6 +8,8 @@ import {
 	Y_PADDING,
 } from '../constants/line_chart.js';
 import { MAX_MONTH } from '../constants/date';
+import { getFilteredHistory, getGroupedHistoryByDay } from '../utils/history';
+import HistoryList from './HistoryList';
 
 class LineChart {
 	constructor(props) {
@@ -31,8 +33,17 @@ class LineChart {
 	}
 
 	render() {
+		const history = store.getState('history');
+		const groupedHistory = getGroupedHistoryByDay(history);
+		const filteredHistory = getFilteredHistory(
+			groupedHistory,
+			(item) => Number(item.categoryId) === this.props.categoryId
+		);
 		this.DOMElement.innerHTML = this.template();
 		this.drawLineChart();
+		this.DOMElement.appendChild(
+			new HistoryList({ filteredHistory, hideTotal: true }).DOMElement
+		);
 	}
 
 	getMonthsColumnLabel(months) {

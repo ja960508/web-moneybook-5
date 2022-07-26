@@ -1,7 +1,11 @@
-import category from '../constants/category';
 import icons from '../constants/icons';
 import store from '../store/store';
-import { getGroupedHistoryByDay, getMonthTotalMoney } from '../utils/history';
+import {
+	getFilteredHistory,
+	getGroupedHistoryByDay,
+	getMonthTotalMoney,
+} from '../utils/history';
+import HistoryList from './HistoryList';
 
 class HistoryContainer {
 	constructor(props = {}) {
@@ -12,47 +16,9 @@ class HistoryContainer {
 			isExpenseFiltered: false,
 		};
 		store.subscribe('history', this.render.bind(this));
-		store.subscribe('month', this.render.bind(this));
 
 		this.render();
 		this.setEvent();
-	}
-
-	getDailyTotalMoney(filteredHistory, day) {
-		return `
-					${
-						filteredHistory[day].incomeSum && !this.state.isIncomeFiltered
-							? `수입 ${filteredHistory[day].incomeSum.toLocaleString()}`
-							: ''
-					}
-					${
-						filteredHistory[day].expenseSum && !this.state.isExpenseFiltered
-							? `지출 ${filteredHistory[day].expenseSum.toLocaleString()}`
-							: ''
-					}
-				`;
-	}
-
-	getSortedDayList(groupedHistory) {
-		return Object.keys(groupedHistory).sort((a, b) => b - a);
-	}
-
-	getFilteredHistory(groupedHistory) {
-		const filteredHistory = { ...groupedHistory };
-
-		for (const day in groupedHistory) {
-			filteredHistory[day].history = groupedHistory[day].history.filter(
-				(item) =>
-					(item.isIncome && !this.state.isIncomeFiltered) ||
-					(!item.isIncome && !this.state.isExpenseFiltered)
-			);
-
-			if (!filteredHistory[day].history.length) {
-				delete filteredHistory[day];
-			}
-		}
-
-		return filteredHistory;
 	}
 
 	getTotalLength(filteredHistory) {
@@ -62,30 +28,7 @@ class HistoryContainer {
 		);
 	}
 
-	makeHistoryItems(item) {
-		return `<li class="history__item bold-medium">
-		<div>
-			<span class="category ${category[item.category]} bold-small">${
-			item.category
-		}</span>
-			<span>${item.content}</span>
-		</div>
-		<div>
-			${item.paymentMethod}
-		</div>
-		<div>
-			${item.isIncome ? '' : '-'}${item.price.toLocaleString()}원
-		</div>
-	</li>`;
-	}
-
-	template() {
-		const history = store.getState('history');
-		const month = store.getState('month');
-		const groupedHistory = getGroupedHistoryByDay(history);
-		const filteredHistory = this.getFilteredHistory(groupedHistory, this.state);
-		const totalMoney = getMonthTotalMoney(groupedHistory);
-
+	template({ filteredHistory, totalMoney }) {
 		return `<div class="list-meta">
     <span>전체 내역 ${this.getTotalLength(filteredHistory)}건</span>
     <div class="list-meta__button-container">
@@ -101,29 +44,24 @@ class HistoryContainer {
       </button>
     </div>
     </div>
-    <ol>
-      ${this.getSortedDayList(filteredHistory)
-				.map(
-					(day) => `<li class="history__day bold-medium">
-          <div class="history__day-meta">
-            <div>${month}월 ${day}일</div>
-						<div class="history__day-total">
-							${this.props.hideTotal ? '' : this.getDailyTotalMoney(filteredHistory, day)}
-						</div>
-          </div>
-					<ul>
-						${filteredHistory[day].history
-							.map((item) => this.makeHistoryItems(item))
-							.join('')}
-					</ul>
-        </li>`
-				)
-				.join('')}
-    </ol>`;
+		`;
 	}
 
 	render() {
-		this.DOMElement.innerHTML = this.template();
+		const history = store.getState('history');
+		const groupedHistory = getGroupedHistoryByDay(history);
+		const filteredHistory = getFilteredHistory(
+			groupedHistory,
+			(item) =>
+				(item.isIncome && !this.state.isIncomeFiltered) ||
+				(!item.isIncome && !this.state.isExpenseFiltered)
+		);
+		const totalMoney = getMonthTotalMoney(groupedHistory);
+
+		this.DOMElement.innerHTML = this.template({ filteredHistory, totalMoney });
+		this.DOMElement.appendChild(
+			new HistoryList({ filteredHistory, ...this.state }).DOMElement
+		);
 	}
 
 	toggleChecked(filterButton) {

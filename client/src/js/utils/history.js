@@ -59,3 +59,18 @@ export function getMonthTotalMoney(groupedHistory) {
 
 	return result;
 }
+
+export function getFilteredHistory(groupedHistory, filterCallback) {
+	const filteredHistory = { ...groupedHistory };
+
+	for (const day in groupedHistory) {
+		filteredHistory[day].history =
+			groupedHistory[day].history.filter(filterCallback);
+
+		if (!filteredHistory[day].history.length) {
+			delete filteredHistory[day];
+		}
+	}
+
+	return filteredHistory;
+}
