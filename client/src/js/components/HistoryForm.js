@@ -1,7 +1,7 @@
 import icons from '../constants/icons';
 import store from '../store/store';
 import paymentMethodType from '../constants/payment_method';
-import { setPriceFormat } from '../utils/input_value_transformer';
+import { getPriceFormat } from '../utils/input_value_transformer';
 import PaymentMethodModal from './PaymentMethodModal';
 import { addHistory } from '../api/history';
 import action from '../store/action';
@@ -224,7 +224,7 @@ class HistoryForm {
 		});
 
 		priceInput.addEventListener('input', ({ target }) => {
-			setPriceFormat(target);
+			target.value = getPriceFormat(target.value);
 		});
 	}
 

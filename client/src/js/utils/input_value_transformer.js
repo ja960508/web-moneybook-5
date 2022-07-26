@@ -4,11 +4,9 @@ function setOnlyNumber(value) {
 	return Number(value.replace(/[^0-9]/g, ''));
 }
 
-export function setPriceFormat(target) {
-	const currentPrice =
-		setOnlyNumber(target.value) > MAX_PRICE
-			? MAX_PRICE
-			: setOnlyNumber(target.value);
+export function getPriceFormat(value) {
+	const number = setOnlyNumber(value);
+	const currentPrice = number > MAX_PRICE ? MAX_PRICE : number;
 
-	target.value = currentPrice ? currentPrice.toLocaleString() : '';
+	return currentPrice ? currentPrice.toLocaleString() : '';
 }
