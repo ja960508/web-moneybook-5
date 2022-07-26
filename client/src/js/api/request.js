@@ -57,3 +57,19 @@ export async function deletePaymentMethod(id) {
 		method: 'DELETE',
 	});
 }
+
+export async function getRecentHistory(year, month, categoryId) {
+	try {
+		const response = await fetch(
+			`${API_ENDPOINT}/history/recent?year=${year}&month=${month}&categoryId=${categoryId}`
+		);
+
+		if (!response.ok) {
+			throw new Error(`Request is not OK ${response.status}`);
+		}
+
+		return await response.json();
+	} catch (e) {
+		return e;
+	}
+}
