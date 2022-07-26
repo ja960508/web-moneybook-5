@@ -3,7 +3,7 @@ import icons from '../constants/icons';
 import store from '../store/store';
 import { getGroupedHistoryByDay, getMonthTotalMoney } from '../utils/history';
 
-class HistoryList {
+class HistoryContainer {
 	constructor(props = {}) {
 		this.DOMElement = document.createElement('main');
 		this.props = props;
@@ -152,4 +152,4 @@ class HistoryList {
 	}
 }
 
-export default HistoryList;
+export default HistoryContainer;
