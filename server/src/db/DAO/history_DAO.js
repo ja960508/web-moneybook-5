@@ -66,7 +66,7 @@ async function updateHistoryById(history) {
 
 async function getRecentHistory(year, month, categoryId) {
   const RECENT_MONTH = 7;
-  const date = timeConverter(new Date(year, month));
+  const date = timeConverter(new Date(year, month, 0));
 
   try {
     const [rows] = await promisePool.execute(
