@@ -6,7 +6,6 @@ import {
 	isToday,
 } from '../utils/date';
 import { getGroupedHistoryByDay, getMonthTotalMoney } from '../utils/history';
-import { getEmptyArray } from '../utils/array';
 
 class Calendar {
 	constructor() {
@@ -57,7 +56,8 @@ class Calendar {
 	}
 
 	getTableBodyRowCells({ rowIndex, firstDay, dateCount, groupedHistory }) {
-		return getEmptyArray(MAX_WEEK)
+		return new Array(MAX_WEEK)
+			.fill()
 			.map((_, columnIndex) =>
 				this.getTableBodyData({
 					dateCount,
@@ -77,7 +77,8 @@ class Calendar {
 		const dateCount = getDateCountFromYearMonth(year, month);
 		const rowCount = Math.ceil((firstDay + dateCount) / MAX_WEEK);
 
-		return getEmptyArray(rowCount)
+		return new Array(rowCount)
+			.fill()
 			.map(
 				(_, rowIndex) => `
 					<tr>
