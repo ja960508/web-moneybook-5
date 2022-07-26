@@ -37,28 +37,25 @@ export function updateHistory(req, res) {
   res.status(200).json({ id: 1, ...historyContent });
 }
 
-export function getRecentHistory(req, res) {
-  const { year, month, category } = req.query;
-  const startTime = getStartTime(year, month);
-  const history = createRecentHistory(startTime);
+export async function getRecentHistory(req, res) {
+  const { year, month, categoryId } = req.query;
+  const data = await historyDAO.getRecentHistory(year, month, categoryId);
+  const history = {};
 
-  for (const year in history) {
-    for (const month in history[year]) {
-      history[year][month] = history[year][month].filter(
-        (item) => item.category === category
-      );
+  data.forEach((item) => {
+    const year = item.date.getFullYear();
+    const month = item.date.getMonth() + 1;
+
+    if (!history[year]) {
+      history[year] = {};
     }
-  }
+
+    if (!history[year][month]) {
+      history[year][month] = [];
+    }
+
+    history[year][month].push(item);
+  });
 
   res.status(200).json(history);
-}
-
-function getStartTime(year, month) {
-  const startMonth = month - 6;
-
-  if (startMonth <= 0) {
-    return `${year - 1}-${startMonth + 12}`;
-  }
-
-  return `${year}-${startMonth < 10 ? '0' + startMonth : startMonth}`;
 }

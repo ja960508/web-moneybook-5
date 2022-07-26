@@ -2,6 +2,8 @@ import categoryObj from '../constants/category';
 import store from '../store/store';
 import { getGroupedHistoryByExpense } from '../utils/history';
 import { categoryBgColors } from '../constants/colors';
+import LineChart from './LineChart';
+import { getRecentHistory } from '../api/request';
 
 class Donut {
 	constructor() {
@@ -18,7 +20,6 @@ class Donut {
 	template(groupedHistory) {
 		const { totalExpense, categoryAndExpenseSumList } = groupedHistory;
 		if (!totalExpense) return `<div></div>`;
-
 		return `
 			<canvas></canvas>
 			<div class="donut__right">
@@ -27,7 +28,7 @@ class Donut {
 					${categoryAndExpenseSumList
 						.map(
 							(item) => `
-						<li>
+						<li class="donut__history-item" data-category-id=${item.categoryId}>
 							<div>
 								<div class="category ${categoryObj[item.category]} bold-medium">${
 								item.category
@@ -44,6 +45,40 @@ class Donut {
 				</ul>
 			</div>
 		`;
+	}
+
+	setEvent() {
+		const donutHistory = this.DOMElement.querySelector('.donut__history');
+
+		if (!donutHistory) {
+			return;
+		}
+
+		const year = store.getState('year');
+		const month = store.getState('month');
+
+		donutHistory.addEventListener('click', async (event) => {
+			const donutHistoryItem = event.target.closest('.donut__history-item');
+			if (!donutHistoryItem) {
+				return;
+			}
+
+			const categoryId = Number(donutHistoryItem.dataset.categoryId);
+			const recentHistory = await getRecentHistory(year, month, categoryId);
+			const chart = this.DOMElement.parentNode.querySelector(
+				'.line-chart__container'
+			);
+
+			if (chart) {
+				chart.replaceWith(
+					new LineChart({ categoryId, recentHistory }).DOMElement
+				);
+			} else {
+				this.DOMElement.parentNode.appendChild(
+					new LineChart({ categoryId, recentHistory }).DOMElement
+				);
+			}
+		});
 	}
 
 	setInitialCanvasSize() {
@@ -93,6 +128,7 @@ class Donut {
 		const groupedHistory = getGroupedHistoryByExpense(history);
 		this.DOMElement.innerHTML = this.template(groupedHistory);
 		this.drawDonutChart(groupedHistory);
+		this.setEvent();
 	}
 }
 

@@ -57,3 +57,9 @@ export async function deletePaymentMethod(id) {
 		method: 'DELETE',
 	});
 }
+
+export async function getRecentHistory(year, month, categoryId) {
+	return await fetchData(
+		`${API_ENDPOINT}/history/recent?year=${year}&month=${month}&categoryId=${categoryId}`
+	);
+}

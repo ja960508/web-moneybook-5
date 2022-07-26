@@ -25,10 +25,14 @@ export function getGroupedHistoryByExpense(history) {
 		if (item.isIncome) return;
 
 		if (!result.has(item.category)) {
-			result.set(item.category, 0);
+			result.set(item.category, { categoryId: item.categoryId, expenseSum: 0 });
 		}
 
-		result.set(item.category, result.get(item.category) + item.price);
+		const original = result.get(item.category);
+		result.set(item.category, {
+			...original,
+			expenseSum: original.expenseSum + item.price,
+		});
 		totalExpense += item.price;
 	});
 
@@ -37,7 +41,8 @@ export function getGroupedHistoryByExpense(history) {
 		categoryAndExpenseSumList: [...result]
 			.map((item) => ({
 				category: item[0],
-				expenseSum: item[1],
+				categoryId: item[1].categoryId,
+				expenseSum: item[1].expenseSum,
 			}))
 			.sort((a, b) => b.expenseSum - a.expenseSum),
 	};

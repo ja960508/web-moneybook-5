@@ -22,7 +22,7 @@ async function insertHistory(history) {
 async function readHistoryByYearMonth(month, year) {
   try {
     const [rows] = await promisePool.execute(
-      `SELECT h.id, h.date, h.content, h.paymentMethod, h.price, c.name as category, c.isIncome FROM HISTORY AS h
+      `SELECT h.id, h.date, h.content, h.paymentMethod, h.price, c.name as category, c.id as categoryId, c.isIncome FROM HISTORY AS h
          LEFT JOIN CATEGORY AS c ON h.categoryId = c.id
          WHERE MONTH(date) = ${month} AND YEAR(date) = ${year}
          ORDER BY date DESC
@@ -65,14 +65,14 @@ async function updateHistoryById(history) {
 }
 
 async function getRecentHistory(year, month, categoryId) {
-  const RECENT_MONTH = 6;
-  const date = timeConverter(new Date(year, month - 1));
+  const RECENT_MONTH = 7;
+  const date = timeConverter(new Date(year, month));
 
   try {
     const [rows] = await promisePool.execute(
       `SELECT h.id, h.date, h.content, h.paymentMethod, h.price, c.name as category, c.isIncome FROM HISTORY AS h
       LEFT JOIN CATEGORY AS c ON h.categoryId = c.id
-      WHERE h.categoryId = ${categoryId} AND date > DATE_SUB("${date}", INTERVAL ${RECENT_MONTH} MONTH)
+      WHERE h.categoryId = ${categoryId} AND date <= "${date}" AND date >= DATE_SUB("${date}", INTERVAL ${RECENT_MONTH} MONTH)
       ORDER BY date DESC
       `
     );
