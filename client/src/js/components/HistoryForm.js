@@ -159,6 +159,10 @@ class HistoryForm {
 		this.setEvent();
 	}
 
+	resetHistoryCategory() {
+		this.DOMElement.querySelector('#historyCategory').value = '';
+	}
+
 	setEvent() {
 		const categoryLabel = this.DOMElement.querySelector(
 			'label[for="historyCategory"]'
@@ -228,6 +232,7 @@ class HistoryForm {
 
 		incomeToggleButton.addEventListener('click', () => {
 			this.DOMElement.classList.toggle('income-mode');
+			this.resetHistoryCategory();
 		});
 
 		priceInput.addEventListener('input', ({ target }) => {
