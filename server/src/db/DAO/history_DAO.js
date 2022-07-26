@@ -22,7 +22,7 @@ async function insertHistory(history) {
 async function readHistoryByYearMonth(month, year) {
   try {
     const [rows] = await promisePool.execute(
-      `SELECT h.id, h.date, h.content, h.paymentMethod, h.price, c.name as category, c.isIncome FROM HISTORY AS h
+      `SELECT h.id, h.date, h.content, h.paymentMethod, h.price, c.name as category, c.id as categoryId, c.isIncome FROM HISTORY AS h
          LEFT JOIN CATEGORY AS c ON h.categoryId = c.id
          WHERE MONTH(date) = ${month} AND YEAR(date) = ${year}
          ORDER BY date DESC
