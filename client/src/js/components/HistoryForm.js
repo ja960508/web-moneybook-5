@@ -52,7 +52,7 @@ class HistoryForm {
 			const content = historyContent.value;
 			const isIncome = historyIsIncome.checked;
 			const paymentMethod = historyPaymentMethod.value;
-			const price = Number(historyPrice.value.split(',').join(''));
+			const price = Number(historyPrice.value.replace(/,/g, ''));
 
 			const newHistory = await addHistory({
 				date,
