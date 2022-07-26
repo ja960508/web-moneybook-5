@@ -3,7 +3,7 @@ import store from '../store/store';
 import { getGroupedHistoryByExpense } from '../utils/history';
 import { categoryBgColors } from '../constants/colors';
 import LineChart from './LineChart';
-import { getRecentHistory } from '../api/request';
+import { getRecentHistory } from '../api/history';
 
 class Donut {
 	constructor() {

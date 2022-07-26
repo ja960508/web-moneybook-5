@@ -8,15 +8,12 @@ import '@styles/Calendar.css';
 import '@styles/PaymentMethodModal.css';
 import '@styles/Donut.css';
 import '@styles/LineChart.css';
-import renderHome from './pages/home.js';
 import Router from './core/router.js';
 import store from './store/store.js';
 import action from './store/action.js';
-import {
-	getAllCategory,
-	getAllPaymentMethod,
-	getCurrentHistory,
-} from './api/request.js';
+import { getAllPaymentMethod } from './api/payment_method.js';
+import { getAllCategory } from './api/category';
+import { getCurrentHistory } from './api/history';
 
 (async function () {
 	customElements.define('custom-link', CustomLink, { extends: 'a' });

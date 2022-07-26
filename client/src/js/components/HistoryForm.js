@@ -3,7 +3,7 @@ import store from '../store/store';
 import paymentMethodType from '../constants/payment_method';
 import { setPriceFormat } from '../utils/input_value_transformer';
 import PaymentMethodModal from './PaymentMethodModal';
-import { addHistory } from '../api/request';
+import { addHistory } from '../api/history';
 import action from '../store/action';
 
 class HistoryForm {

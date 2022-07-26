@@ -1,4 +1,4 @@
-import { getCurrentHistory } from '../api/request';
+import { getCurrentHistory } from '../api/history';
 import icons from '../constants/icons';
 import action from '../store/action';
 import store from '../store/store';
