@@ -3,19 +3,21 @@ import icons from '../constants/icons';
 import { changeActiveNavElement } from '../core/router';
 import action from '../store/action';
 import store from '../store/store';
+import Component from '../core/Component';
 import { getNextYearAndMonth, getPrevYearAndMonth } from '../utils/date';
 
-class Header {
+class Header extends Component {
 	constructor() {
+		super();
 		this.DOMElement = document.createElement('header');
 		this.DOMElement.classList.add('header');
-		store.subscribe('date', this.render.bind(this));
+		this.subscribe('date', this.render.bind(this));
 		this.render();
 		this.setEvent();
 	}
 
 	template() {
-		const date = store.getState('date');
+		const date = this.getState('date');
 
 		return `
       <div class="wrapper"> 
@@ -49,7 +51,7 @@ class Header {
 
 	setEvent() {
 		this.DOMElement.addEventListener('click', async (event) => {
-			const { year, month } = store.getState('date');
+			const { year, month } = this.getState('date');
 
 			if (event.target.closest('.month-controller__prev-button')) {
 				const [prevYear, prevMonth] = getPrevYearAndMonth(year, month);

@@ -1,19 +1,17 @@
 import categoryObj from '../constants/category';
-import store from '../store/store';
 import { getExpenseSumListByCategory } from '../utils/history';
 import { categoryBgColors } from '../constants/colors';
 import LineChart from './LineChart';
 import { getRecentHistory } from '../api/history';
-import Component from '../core/component';
+import Component from '../core/Component';
 
 class Donut extends Component {
 	constructor() {
 		super();
 		this.DOMElement = document.createElement('div');
 		this.DOMElement.className = 'donut';
-		this.unsubscribe = this.unsubscribe.concat(
-			store.subscribe('history', this.render.bind(this))
-		);
+		this.subscribe('date', this.render.bind(this));
+		this.subscribe('history', this.render.bind(this));
 		this.render();
 	}
 
@@ -60,7 +58,7 @@ class Donut extends Component {
 			return;
 		}
 
-		const { year, month } = store.getState('date');
+		const { year, month } = this.getState('date');
 
 		donutHistory.addEventListener('click', async (event) => {
 			const donutHistoryItem = event.target.closest('.donut__history-item');
@@ -128,7 +126,7 @@ class Donut extends Component {
 	}
 
 	render() {
-		const history = store.getState('history');
+		const history = this.getState('history');
 		const expenseSumList = getExpenseSumListByCategory(history);
 		this.DOMElement.innerHTML = this.template(expenseSumList);
 		this.drawDonutChart(expenseSumList);

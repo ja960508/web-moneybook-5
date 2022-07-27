@@ -36,11 +36,16 @@ export default function reducer(state = initialState, action) {
 					(item) => item.id !== Number(action.payload.id)
 				),
 			};
-		case 'ADD_HISTORY':
+		case 'ADD_HISTORY': {
+			const month = new Date(action.payload.date).getMonth() + 1;
+			if (month != state.date.month) {
+				return { ...state };
+			}
 			return {
 				...state,
 				history: [action.payload, ...state.history],
 			};
+		}
 		default:
 			return state;
 	}

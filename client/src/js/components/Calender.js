@@ -1,6 +1,5 @@
 import { MAX_WEEK } from '../constants/date';
-import Component from '../core/component';
-import store from '../store/store';
+import Component from '../core/Component';
 import {
 	getFirstDayFromYearMonth,
 	getDateCountFromYearMonth,
@@ -14,10 +13,8 @@ class Calendar extends Component {
 		this.DOMElement = document.createElement('div');
 		this.DOMElement.className = 'calendar';
 
-		this.unsubscribe = [
-			store.subscribe('history', this.render.bind(this)),
-			store.subscribe('date', this.render.bind(this)),
-		];
+		this.subscribe('history', this.render.bind(this));
+		this.subscribe('date', this.render.bind(this));
 
 		this.render();
 	}
@@ -44,7 +41,7 @@ class Calendar extends Component {
 		rowIndex,
 		columnIndex,
 	}) {
-		const { year, month } = store.getState('date');
+		const { year, month } = this.getState('date');
 
 		const nowDate = rowIndex * MAX_WEEK + columnIndex + 1 - firstDay;
 		const isNowDateInCurrentMonth = nowDate > 0 && nowDate <= dateCount;
@@ -76,7 +73,7 @@ class Calendar extends Component {
 	}
 
 	getTableBodyRows(groupedHistory) {
-		const { year, month } = store.getState('date');
+		const { year, month } = this.getState('date');
 
 		const firstDay = getFirstDayFromYearMonth(year, month);
 		const dateCount = getDateCountFromYearMonth(year, month);
@@ -95,7 +92,7 @@ class Calendar extends Component {
 	}
 
 	template() {
-		const history = store.getState('history');
+		const history = this.getState('history');
 		const groupedHistory = getGroupedHistoryByDay(history);
 		const totalMoney = getMonthTotalMoney(groupedHistory);
 

@@ -1,13 +1,12 @@
 import category from '../constants/category';
-import Component from '../core/component';
-import store from '../store/store';
+import Component from '../core/Component';
 
 class HistoryList extends Component {
 	constructor(props) {
 		super(props);
 		this.props = props;
 		this.DOMElement = document.createElement('ol');
-		this.unsubscribe.push(store.subscribe('date', this.render.bind(this)));
+		this.subscribe('date', this.render.bind(this));
 		this.render();
 	}
 
@@ -48,7 +47,7 @@ class HistoryList extends Component {
 	}
 
 	template() {
-		const { month } = store.getState('date');
+		const { month } = this.getState('date');
 		const { filteredHistory } = this.props;
 
 		return `

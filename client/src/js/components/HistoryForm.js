@@ -5,17 +5,15 @@ import { getPriceFormat } from '../utils/input_value_transformer';
 import PaymentMethodModal from './PaymentMethodModal';
 import { addHistory } from '../api/history';
 import action from '../store/action';
-import Component from '../core/component';
+import Component from '../core/Component';
 
 class HistoryForm extends Component {
 	constructor() {
 		super();
 		this.DOMElement = document.createElement('form');
 		this.DOMElement.className = 'history__form';
-		this.unsubscribe.push(
-			store.subscribe('paymentMethod', this.render.bind(this))
-		);
-		this.unsubscribe.push(store.subscribe('category', this.render.bind(this)));
+		this.subscribe('paymentMethod', this.render.bind(this));
+		this.subscribe('category', this.render.bind(this));
 		this.setFormEvent();
 		this.render();
 	}
@@ -26,6 +24,29 @@ class HistoryForm extends Component {
 
 	disalbeSubmitButton() {
 		this.DOMElement.querySelector('.history__form--submit').disabled = true;
+	}
+
+	setDropdownElement({ isPaymentMethod }) {
+		const state = isPaymentMethod ? 'paymentMethod' : 'category';
+
+		const dropdownContent = this.getState(state);
+
+		return `
+	<ul class="history__form-dropdown">
+		${dropdownContent
+			.map(
+				(item) => `<li data-id=${item.id} data-is-income=${item.isIncome}>
+			<span>${item.name}</span>
+			${
+				isPaymentMethod
+					? `<button class="payment-method-delete" type="button">X</button>`
+					: ''
+			}
+		</li>`
+			)
+			.join('')}
+		${isPaymentMethod ? `<li class="payment-method-add">추가하기</li>` : ''}
+	</ul>`;
 	}
 
 	setFormEvent() {
@@ -57,7 +78,6 @@ class HistoryForm extends Component {
 			const isIncome = historyIsIncome.checked;
 			const paymentMethod = historyPaymentMethod.value;
 			const price = Number(historyPrice.value.replace(/,/g, ''));
-			const currentMonth = store.getState('date').month;
 
 			const newHistory = await addHistory({
 				date,
@@ -70,22 +90,18 @@ class HistoryForm extends Component {
 			this.DOMElement.reset();
 			this.disalbeSubmitButton();
 
-			const [_year, month] = date.split('-');
-
-			if (Number(month) === Number(currentMonth)) {
-				store.dispatch(
-					action.addHistory({
-						id: newHistory.id,
-						date,
-						category,
-						categoryId,
-						content,
-						paymentMethod,
-						isIncome,
-						price,
-					})
-				);
-			}
+			store.dispatch(
+				action.addHistory({
+					id: newHistory.id,
+					date,
+					category,
+					categoryId,
+					content,
+					paymentMethod,
+					isIncome,
+					price,
+				})
+			);
 		});
 	}
 
@@ -107,7 +123,7 @@ class HistoryForm extends Component {
 				<span class="arrow">
 					${icons.arrow}
 				</span>
-				${setDropdownElement({ isPaymentMethod: false })}
+				${this.setDropdownElement({ isPaymentMethod: false })}
 			</label>
 			<label for="historyContent" class="box23">
 				<span class="bold-small">내용</span>
@@ -132,7 +148,7 @@ class HistoryForm extends Component {
 				<span class="arrow">
 					${icons.arrow}
 				</span>
-				${setDropdownElement({ isPaymentMethod: true })}
+				${this.setDropdownElement({ isPaymentMethod: true })}
 			</label>
 			<label for="historyPrice" class="box23">
 				<span class="bold-small">금액</span>
@@ -287,29 +303,6 @@ function toggleDropdownElement(label) {
 	) {
 		label.querySelector('.history__form-dropdown').classList.toggle('show');
 	}
-}
-
-function setDropdownElement({ isPaymentMethod }) {
-	const state = isPaymentMethod ? 'paymentMethod' : 'category';
-
-	const dropdownContent = store.getState(state);
-
-	return `
-	<ul class="history__form-dropdown">
-		${dropdownContent
-			.map(
-				(item) => `<li data-id=${item.id} data-is-income=${item.isIncome}>
-			<span>${item.name}</span>
-			${
-				isPaymentMethod
-					? `<button class="payment-method-delete" type="button">X</button>`
-					: ''
-			}
-		</li>`
-			)
-			.join('')}
-		${isPaymentMethod ? `<li class="payment-method-add">추가하기</li>` : ''}
-	</ul>`;
 }
 
 export default HistoryForm;

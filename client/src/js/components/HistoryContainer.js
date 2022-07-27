@@ -1,6 +1,5 @@
 import icons from '../constants/icons';
-import Component from '../core/component';
-import store from '../store/store';
+import Component from '../core/Component';
 import {
 	getFilteredHistory,
 	getGroupedHistoryByDay,
@@ -18,8 +17,7 @@ class HistoryContainer extends Component {
 			isIncomeFiltered: false,
 			isExpenseFiltered: false,
 		};
-		this.unsubscribe.push(store.subscribe('history', this.render.bind(this)));
-
+		this.subscribe('history', this.render.bind(this));
 		this.render();
 		this.setEvent();
 	}
@@ -35,12 +33,12 @@ class HistoryContainer extends Component {
 		return `<div class="list-meta">
     <span>전체 내역 ${this.getTotalLength(filteredHistory)}건</span>
     <div class="list-meta__button-container">
-      <button class="list-meta__income-button" data-checked=${!this.state
+      <button class="list-meta__income-button" data-checked=${!this.keys
 				.isIncomeFiltered}>
         <div>${icons.check}</div>
         <span>수입 ${totalMoney.income.toLocaleString()}</span>
       </button>
-      <button class="list-meta__expense-button" data-checked=${!this.state
+      <button class="list-meta__expense-button" data-checked=${!this.keys
 				.isExpenseFiltered}>
         <div>${icons.check}</div>
         <span>지출 ${totalMoney.expense.toLocaleString()}</span>
@@ -51,16 +49,16 @@ class HistoryContainer extends Component {
 	}
 
 	render() {
-		const history = store.getState('history');
+		const history = this.getState('history');
 		const groupedHistory = getGroupedHistoryByDay(history);
 		const filteredHistory = getFilteredHistory(
 			groupedHistory,
 			(item) =>
-				(item.isIncome && !this.state.isIncomeFiltered) ||
-				(!item.isIncome && !this.state.isExpenseFiltered)
+				(item.isIncome && !this.keys.isIncomeFiltered) ||
+				(!item.isIncome && !this.keys.isExpenseFiltered)
 		);
 		const totalMoney = getMonthTotalMoney(groupedHistory);
-		const historyList = new HistoryList({ filteredHistory, ...this.state });
+		const historyList = new HistoryList({ filteredHistory, ...this.keys });
 		this.DOMElement.innerHTML = this.template({ filteredHistory, totalMoney });
 		this.DOMElement.appendChild(historyList.DOMElement);
 		this.setChildren(historyList);
@@ -81,11 +79,11 @@ class HistoryContainer extends Component {
 
 			if (incomeFilterButton) {
 				this.toggleChecked(incomeFilterButton);
-				this.state.isIncomeFiltered = !this.state.isIncomeFiltered;
+				this.keys.isIncomeFiltered = !this.keys.isIncomeFiltered;
 				this.render();
 			} else if (expenseFilterButton) {
 				this.toggleChecked(expenseFilterButton);
-				this.state.isExpenseFiltered = !this.state.isExpenseFiltered;
+				this.keys.isExpenseFiltered = !this.keys.isExpenseFiltered;
 				this.render();
 			}
 		});
