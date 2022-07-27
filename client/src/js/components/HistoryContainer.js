@@ -1,4 +1,5 @@
 import icons from '../constants/icons';
+import Component from '../core/component';
 import store from '../store/store';
 import {
 	getFilteredHistory,
@@ -7,8 +8,9 @@ import {
 } from '../utils/history';
 import HistoryList from './HistoryList';
 
-class HistoryContainer {
+class HistoryContainer extends Component {
 	constructor(props = {}) {
+		super(props);
 		this.DOMElement = document.createElement('div');
 		this.DOMElement.className = 'history-container';
 		this.props = props;
@@ -16,7 +18,7 @@ class HistoryContainer {
 			isIncomeFiltered: false,
 			isExpenseFiltered: false,
 		};
-		store.subscribe('history', this.render.bind(this));
+		this.unsubscribe.push(store.subscribe('history', this.render.bind(this)));
 
 		this.render();
 		this.setEvent();
@@ -58,10 +60,10 @@ class HistoryContainer {
 				(!item.isIncome && !this.state.isExpenseFiltered)
 		);
 		const totalMoney = getMonthTotalMoney(groupedHistory);
+		const historyList = new HistoryList({ filteredHistory, ...this.state });
 		this.DOMElement.innerHTML = this.template({ filteredHistory, totalMoney });
-		this.DOMElement.appendChild(
-			new HistoryList({ filteredHistory, ...this.state }).DOMElement
-		);
+		this.DOMElement.appendChild(historyList.DOMElement);
+		this.setChildren(historyList);
 	}
 
 	toggleChecked(filterButton) {

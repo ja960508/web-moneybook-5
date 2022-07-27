@@ -25,8 +25,7 @@ import { getCurrentHistory } from './api/history';
 	const paymentMethod = await getAllPaymentMethod();
 	const app = document.getElementById('app');
 
-	app.appendChild(new Header().DOMElement);
-	app.appendChild(document.createElement('main'));
+	app.insertBefore(new Header().DOMElement, app.firstChild);
 
 	store.dispatch(action.getCurrentMonthData(history));
 	store.dispatch(action.getAllCategory(category));

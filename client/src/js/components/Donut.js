@@ -4,12 +4,16 @@ import { getExpenseSumListByCategory } from '../utils/history';
 import { categoryBgColors } from '../constants/colors';
 import LineChart from './LineChart';
 import { getRecentHistory } from '../api/history';
+import Component from '../core/component';
 
-class Donut {
+class Donut extends Component {
 	constructor() {
+		super();
 		this.DOMElement = document.createElement('div');
 		this.DOMElement.className = 'donut';
-		store.subscribe('history', this.render.bind(this));
+		this.unsubscribe = this.unsubscribe.concat(
+			store.subscribe('history', this.render.bind(this))
+		);
 		this.render();
 	}
 
@@ -70,14 +74,13 @@ class Donut {
 				'.line-chart__container'
 			);
 
+			const lineChart = new LineChart({ categoryId, recentHistory });
+
 			if (chart) {
-				chart.replaceWith(
-					new LineChart({ categoryId, recentHistory }).DOMElement
-				);
+				chart.replaceWith(lineChart.DOMElement);
 			} else {
-				this.DOMElement.parentNode.appendChild(
-					new LineChart({ categoryId, recentHistory }).DOMElement
-				);
+				this.DOMElement.parentNode.appendChild(lineChart.DOMElement);
+				this.setChildren(lineChart);
 			}
 		});
 	}

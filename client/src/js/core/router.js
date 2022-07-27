@@ -2,7 +2,7 @@ import render404 from '../pages/404';
 import renderAnalytics from '../pages/analytics';
 import renderCalendar from '../pages/calendar';
 import renderHome from '../pages/home';
-import store from '../store/store';
+import Main from '../components/Main';
 
 export default (function () {
 	const routes = {
@@ -10,14 +10,15 @@ export default (function () {
 		'/calendar': renderCalendar,
 		'/analytics': renderAnalytics,
 	};
+	const app = document.getElementById('app');
+	const main = new Main();
+	const container = main.DOMElement;
+	app.appendChild(container);
 
 	function render(path) {
-		const app = document.querySelector('#app');
-		const container = app.querySelector('main');
 		const renderPage = routes[path];
 
-		container.innerHTML = ``;
-		store.resetListeners();
+		main.clear();
 
 		if (!renderPage) {
 			render404();
@@ -25,7 +26,7 @@ export default (function () {
 			return;
 		}
 
-		renderPage(container);
+		renderPage(main);
 	}
 
 	function changeActiveNavElement(element = document) {

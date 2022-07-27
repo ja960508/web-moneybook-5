@@ -5,13 +5,17 @@ import { getPriceFormat } from '../utils/input_value_transformer';
 import PaymentMethodModal from './PaymentMethodModal';
 import { addHistory } from '../api/history';
 import action from '../store/action';
+import Component from '../core/component';
 
-class HistoryForm {
+class HistoryForm extends Component {
 	constructor() {
+		super();
 		this.DOMElement = document.createElement('form');
 		this.DOMElement.className = 'history__form';
-		store.subscribe('paymentMethod', this.render.bind(this));
-		store.subscribe('category', this.render.bind(this));
+		this.unsubscribe.push(
+			store.subscribe('paymentMethod', this.render.bind(this))
+		);
+		this.unsubscribe.push(store.subscribe('category', this.render.bind(this)));
 		this.setFormEvent();
 		this.render();
 	}

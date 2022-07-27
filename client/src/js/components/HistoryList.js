@@ -1,11 +1,13 @@
 import category from '../constants/category';
+import Component from '../core/component';
 import store from '../store/store';
 
-class HistoryList {
+class HistoryList extends Component {
 	constructor(props) {
+		super(props);
 		this.props = props;
 		this.DOMElement = document.createElement('ol');
-		store.subscribe('date', this.render.bind(this));
+		this.unsubscribe.push(store.subscribe('date', this.render.bind(this)));
 		this.render();
 	}
 

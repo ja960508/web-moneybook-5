@@ -1,4 +1,5 @@
 import { MAX_WEEK } from '../constants/date';
+import Component from '../core/component';
 import store from '../store/store';
 import {
 	getFirstDayFromYearMonth,
@@ -7,12 +8,16 @@ import {
 } from '../utils/date';
 import { getGroupedHistoryByDay, getMonthTotalMoney } from '../utils/history';
 
-class Calendar {
+class Calendar extends Component {
 	constructor() {
+		super();
 		this.DOMElement = document.createElement('div');
 		this.DOMElement.className = 'calendar';
-		store.subscribe('history', this.render.bind(this));
-		store.subscribe('date', this.render.bind(this));
+
+		this.unsubscribe = [
+			store.subscribe('history', this.render.bind(this)),
+			store.subscribe('date', this.render.bind(this)),
+		];
 
 		this.render();
 	}
