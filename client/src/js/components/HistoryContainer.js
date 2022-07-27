@@ -57,6 +57,7 @@ class HistoryContainer {
 				(!item.isIncome && !this.state.isExpenseFiltered)
 		);
 		const totalMoney = getMonthTotalMoney(groupedHistory);
+		debugger;
 
 		this.DOMElement.innerHTML = this.template({ filteredHistory, totalMoney });
 		this.DOMElement.appendChild(

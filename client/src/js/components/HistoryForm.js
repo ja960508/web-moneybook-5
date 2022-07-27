@@ -103,7 +103,7 @@ class HistoryForm {
 				<span class="arrow">
 					${icons.arrow}
 				</span>
-				${setDropdownElement()}
+				${setDropdownElement({ isPaymentMethod: false })}
 			</label>
 			<label for="historyContent" class="box23">
 				<span class="bold-small">내용</span>
@@ -128,7 +128,7 @@ class HistoryForm {
 				<span class="arrow">
 					${icons.arrow}
 				</span>
-				${setDropdownElement(true)}
+				${setDropdownElement({ isPaymentMethod: true })}
 			</label>
 			<label for="historyPrice" class="box23">
 				<span class="bold-small">금액</span>
@@ -285,7 +285,7 @@ function toggleDropdownElement(label) {
 	}
 }
 
-function setDropdownElement(isPaymentMethod) {
+function setDropdownElement({ isPaymentMethod }) {
 	const state = isPaymentMethod ? 'paymentMethod' : 'category';
 
 	const dropdownContent = store.getState(state);

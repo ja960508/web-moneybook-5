@@ -1,9 +1,9 @@
 import CustomLink from './custom_elements/CustomLink.js';
 import '@styles/reset.css';
 import '@styles/common.scss';
-import '@styles/main.css';
+import '@styles/HistoryContainer.css';
 import '@styles/Header.css';
-import '@styles/history_form.css';
+import '@styles/HistoryForm.css';
 import '@styles/Calendar.css';
 import '@styles/PaymentMethodModal.css';
 import '@styles/Donut.css';
@@ -32,6 +32,7 @@ import { getCurrentHistory } from './api/history';
 		Router.render(path);
 
 		const customLinks = document.querySelectorAll('nav [is=custom-link]');
+
 		customLinks.forEach((link) => {
 			link.classList.remove('active');
 			link.getAttribute('href') === path && link.classList.add('active');

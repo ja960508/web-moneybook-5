@@ -1,6 +1,6 @@
 import categoryObj from '../constants/category';
 import store from '../store/store';
-import { getGroupedHistoryByExpense } from '../utils/history';
+import { getExpenseSumListByCategory } from '../utils/history';
 import { categoryBgColors } from '../constants/colors';
 import LineChart from './LineChart';
 import { getRecentHistory } from '../api/history';
@@ -17,9 +17,11 @@ class Donut {
 		return this.DOMElement.querySelector('canvas');
 	}
 
-	template(groupedHistory) {
-		const { totalExpense, categoryAndExpenseSumList } = groupedHistory;
+	template(expenseSumList) {
+		const { totalExpense, categoryAndExpenseSumList } = expenseSumList;
+
 		if (!totalExpense) return `<div></div>`;
+
 		return `
 			<canvas></canvas>
 			<div class="donut__right">
@@ -104,10 +106,10 @@ class Donut {
 		ctx.stroke();
 	}
 
-	drawDonutChart(groupedHistory) {
+	drawDonutChart(expenseSumList) {
 		const MAX_ANGLE = 2 * Math.PI;
 
-		const { totalExpense, categoryAndExpenseSumList } = groupedHistory;
+		const { totalExpense, categoryAndExpenseSumList } = expenseSumList;
 		if (!totalExpense) return;
 
 		this.setInitialCanvasSize();
@@ -124,9 +126,10 @@ class Donut {
 
 	render() {
 		const history = store.getState('history');
-		const groupedHistory = getGroupedHistoryByExpense(history);
-		this.DOMElement.innerHTML = this.template(groupedHistory);
-		this.drawDonutChart(groupedHistory);
+		const expenseSumList = getExpenseSumListByCategory(history);
+		debugger;
+		this.DOMElement.innerHTML = this.template(expenseSumList);
+		this.drawDonutChart(expenseSumList);
 		this.setEvent();
 	}
 }
