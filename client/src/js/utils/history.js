@@ -19,7 +19,7 @@ export function getGroupedHistoryByDay(history) {
 	return result;
 }
 
-export function getGroupedHistoryByExpense(history) {
+export function getExpenseSumListByCategory(history) {
 	const result = new Map();
 	let totalExpense = 0;
 

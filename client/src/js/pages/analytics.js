@@ -1,8 +1,8 @@
-import Donut from '../components/Donut';
-import Header from '../components/Header';
+import Analytics from '../components/Analytics';
 
-export default function renderAnalytics() {
-	const app = document.querySelector('#app');
-	app.appendChild(new Header().DOMElement);
-	app.appendChild(new Donut().DOMElement);
+export default function renderAnalytics(main) {
+	const analytics = new Analytics();
+
+	main.DOMElement.appendChild(analytics.DOMElement);
+	main.setChild(analytics);
 }

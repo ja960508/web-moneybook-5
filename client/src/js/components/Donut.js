@@ -1,15 +1,14 @@
 import categoryObj from '../constants/category';
-import store from '../store/store';
-import { getGroupedHistoryByExpense } from '../utils/history';
+import { getExpenseSumListByCategory } from '../utils/history';
 import { categoryBgColors } from '../constants/colors';
-import LineChart from './LineChart';
-import { getRecentHistory } from '../api/history';
+import Component from '../core/Component';
 
-class Donut {
-	constructor() {
+class Donut extends Component {
+	constructor(props) {
+		super();
 		this.DOMElement = document.createElement('div');
+		this.props = props;
 		this.DOMElement.className = 'donut';
-		store.subscribe('history', this.render.bind(this));
 		this.render();
 	}
 
@@ -17,9 +16,9 @@ class Donut {
 		return this.DOMElement.querySelector('canvas');
 	}
 
-	template(groupedHistory) {
-		const { totalExpense, categoryAndExpenseSumList } = groupedHistory;
-		if (!totalExpense) return `<div></div>`;
+	template(expenseSumList) {
+		const { totalExpense, categoryAndExpenseSumList } = expenseSumList;
+
 		return `
 			<canvas></canvas>
 			<div class="donut__right">
@@ -49,34 +48,16 @@ class Donut {
 
 	setEvent() {
 		const donutHistory = this.DOMElement.querySelector('.donut__history');
-
 		if (!donutHistory) {
 			return;
 		}
 
-		const { year, month } = store.getState('date');
-
-		donutHistory.addEventListener('click', async (event) => {
+		donutHistory.addEventListener('click', (event) => {
 			const donutHistoryItem = event.target.closest('.donut__history-item');
-			if (!donutHistoryItem) {
-				return;
-			}
 
 			const categoryId = Number(donutHistoryItem.dataset.categoryId);
-			const recentHistory = await getRecentHistory(year, month, categoryId);
-			const chart = this.DOMElement.parentNode.querySelector(
-				'.line-chart__container'
-			);
 
-			if (chart) {
-				chart.replaceWith(
-					new LineChart({ categoryId, recentHistory }).DOMElement
-				);
-			} else {
-				this.DOMElement.parentNode.appendChild(
-					new LineChart({ categoryId, recentHistory }).DOMElement
-				);
-			}
+			this.props.onClick(categoryId);
 		});
 	}
 
@@ -104,10 +85,10 @@ class Donut {
 		ctx.stroke();
 	}
 
-	drawDonutChart(groupedHistory) {
+	drawDonutChart(expenseSumList) {
 		const MAX_ANGLE = 2 * Math.PI;
 
-		const { totalExpense, categoryAndExpenseSumList } = groupedHistory;
+		const { totalExpense, categoryAndExpenseSumList } = expenseSumList;
 		if (!totalExpense) return;
 
 		this.setInitialCanvasSize();
@@ -123,10 +104,10 @@ class Donut {
 	}
 
 	render() {
-		const history = store.getState('history');
-		const groupedHistory = getGroupedHistoryByExpense(history);
-		this.DOMElement.innerHTML = this.template(groupedHistory);
-		this.drawDonutChart(groupedHistory);
+		const { history } = this.props;
+		const expenseSumList = getExpenseSumListByCategory(history);
+		this.DOMElement.innerHTML = this.template(expenseSumList);
+		this.drawDonutChart(expenseSumList);
 		this.setEvent();
 	}
 }

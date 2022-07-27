@@ -1,4 +1,3 @@
-import store from '../store/store';
 import {
 	NUM_OF_COLOUMNS,
 	NUM_OF_ROWS,
@@ -8,22 +7,16 @@ import {
 	Y_PADDING,
 } from '../constants/line_chart.js';
 import { MAX_MONTH } from '../constants/date';
-import { getFilteredHistory, getGroupedHistoryByDay } from '../utils/history';
-import HistoryList from './HistoryList';
+import Component from '../core/Component.js';
 
-class LineChart {
+class LineChart extends Component {
 	constructor(props) {
+		super();
 		this.props = props;
 		this.DOMElement = document.createElement('div');
 		this.DOMElement.className = 'line-chart__container';
 		this.totalExpense = this.getTotalExpenseByMonth();
-		this.unsubscribe = store.subscribe('history', this.init.bind(this));
 		this.render();
-	}
-
-	init() {
-		this.unsubscribe();
-		this.DOMElement.remove();
 	}
 
 	template() {
@@ -33,17 +26,8 @@ class LineChart {
 	}
 
 	render() {
-		const history = store.getState('history');
-		const groupedHistory = getGroupedHistoryByDay(history);
-		const filteredHistory = getFilteredHistory(
-			groupedHistory,
-			(item) => Number(item.categoryId) === this.props.categoryId
-		);
 		this.DOMElement.innerHTML = this.template();
 		this.drawLineChart();
-		this.DOMElement.appendChild(
-			new HistoryList({ filteredHistory, hideTotal: true }).DOMElement
-		);
 	}
 
 	getMonthsColumnLabel(months) {

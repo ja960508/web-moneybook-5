@@ -1,11 +1,13 @@
 import category from '../constants/category';
-import store from '../store/store';
+import Component from '../core/Component';
 
-class HistoryList {
+class HistoryList extends Component {
 	constructor(props) {
+		super();
 		this.props = props;
 		this.DOMElement = document.createElement('ol');
-		store.subscribe('date', this.render.bind(this));
+		this.DOMElement.className = 'history-list';
+		this.subscribe('date', this.render.bind(this));
 		this.render();
 	}
 
@@ -46,7 +48,7 @@ class HistoryList {
 	}
 
 	template() {
-		const { month } = store.getState('date');
+		const { month } = this.getState('date');
 		const { filteredHistory } = this.props;
 
 		return `

@@ -1,8 +1,8 @@
 import Calendar from '../components/Calender';
-import Header from '../components/Header';
 
-export default function renderCalendar() {
-	const app = document.querySelector('#app');
-	app.appendChild(new Header().DOMElement);
-	app.appendChild(new Calendar().DOMElement);
+export default function renderCalendar(main) {
+	const calendar = new Calendar();
+
+	main.DOMElement.appendChild(calendar.DOMElement);
+	main.setChild(calendar);
 }

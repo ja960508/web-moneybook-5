@@ -1,30 +1,23 @@
 import { getCurrentHistory } from '../api/history';
 import icons from '../constants/icons';
+import { changeActiveNavElement } from '../core/router';
 import action from '../store/action';
 import store from '../store/store';
+import Component from '../core/Component';
 import { getNextYearAndMonth, getPrevYearAndMonth } from '../utils/date';
 
-class Header {
+class Header extends Component {
 	constructor() {
+		super();
 		this.DOMElement = document.createElement('header');
 		this.DOMElement.classList.add('header');
-		store.subscribe('date', this.render.bind(this));
+		this.subscribe('date', this.render.bind(this));
 		this.render();
 		this.setEvent();
 	}
 
-	setActive() {
-		const customLinks = this.DOMElement.querySelectorAll(
-			'nav [is=custom-link]'
-		);
-		const path = window.location.pathname;
-		customLinks.forEach((link) => {
-			link.getAttribute('href') === path && link.classList.add('active');
-		});
-	}
-
 	template() {
-		const date = store.getState('date');
+		const date = this.getState('date');
 
 		return `
       <div class="wrapper"> 
@@ -53,12 +46,12 @@ class Header {
 
 	render() {
 		this.DOMElement.innerHTML = this.template();
-		this.setActive();
+		changeActiveNavElement(this.DOMElement);
 	}
 
 	setEvent() {
 		this.DOMElement.addEventListener('click', async (event) => {
-			const { year, month } = store.getState('date');
+			const { year, month } = this.getState('date');
 
 			if (event.target.closest('.month-controller__prev-button')) {
 				const [prevYear, prevMonth] = getPrevYearAndMonth(year, month);
@@ -72,13 +65,11 @@ class Header {
 
 				store.dispatch(action.getCurrentMonthData(response));
 				store.dispatch(action.changeDate({ year: nextYear, month: nextMonth }));
+			} else if (event.target.closest('nav [is=custom-link]')) {
+				changeActiveNavElement();
 			}
 		});
 	}
 }
 
 export default Header;
-
-// store에서 데이터를 다 가지고 있음
-// app에서 store 구독 중임
-// app에서 자식 컴포넌트(Hedaer,,) 렌더 호출할 때 데이터를 전달해야함

@@ -1,33 +1,31 @@
 import render404 from '../pages/404';
-import renderAnalytics from '../pages/analytics';
-import renderCalendar from '../pages/calendar';
-import renderHome from '../pages/home';
-import store from '../store/store';
 
-export default (function () {
-	const routes = {
-		'/': renderHome,
-		'/calendar': renderCalendar,
-		'/analytics': renderAnalytics,
-	};
-
+export default function createRouter(routes, container) {
 	function render(path) {
-		const app = document.querySelector('#app');
 		const renderPage = routes[path];
 
-		store.resetListeners();
-		app.innerHTML = ``;
+		container.clearChildren();
 
 		if (!renderPage) {
-			render404();
+			render404(container);
 
 			return;
 		}
 
-		renderPage();
+		renderPage(container);
 	}
 
 	return {
 		render,
 	};
-})();
+}
+
+export function changeActiveNavElement(element = document) {
+	const path = window.location.pathname;
+	const customLinks = element.querySelectorAll('nav [is=custom-link]');
+
+	customLinks.forEach((link) => {
+		link.classList.remove('active');
+		link.getAttribute('href') === path && link.classList.add('active');
+	});
+}
