@@ -89,6 +89,12 @@ class HistoryContainer extends Component {
 				this.keys.isExpenseFiltered = !this.keys.isExpenseFiltered;
 				this.render();
 			} else if (historyItem) {
+				if (historyItem.classList.contains('updating')) {
+					historyItem.classList.remove('updating');
+					store.dispatch(action.resetHistoryFormData());
+					return;
+				}
+
 				const history = this.getState('history');
 				const item = history.find(({ id }) => id == historyItem.dataset.id);
 				this.DOMElement.querySelectorAll('.history__item').forEach((item) => {
