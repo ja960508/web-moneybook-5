@@ -22,11 +22,11 @@ class HistoryForm extends Component {
 		this.render();
 	}
 
-	enalbeSubmitButton() {
+	enableSubmitButton() {
 		this.DOMElement.querySelector('.history__form--submit').disabled = false;
 	}
 
-	disalbeSubmitButton() {
+	disableSubmitButton() {
 		this.DOMElement.querySelector('.history__form--submit').disabled = true;
 	}
 
@@ -60,9 +60,9 @@ class HistoryForm extends Component {
 			if (
 				checkAllInputs(Array.from(this.DOMElement.querySelectorAll('input')))
 			) {
-				this.enalbeSubmitButton();
+				this.enableSubmitButton();
 			} else {
-				this.disalbeSubmitButton();
+				this.disableSubmitButton();
 			}
 		});
 
@@ -87,7 +87,7 @@ class HistoryForm extends Component {
 
 			await setLoadingInRequest(async () => {
 				this.DOMElement.reset();
-				this.disalbeSubmitButton();
+				this.disableSubmitButton();
 
 				const { id, isUpdateMode } = this.getState('historyFormData');
 				const historyParam = {
