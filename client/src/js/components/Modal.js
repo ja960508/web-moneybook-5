@@ -72,6 +72,7 @@ class Modal {
 			if (event.target.classList.contains('cancel')) {
 				this.DOMElement.remove();
 			}
+			this.toggleBodyOverflow();
 
 			return;
 		});
