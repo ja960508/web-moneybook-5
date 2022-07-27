@@ -75,13 +75,13 @@
 .history__item {
 	cursor: pointer;
 	display: flex;
-	padding: 0.75rem 0;
+	padding: 0.75rem 0.5rem;
 	border-top: 1px solid var(--color-gray-200);
 	transition: background-color 200ms;
 }
 
 .history__item:hover {
-	background-color: var(--color-gray-100);
+	background-color: var(--color-gray-150);
 }
 
 .history__item:last-child {
