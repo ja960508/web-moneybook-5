@@ -109,13 +109,17 @@ class HistoryForm extends Component {
 				};
 
 				if (isUpdateMode) {
-					await updateHistory({ id, ...historyParam });
-					store.dispatch(action.updateHistory({ id, ...historyPayload }));
+					await setLoadingInRequest(async () => {
+						await updateHistory({ id, ...historyParam });
+						store.dispatch(action.updateHistory({ id, ...historyPayload }));
+					});
 				} else {
-					const newHistory = await addHistory(historyParam);
-					store.dispatch(
-						action.addHistory({ id: newHistory.id, ...historyPayload })
-					);
+					await setLoadingInRequest(async () => {
+						const newHistory = await addHistory(historyParam);
+						store.dispatch(
+							action.addHistory({ id: newHistory.id, ...historyPayload })
+						);
+					});
 				}
 
 				store.dispatch(action.resetHistoryFormData());

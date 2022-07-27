@@ -11,6 +11,7 @@ import HistoryList from './HistoryList';
 import Modal from './Modal';
 import MODAL_TYPE from '../constants/modal';
 import { removeHistory } from '../api/history';
+import setLoadingInRequest from '../utils/request_loader';
 
 class HistoryContainer extends Component {
 	constructor(props = {}) {
@@ -102,8 +103,10 @@ class HistoryContainer extends Component {
 					modalType: MODAL_TYPE.remove,
 					onSubmit: async () => {
 						const id = Number(historyItem.dataset.id);
-						await removeHistory(id);
-						store.dispatch(action.deleteHistory({ id }));
+						await setLoadingInRequest(async () => {
+							await removeHistory(id);
+							store.dispatch(action.deleteHistory({ id }));
+						});
 					},
 				});
 			} else if (historyItem) {
