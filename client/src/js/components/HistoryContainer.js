@@ -9,7 +9,8 @@ import HistoryList from './HistoryList';
 
 class HistoryContainer {
 	constructor(props = {}) {
-		this.DOMElement = document.createElement('main');
+		this.DOMElement = document.createElement('div');
+		this.DOMElement.className = 'history-container';
 		this.props = props;
 		this.state = {
 			isIncomeFiltered: false,
@@ -57,8 +58,6 @@ class HistoryContainer {
 				(!item.isIncome && !this.state.isExpenseFiltered)
 		);
 		const totalMoney = getMonthTotalMoney(groupedHistory);
-		debugger;
-
 		this.DOMElement.innerHTML = this.template({ filteredHistory, totalMoney });
 		this.DOMElement.appendChild(
 			new HistoryList({ filteredHistory, ...this.state }).DOMElement

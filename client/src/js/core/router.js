@@ -13,10 +13,11 @@ export default (function () {
 
 	function render(path) {
 		const app = document.querySelector('#app');
+		const container = app.querySelector('main');
 		const renderPage = routes[path];
 
+		container.innerHTML = ``;
 		store.resetListeners();
-		app.innerHTML = ``;
 
 		if (!renderPage) {
 			render404();
@@ -24,10 +25,21 @@ export default (function () {
 			return;
 		}
 
-		renderPage();
+		renderPage(container);
+	}
+
+	function changeActiveNavElement(element = document) {
+		const path = window.location.pathname;
+		const customLinks = element.querySelectorAll('nav [is=custom-link]');
+
+		customLinks.forEach((link) => {
+			link.classList.remove('active');
+			link.getAttribute('href') === path && link.classList.add('active');
+		});
 	}
 
 	return {
 		render,
+		changeActiveNavElement,
 	};
 })();

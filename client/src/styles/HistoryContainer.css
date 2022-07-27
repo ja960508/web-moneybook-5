@@ -1,9 +1,9 @@
-main {
+.history-container {
 	max-width: 848px;
 	margin: 0 auto;
 }
 
-main .list-meta {
+.history-container .list-meta {
 	display: flex;
 	justify-content: space-between;
 	color: var(--color-primary-mint3);

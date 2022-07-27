@@ -1,5 +1,6 @@
 import { getCurrentHistory } from '../api/history';
 import icons from '../constants/icons';
+import Router from '../core/router';
 import action from '../store/action';
 import store from '../store/store';
 import { getNextYearAndMonth, getPrevYearAndMonth } from '../utils/date';
@@ -11,16 +12,6 @@ class Header {
 		store.subscribe('date', this.render.bind(this));
 		this.render();
 		this.setEvent();
-	}
-
-	setActive() {
-		const customLinks = this.DOMElement.querySelectorAll(
-			'nav [is=custom-link]'
-		);
-		const path = window.location.pathname;
-		customLinks.forEach((link) => {
-			link.getAttribute('href') === path && link.classList.add('active');
-		});
 	}
 
 	template() {
@@ -53,7 +44,7 @@ class Header {
 
 	render() {
 		this.DOMElement.innerHTML = this.template();
-		this.setActive();
+		Router.changeActiveNavElement(this.DOMElement);
 	}
 
 	setEvent() {
@@ -72,6 +63,8 @@ class Header {
 
 				store.dispatch(action.getCurrentMonthData(response));
 				store.dispatch(action.changeDate({ year: nextYear, month: nextMonth }));
+			} else if (event.target.closest('nav [is=custom-link]')) {
+				Router.changeActiveNavElement();
 			}
 		});
 	}

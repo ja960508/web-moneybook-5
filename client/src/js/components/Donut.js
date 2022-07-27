@@ -127,7 +127,6 @@ class Donut {
 	render() {
 		const history = store.getState('history');
 		const expenseSumList = getExpenseSumListByCategory(history);
-		debugger;
 		this.DOMElement.innerHTML = this.template(expenseSumList);
 		this.drawDonutChart(expenseSumList);
 		this.setEvent();
