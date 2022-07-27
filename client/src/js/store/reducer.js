@@ -6,6 +6,7 @@ const initialState = {
 	history: [],
 	category: [],
 	paymentMethod: [],
+	loading: false,
 };
 
 /**
@@ -44,6 +45,18 @@ export default function reducer(state = initialState, action) {
 			return {
 				...state,
 				history: [action.payload, ...state.history],
+			};
+		}
+		case 'SET_LOADING': {
+			return {
+				...state,
+				loading: true,
+			};
+		}
+		case 'FINISH_LOADING': {
+			return {
+				...state,
+				loading: false,
 			};
 		}
 		default:

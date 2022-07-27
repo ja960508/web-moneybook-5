@@ -18,6 +18,7 @@
 	justify-content: center;
 	align-items: center;
 	background: rgba(0, 0, 0, 0.2);
+	display: none;
 }
 
 .spinner {
@@ -30,4 +31,8 @@
 	-webkit-animation: spinner 0.8s linear infinite;
 	border-top-color: var(--color-primary-mint2);
 	animation: spin 0.8s linear infinite;
+}
+
+.loading-overlay.loading {
+	display: flex;
 }

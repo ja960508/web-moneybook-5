@@ -5,6 +5,7 @@ import action from '../store/action';
 import store from '../store/store';
 import Component from '../core/Component';
 import { getNextYearAndMonth, getPrevYearAndMonth } from '../utils/date';
+import setLoadingInRequest from '../utils/request_loader';
 
 class Header extends Component {
 	constructor() {
@@ -53,21 +54,27 @@ class Header extends Component {
 		this.DOMElement.addEventListener('click', async (event) => {
 			const { year, month } = this.getState('date');
 
-			if (event.target.closest('.month-controller__prev-button')) {
-				const [prevYear, prevMonth] = getPrevYearAndMonth(year, month);
-				const response = await getCurrentHistory(prevYear, prevMonth);
+			setLoadingInRequest(async () => {
+				if (event.target.closest('.month-controller__prev-button')) {
+					const [prevYear, prevMonth] = getPrevYearAndMonth(year, month);
+					const response = await getCurrentHistory(prevYear, prevMonth);
 
-				store.dispatch(action.getCurrentMonthData(response));
-				store.dispatch(action.changeDate({ year: prevYear, month: prevMonth }));
-			} else if (event.target.closest('.month-controller__next-button')) {
-				const [nextYear, nextMonth] = getNextYearAndMonth(year, month);
-				const response = await getCurrentHistory(nextYear, nextMonth);
+					store.dispatch(action.getCurrentMonthData(response));
+					store.dispatch(
+						action.changeDate({ year: prevYear, month: prevMonth })
+					);
+				} else if (event.target.closest('.month-controller__next-button')) {
+					const [nextYear, nextMonth] = getNextYearAndMonth(year, month);
+					const response = await getCurrentHistory(nextYear, nextMonth);
 
-				store.dispatch(action.getCurrentMonthData(response));
-				store.dispatch(action.changeDate({ year: nextYear, month: nextMonth }));
-			} else if (event.target.closest('nav [is=custom-link]')) {
-				changeActiveNavElement();
-			}
+					store.dispatch(action.getCurrentMonthData(response));
+					store.dispatch(
+						action.changeDate({ year: nextYear, month: nextMonth })
+					);
+				} else if (event.target.closest('nav [is=custom-link]')) {
+					changeActiveNavElement();
+				}
+			});
 		});
 	}
 }

@@ -4,6 +4,9 @@ import LineChart from './LineChart';
 import HistoryList from './HistoryList';
 import { getRecentHistory } from '../api/history';
 import { getGroupedHistoryByDay, getFilteredHistory } from '../utils/history';
+import store from '../store/store';
+import action from '../store/action';
+import setLoadingInRequest from '../utils/request_loader';
 
 class Analytics extends Component {
 	constructor() {
@@ -20,7 +23,10 @@ class Analytics extends Component {
 		const { year, month } = this.getState('date');
 		const history = this.getState('history');
 
-		const recentHistory = await getRecentHistory(year, month, categoryId);
+		const recentHistory = await setLoadingInRequest(async () => {
+			const recentHistory = await getRecentHistory(year, month, categoryId);
+		});
+
 		const groupedHistory = getGroupedHistoryByDay(history);
 		const filteredHistory = getFilteredHistory(
 			groupedHistory,

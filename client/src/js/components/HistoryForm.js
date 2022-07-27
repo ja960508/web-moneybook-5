@@ -6,6 +6,7 @@ import PaymentMethodModal from './PaymentMethodModal';
 import { addHistory } from '../api/history';
 import action from '../store/action';
 import Component from '../core/Component';
+import setLoadingInRequest from '../utils/request_loader';
 
 class HistoryForm extends Component {
 	constructor() {
@@ -79,29 +80,31 @@ class HistoryForm extends Component {
 			const paymentMethod = historyPaymentMethod.value;
 			const price = Number(historyPrice.value.replace(/,/g, ''));
 
-			const newHistory = await addHistory({
-				date,
-				categoryId,
-				content,
-				paymentMethod,
-				price,
-			});
-
-			this.DOMElement.reset();
-			this.disalbeSubmitButton();
-
-			store.dispatch(
-				action.addHistory({
-					id: newHistory.id,
+			await setLoadingInRequest(async () => {
+				const newHistory = await addHistory({
 					date,
-					category,
 					categoryId,
 					content,
 					paymentMethod,
-					isIncome,
 					price,
-				})
-			);
+				});
+
+				this.DOMElement.reset();
+				this.disalbeSubmitButton();
+
+				store.dispatch(
+					action.addHistory({
+						id: newHistory.id,
+						date,
+						category,
+						categoryId,
+						content,
+						paymentMethod,
+						isIncome,
+						price,
+					})
+				);
+			});
 		});
 	}
 

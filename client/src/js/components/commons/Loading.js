@@ -5,8 +5,13 @@ class Loading extends Component {
 		super();
 		this.DOMElement = document.createElement('div');
 		this.DOMElement.className = `loading-overlay`;
+		this.subscribe('loading', this.changeLoadingState.bind(this));
 
 		this.render();
+	}
+
+	changeLoadingState() {
+		this.DOMElement.classList.toggle('loading');
 	}
 
 	template() {
