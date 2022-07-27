@@ -88,6 +88,11 @@
 	border-bottom: 1px solid var(--color-gray-200);
 }
 
+.history__item.updating {
+	border: 1px dashed var(--color-black);
+	border-radius: 6px;
+}
+
 .history__item > div {
 	flex: 1 1 30%;
 	display: flex;

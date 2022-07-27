@@ -91,6 +91,10 @@ class HistoryContainer extends Component {
 			} else if (historyItem) {
 				const history = this.getState('history');
 				const item = history.find(({ id }) => id == historyItem.dataset.id);
+				this.DOMElement.querySelectorAll('.history__item').forEach((item) => {
+					item.classList.remove('updating');
+				});
+				historyItem.classList.add('updating');
 
 				store.dispatch(
 					action.updateHistoryFormData({
