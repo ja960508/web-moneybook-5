@@ -104,6 +104,8 @@ class HistoryContainer extends Component {
 						isUpdateMode: true,
 					})
 				);
+
+				window.scrollTo(0, 0);
 			}
 		});
 	}
