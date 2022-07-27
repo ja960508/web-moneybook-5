@@ -1,4 +1,4 @@
-import Router from '../core/router.js';
+import { router } from '../index';
 
 class CustomLink extends HTMLAnchorElement {
 	constructor() {
@@ -21,7 +21,7 @@ class CustomLink extends HTMLAnchorElement {
 		}
 
 		window.history.pushState({}, null, path);
-		Router.render(path); // 페이지 생성함수 호출
+		router.render(path);
 	}
 }
 

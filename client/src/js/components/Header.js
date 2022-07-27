@@ -1,6 +1,6 @@
 import { getCurrentHistory } from '../api/history';
 import icons from '../constants/icons';
-import Router from '../core/router';
+import { changeActiveNavElement } from '../core/router';
 import action from '../store/action';
 import store from '../store/store';
 import { getNextYearAndMonth, getPrevYearAndMonth } from '../utils/date';
@@ -44,7 +44,7 @@ class Header {
 
 	render() {
 		this.DOMElement.innerHTML = this.template();
-		Router.changeActiveNavElement(this.DOMElement);
+		changeActiveNavElement(this.DOMElement);
 	}
 
 	setEvent() {
@@ -64,14 +64,10 @@ class Header {
 				store.dispatch(action.getCurrentMonthData(response));
 				store.dispatch(action.changeDate({ year: nextYear, month: nextMonth }));
 			} else if (event.target.closest('nav [is=custom-link]')) {
-				Router.changeActiveNavElement();
+				changeActiveNavElement();
 			}
 		});
 	}
 }
 
 export default Header;
-
-// store에서 데이터를 다 가지고 있음
-// app에서 store 구독 중임
-// app에서 자식 컴포넌트(Hedaer,,) 렌더 호출할 때 데이터를 전달해야함
