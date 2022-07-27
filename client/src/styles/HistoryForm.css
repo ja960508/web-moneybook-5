@@ -82,6 +82,10 @@
 	display: block;
 }
 
+.payment-method-delete::after {
+	content: 'X';
+}
+
 .history__form:not(.income-mode)
 	label
 	.history__form-dropdown

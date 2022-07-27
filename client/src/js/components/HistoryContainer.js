@@ -1,5 +1,7 @@
 import icons from '../constants/icons';
 import Component from '../core/Component';
+import action from '../store/action';
+import store from '../store/store';
 import {
 	getFilteredHistory,
 	getGroupedHistoryByDay,
@@ -76,6 +78,7 @@ class HistoryContainer extends Component {
 			const expenseFilterButton = event.target.closest(
 				'.list-meta__expense-button'
 			);
+			const historyItem = event.target.closest('.history__item');
 
 			if (incomeFilterButton) {
 				this.toggleChecked(incomeFilterButton);
@@ -85,9 +88,37 @@ class HistoryContainer extends Component {
 				this.toggleChecked(expenseFilterButton);
 				this.keys.isExpenseFiltered = !this.keys.isExpenseFiltered;
 				this.render();
+			} else if (historyItem) {
+				const history = this.getState('history');
+				const item = history.find(({ id }) => id == historyItem.dataset.id);
+
+				store.dispatch(
+					action.updateHistoryFormData({
+						...item,
+						date: getDateForCalender(item.date),
+						price: item.price.toLocaleString(),
+						isUpdateMode: true,
+					})
+				);
 			}
 		});
 	}
+}
+
+function addLeadingZero(number) {
+	return `${number}`.padStart(2, '0');
+}
+
+/**
+ * "2022-07-27T15:00:00.000Z"와 같은 날짜를 "2022-07-28"로 바꿔서 반환한다.
+ *
+ * @param {string} date
+ */
+function getDateForCalender(dateString) {
+	const date = new Date(dateString);
+	return `${date.getFullYear()}-${addLeadingZero(
+		date.getMonth() + 1
+	)}-${addLeadingZero(date.getDate())}`;
 }
 
 export default HistoryContainer;

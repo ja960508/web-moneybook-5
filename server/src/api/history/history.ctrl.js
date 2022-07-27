@@ -25,11 +25,12 @@ export function removeHistory(req, res) {
   res.status(200).json({ message: '성공적으로 삭제했습니다.' });
 }
 
-export function updateHistory(req, res) {
+export async function updateHistory(req, res) {
   const historyContent = req.body;
   const { id } = req.params;
+  await historyDAO.updateHistoryById(historyContent);
 
-  res.status(200).json({ id: 1, ...historyContent });
+  res.status(200).json({ id, ...historyContent });
 }
 
 export async function getRecentHistory(req, res) {

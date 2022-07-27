@@ -1,3 +1,14 @@
+const initialHistoryFormData = {
+	date: '',
+	categoryId: '',
+	category: '',
+	content: '',
+	paymentMethod: '',
+	isIncome: false,
+	price: '',
+	isUpdateMode: false,
+};
+
 const initialState = {
 	date: {
 		year: new Date().getFullYear(),
@@ -7,6 +18,7 @@ const initialState = {
 	category: [],
 	paymentMethod: [],
 	loading: false,
+	historyFormData: { ...initialHistoryFormData },
 };
 
 /**
@@ -44,7 +56,27 @@ export default function reducer(state = initialState, action) {
 			}
 			return {
 				...state,
-				history: [action.payload, ...state.history],
+				history: [...state.history, action.payload],
+			};
+		}
+		case 'UPDATE_HISTORY': {
+			return {
+				...state,
+				history: state.history.map((item) =>
+					item.id === action.payload.id ? action.payload : item
+				),
+			};
+		}
+		case 'UPDATAE_HISTORY_FORM_DATA': {
+			return {
+				...state,
+				historyFormData: { ...state.historyFormData, ...action.payload },
+			};
+		}
+		case 'RESET_HISTORY_FORM_DATA': {
+			return {
+				...state,
+				historyFormData: { ...initialHistoryFormData },
 			};
 		}
 		case 'SET_LOADING': {

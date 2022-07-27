@@ -59,6 +59,26 @@ function finishLoading() {
 	};
 }
 
+function updateHistory(payload) {
+	return {
+		type: 'UPDATE_HISTORY',
+		payload,
+	};
+}
+
+function updateHistoryFormData(payload) {
+	return {
+		type: 'UPDATAE_HISTORY_FORM_DATA',
+		payload,
+	};
+}
+
+function resetHistoryFormData() {
+	return {
+		type: 'RESET_HISTORY_FORM_DATA',
+	};
+}
+
 export default {
 	getCurrentMonthData,
 	getAllCategory,
@@ -69,4 +89,7 @@ export default {
 	addHistory,
 	setLoading,
 	finishLoading,
+	updateHistory,
+	updateHistoryFormData,
+	resetHistoryFormData,
 };

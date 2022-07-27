@@ -8,7 +8,7 @@ export function getGroupedHistoryByDay(history) {
 			result[day] = { history: [], incomeSum: 0, expenseSum: 0 };
 		}
 
-		result[day].history.push(item);
+		result[day].history.unshift(item);
 		if (item.isIncome) {
 			result[day].incomeSum += item.price;
 		} else {

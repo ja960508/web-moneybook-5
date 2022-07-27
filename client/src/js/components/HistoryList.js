@@ -31,7 +31,7 @@ class HistoryList extends Component {
 	}
 
 	makeHistoryItems(item) {
-		return `<li class="history__item bold-medium">
+		return `<li class="history__item bold-medium" data-id="${item.id}">
 		<div>
 			<span class="category ${category[item.category]} bold-small">${
 			item.category
