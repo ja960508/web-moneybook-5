@@ -8,5 +8,6 @@ export default function renderHome(main) {
 	main.DOMElement.appendChild(historyForm.DOMElement);
 	main.DOMElement.appendChild(historyContainer.DOMElement);
 
-	main.setChildren(historyForm, historyContainer);
+	main.setChild(historyForm);
+	main.setChild(historyContainer);
 }

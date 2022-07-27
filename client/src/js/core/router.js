@@ -4,7 +4,7 @@ export default function createRouter(routes, container) {
 	function render(path) {
 		const renderPage = routes[path];
 
-		container.clear();
+		container.clearChildren();
 
 		if (!renderPage) {
 			render404(container);

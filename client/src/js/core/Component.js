@@ -20,22 +20,24 @@ class Component {
 		return store.getState(key);
 	}
 
-	setChildren(...children) {
-		this.childComponents = this.childComponents.concat(children);
+	setChild(children) {
+		this.childComponents.push(children);
 	}
 
 	clearChildren() {
-		this.childComponents.forEach((childComponent) =>
-			childComponent.clearChildren()
-		);
+		this.childComponents.forEach((childComponent) => {
+			childComponent.unsubscribe.forEach((u) => u());
+			childComponent.clearChildren();
+			childComponent.DOMElement.remove();
+		});
 
-		this.unsubscribe.forEach((u) => u());
 		this.childComponents = [];
 	}
 
-	clear() {
+	clearSelf() {
+		this.DOMElement.remove();
+		this.unsubscribe.forEach((u) => u());
 		this.clearChildren();
-		this.DOMElement.innerHTML = ``;
 	}
 }
 
