@@ -47,6 +47,18 @@ function addHistory(payload) {
 	};
 }
 
+function setLoading() {
+	return {
+		type: 'SET_LOADING',
+	};
+}
+
+function finishLoading() {
+	return {
+		type: 'FINISH_LOADING',
+	};
+}
+
 export default {
 	getCurrentMonthData,
 	getAllCategory,
@@ -55,4 +67,6 @@ export default {
 	addPaymentMethod,
 	deletePaymentMethod,
 	addHistory,
+	setLoading,
+	finishLoading,
 };

@@ -2,6 +2,7 @@ import { addPaymentMethod, deletePaymentMethod } from '../api/payment_method';
 import paymentMethodType from '../constants/payment_method';
 import action from '../store/action';
 import store from '../store/store.js';
+import setLoadingInRequest from '../utils/request_loader';
 
 class PaymentMethodModal {
 	constructor(props) {
@@ -54,19 +55,21 @@ class PaymentMethodModal {
 				return;
 			}
 
-			if (this.isDelete) {
-				const res = await deletePaymentMethod(this.props.paymentMethod.id);
-				store.dispatch(action.deletePaymentMethod({ id: res.id }));
-			} else {
-				const value = event.target.paymentMethod.value;
-				const res = await addPaymentMethod(value);
-				store.dispatch(
-					action.addPaymentMethod({
-						id: res.id,
-						name: value,
-					})
-				);
-			}
+			await setLoadingInRequest(async () => {
+				if (this.isDelete) {
+					const res = await deletePaymentMethod(this.props.paymentMethod.id);
+					store.dispatch(action.deletePaymentMethod({ id: res.id }));
+				} else {
+					const value = event.target.paymentMethod.value;
+					const res = await addPaymentMethod(value);
+					store.dispatch(
+						action.addPaymentMethod({
+							id: res.id,
+							name: value,
+						})
+					);
+				}
+			});
 
 			document.body.removeChild(this.DOMElement);
 		});

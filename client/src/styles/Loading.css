@@ -1,0 +1,37 @@
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(1turn);
+	}
+}
+
+.loading-overlay {
+	position: fixed;
+	top: 0;
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background: rgba(0, 0, 0, 0.2);
+	display: none;
+	z-index: 1000;
+}
+
+.spinner {
+	position: absolute;
+	padding: 2.5rem;
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	border: 0.5rem solid var(--color-gray-100);
+	-webkit-animation: spinner 0.8s linear infinite;
+	border-top-color: var(--color-primary-mint2);
+	animation: spin 0.8s linear infinite;
+}
+
+.loading-overlay.loading {
+	display: flex;
+}

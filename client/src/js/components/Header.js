@@ -5,6 +5,7 @@ import action from '../store/action';
 import store from '../store/store';
 import Component from '../core/Component';
 import { getNextYearAndMonth, getPrevYearAndMonth } from '../utils/date';
+import setLoadingInRequest from '../utils/request_loader';
 
 class Header extends Component {
 	constructor() {
@@ -55,14 +56,16 @@ class Header extends Component {
 
 			if (event.target.closest('.month-controller__prev-button')) {
 				const [prevYear, prevMonth] = getPrevYearAndMonth(year, month);
-				const response = await getCurrentHistory(prevYear, prevMonth);
-
+				const response = await setLoadingInRequest(async () => {
+					return await getCurrentHistory(prevYear, prevMonth);
+				});
 				store.dispatch(action.getCurrentMonthData(response));
 				store.dispatch(action.changeDate({ year: prevYear, month: prevMonth }));
 			} else if (event.target.closest('.month-controller__next-button')) {
 				const [nextYear, nextMonth] = getNextYearAndMonth(year, month);
-				const response = await getCurrentHistory(nextYear, nextMonth);
-
+				const response = await setLoadingInRequest(async () => {
+					return await getCurrentHistory(nextYear, nextMonth);
+				});
 				store.dispatch(action.getCurrentMonthData(response));
 				store.dispatch(action.changeDate({ year: nextYear, month: nextMonth }));
 			} else if (event.target.closest('nav [is=custom-link]')) {
