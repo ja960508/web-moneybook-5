@@ -3,9 +3,10 @@ import Component from '../core/Component';
 
 class HistoryList extends Component {
 	constructor(props) {
-		super(props);
+		super();
 		this.props = props;
 		this.DOMElement = document.createElement('ol');
+		this.DOMElement.className = 'history-list';
 		this.subscribe('date', this.render.bind(this));
 		this.render();
 	}

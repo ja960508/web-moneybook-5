@@ -9,7 +9,7 @@ import HistoryList from './HistoryList';
 
 class HistoryContainer extends Component {
 	constructor(props = {}) {
-		super(props);
+		super();
 		this.DOMElement = document.createElement('div');
 		this.DOMElement.className = 'history-container';
 		this.props = props;
@@ -61,7 +61,7 @@ class HistoryContainer extends Component {
 		const historyList = new HistoryList({ filteredHistory, ...this.keys });
 		this.DOMElement.innerHTML = this.template({ filteredHistory, totalMoney });
 		this.DOMElement.appendChild(historyList.DOMElement);
-		this.setChildren(historyList);
+		this.setChild(historyList);
 	}
 
 	toggleChecked(filterButton) {

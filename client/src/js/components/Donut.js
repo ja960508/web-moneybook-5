@@ -1,17 +1,14 @@
 import categoryObj from '../constants/category';
 import { getExpenseSumListByCategory } from '../utils/history';
 import { categoryBgColors } from '../constants/colors';
-import LineChart from './LineChart';
-import { getRecentHistory } from '../api/history';
 import Component from '../core/Component';
 
 class Donut extends Component {
-	constructor() {
+	constructor(props) {
 		super();
 		this.DOMElement = document.createElement('div');
+		this.props = props;
 		this.DOMElement.className = 'donut';
-		this.subscribe('date', this.render.bind(this));
-		this.subscribe('history', this.render.bind(this));
 		this.render();
 	}
 
@@ -21,8 +18,6 @@ class Donut extends Component {
 
 	template(expenseSumList) {
 		const { totalExpense, categoryAndExpenseSumList } = expenseSumList;
-
-		if (!totalExpense) return `<div></div>`;
 
 		return `
 			<canvas></canvas>
@@ -53,33 +48,16 @@ class Donut extends Component {
 
 	setEvent() {
 		const donutHistory = this.DOMElement.querySelector('.donut__history');
-
 		if (!donutHistory) {
 			return;
 		}
 
-		const { year, month } = this.getState('date');
-
-		donutHistory.addEventListener('click', async (event) => {
+		donutHistory.addEventListener('click', (event) => {
 			const donutHistoryItem = event.target.closest('.donut__history-item');
-			if (!donutHistoryItem) {
-				return;
-			}
 
 			const categoryId = Number(donutHistoryItem.dataset.categoryId);
-			const recentHistory = await getRecentHistory(year, month, categoryId);
-			const chart = this.DOMElement.parentNode.querySelector(
-				'.line-chart__container'
-			);
 
-			const lineChart = new LineChart({ categoryId, recentHistory });
-
-			if (chart) {
-				chart.replaceWith(lineChart.DOMElement);
-			} else {
-				this.DOMElement.parentNode.appendChild(lineChart.DOMElement);
-				this.setChildren(lineChart);
-			}
+			this.props.onClick(categoryId);
 		});
 	}
 
@@ -126,7 +104,7 @@ class Donut extends Component {
 	}
 
 	render() {
-		const history = this.getState('history');
+		const { history } = this.props;
 		const expenseSumList = getExpenseSumListByCategory(history);
 		this.DOMElement.innerHTML = this.template(expenseSumList);
 		this.drawDonutChart(expenseSumList);
