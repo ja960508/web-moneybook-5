@@ -24,7 +24,7 @@ class Analytics extends Component {
 		const history = this.getState('history');
 
 		const recentHistory = await setLoadingInRequest(async () => {
-			const recentHistory = await getRecentHistory(year, month, categoryId);
+			return await getRecentHistory(year, month, categoryId);
 		});
 
 		const groupedHistory = getGroupedHistoryByDay(history);
