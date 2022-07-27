@@ -8,6 +8,7 @@ import '@styles/Calendar.css';
 import '@styles/PaymentMethodModal.css';
 import '@styles/Donut.css';
 import '@styles/LineChart.css';
+import '@styles/Analytics.css';
 import createRouter, { changeActiveNavElement } from './core/router.js';
 import Header from './components/Header.js';
 import store from './store/store.js';
