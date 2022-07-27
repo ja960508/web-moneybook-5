@@ -142,7 +142,7 @@ class HistoryForm {
 						id="historyPrice"
 						type="text"
 						placeholder="입력하세요"
-						class="body-regular"
+						class="history__form-price body-regular"
 						autocomplete="off"
 					/>
 					<span class="body-regular">원</span>
@@ -159,6 +159,10 @@ class HistoryForm {
 		this.setEvent();
 	}
 
+	resetHistoryCategory() {
+		this.DOMElement.querySelector('#historyCategory').value = '';
+	}
+
 	setEvent() {
 		const categoryLabel = this.DOMElement.querySelector(
 			'label[for="historyCategory"]'
@@ -172,7 +176,10 @@ class HistoryForm {
 		const paymentMethodDropdown = paymentMethodLabel.querySelector(
 			'.history__form-dropdown'
 		);
-		const priceInput = this.DOMElement.querySelector('#historyPrice');
+		const incomeToggleButton = this.DOMElement.querySelector(
+			'.history__form-income-toggle'
+		);
+		const priceInput = this.DOMElement.querySelector('.history__form-price');
 
 		categoryLabel.addEventListener('click', (e) => {
 			e.preventDefault();
@@ -221,6 +228,11 @@ class HistoryForm {
 			} else {
 				addPaymentMethodToInput(paymentMethodLabel, dropdownItem);
 			}
+		});
+
+		incomeToggleButton.addEventListener('click', () => {
+			this.DOMElement.classList.toggle('income-mode');
+			this.resetHistoryCategory();
 		});
 
 		priceInput.addEventListener('input', ({ target }) => {
@@ -282,7 +294,7 @@ function setDropdownElement(isPaymentMethod) {
 	<ul class="history__form-dropdown">
 		${dropdownContent
 			.map(
-				(item) => `<li data-id=${item.id}>
+				(item) => `<li data-id=${item.id} data-is-income=${item.isIncome}>
 			<span>${item.name}</span>
 			${
 				isPaymentMethod
