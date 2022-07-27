@@ -8,6 +8,9 @@ import {
 	getMonthTotalMoney,
 } from '../utils/history';
 import HistoryList from './HistoryList';
+import Modal from './Modal';
+import MODAL_TYPE from '../constants/modal';
+import { removeHistory } from '../api/history';
 
 class HistoryContainer extends Component {
 	constructor(props = {}) {
@@ -78,6 +81,9 @@ class HistoryContainer extends Component {
 			const expenseFilterButton = event.target.closest(
 				'.list-meta__expense-button'
 			);
+			const historyItemDeleteButton = event.target.closest(
+				'.history__item .delete-button'
+			);
 			const historyItem = event.target.closest('.history__item');
 
 			if (incomeFilterButton) {
@@ -88,6 +94,18 @@ class HistoryContainer extends Component {
 				this.toggleChecked(expenseFilterButton);
 				this.keys.isExpenseFiltered = !this.keys.isExpenseFiltered;
 				this.render();
+			} else if (historyItemDeleteButton) {
+				new Modal({
+					title: '해당 거래 내역을 삭제하시겠습니까?',
+					content: historyItem.querySelector('.history__item-content')
+						.innerText,
+					modalType: MODAL_TYPE.remove,
+					onSubmit: async () => {
+						const id = Number(historyItem.dataset.id);
+						await removeHistory(id);
+						store.dispatch(action.deleteHistory({ id }));
+					},
+				});
 			} else if (historyItem) {
 				if (historyItem.classList.contains('updating')) {
 					historyItem.classList.remove('updating');

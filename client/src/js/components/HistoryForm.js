@@ -1,12 +1,14 @@
 import icons from '../constants/icons';
 import store from '../store/store';
-import paymentMethodType from '../constants/payment_method';
+import MODAL_TYPE from '../constants/modal';
+
 import { getPriceFormat } from '../utils/input_value_transformer';
-import PaymentMethodModal from './PaymentMethodModal';
+import Modal from './Modal';
 import { addHistory, updateHistory } from '../api/history';
 import action from '../store/action';
 import Component from '../core/Component';
 import setLoadingInRequest from '../utils/request_loader';
+import { addPaymentMethod, deletePaymentMethod } from '../api/payment_method';
 
 class HistoryForm extends Component {
 	constructor() {
@@ -262,24 +264,34 @@ class HistoryForm extends Component {
 			const dropdownItem = target;
 
 			if (dropdownItem.className === 'payment-method-add') {
-				this.showPaymentMethodModal(
-					'추가하실 결제수단을 적어주세요.',
-					{ content: '' },
-					paymentMethodType.add
-				);
+				new Modal({
+					title: '추가하실 결제수단을 적어주세요.',
+					content: '',
+					modalType: MODAL_TYPE.add,
+					onSubmit: async (value) => {
+						const res = await addPaymentMethod(value);
+						store.dispatch(
+							action.addPaymentMethod({
+								id: res.id,
+								name: value,
+							})
+						);
+					},
+				});
 			} else if (dropdownItem.className === 'payment-method-delete') {
 				const li = dropdownItem.closest('li');
 				const id = li.dataset.id;
 				const content = li.querySelector('span').innerText;
 
-				this.showPaymentMethodModal(
-					'해당 결제수단을 삭제하시겠습니까?',
-					{
-						content,
-						id,
+				new Modal({
+					title: '해당 결제수단을 삭제하시겠습니까?',
+					content,
+					modalType: MODAL_TYPE.remove,
+					onSubmit: async () => {
+						const res = await deletePaymentMethod(id);
+						store.dispatch(action.deletePaymentMethod({ id: res.id }));
 					},
-					paymentMethodType.remove
-				);
+				});
 			} else {
 				addPaymentMethodToInput(paymentMethodLabel, dropdownItem);
 			}
@@ -293,10 +305,6 @@ class HistoryForm extends Component {
 		priceInput.addEventListener('input', ({ target }) => {
 			target.value = getPriceFormat(target.value);
 		});
-	}
-
-	showPaymentMethodModal(title = '', paymentMethod, paymentMethodType) {
-		new PaymentMethodModal({ title, paymentMethod, paymentMethodType });
 	}
 }
 

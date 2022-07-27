@@ -19,8 +19,9 @@ export async function addHistory(req, res) {
   res.status(201).json({ id: insertId, ...history });
 }
 
-export function removeHistory(req, res) {
+export async function removeHistory(req, res) {
   const { id } = req.params;
+  await historyDAO.deleteHistoryById(id);
 
   res.status(200).json({ message: '성공적으로 삭제했습니다.' });
 }

@@ -66,6 +66,13 @@ function updateHistory(payload) {
 	};
 }
 
+function deleteHistory(payload) {
+	return {
+		type: 'DELETE_HISTORY',
+		payload,
+	};
+}
+
 function updateHistoryFormData(payload) {
 	return {
 		type: 'UPDATAE_HISTORY_FORM_DATA',
@@ -90,6 +97,7 @@ export default {
 	setLoading,
 	finishLoading,
 	updateHistory,
+	deleteHistory,
 	updateHistoryFormData,
 	resetHistoryFormData,
 };

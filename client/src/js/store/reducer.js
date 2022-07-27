@@ -67,6 +67,12 @@ export default function reducer(state = initialState, action) {
 				),
 			};
 		}
+		case 'DELETE_HISTORY': {
+			return {
+				...state,
+				history: state.history.filter((item) => item.id !== action.payload.id),
+			};
+		}
 		case 'UPDATAE_HISTORY_FORM_DATA': {
 			return {
 				...state,
