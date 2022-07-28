@@ -19,17 +19,24 @@ class Header extends Component {
 
 	template() {
 		const date = this.getState('date');
+		const { year, month } = date;
+		const [prevYear, prevMonth] = getPrevYearAndMonth(year, month);
+		const [nextYear, nextMonth] = getNextYearAndMonth(year, month);
 
 		return `
       <div class="wrapper"> 
         <a class="logo" is="custom-link" href="/"><h1 class="display-small">우아한 가계부</h1></a>
         <div class="month-controller">
-          <button type="button" class="month-controller__prev-button">${icons.arrow}</button>
+          <a is="custom-link" href="${`?year=${prevYear}&month=${prevMonth}`}"  class="month-controller__prev-button">${
+			icons.arrow
+		}</a>
           <div>
-            <div class="display-large">${date.month}</div>
-            <div class="display-small">${date.year}</div>
+            <div class="display-large">${month}</div>
+            <div class="display-small">${year}</div>
           </div> 
-          <button type="button" class="month-controller__next-button">${icons.arrow}</button>
+          <a is="custom-link" href="${`?year=${nextYear}&month=${nextMonth}`}" class="month-controller__next-button">${
+			icons.arrow
+		}</a>
         </div>
         <nav>
           <a class="moneybook-link" is="custom-link" href="/">
@@ -52,22 +59,17 @@ class Header extends Component {
 
 	setEvent() {
 		this.DOMElement.addEventListener('click', async (event) => {
-			const { year, month } = this.getState('date');
-
-			if (event.target.closest('.month-controller__prev-button')) {
-				const [prevYear, prevMonth] = getPrevYearAndMonth(year, month);
+			if (
+				event.target.closest('.month-controller__prev-button') ||
+				event.target.closest('.month-controller__next-button')
+			) {
+				store.dispatch(action.getCurrentMonthData({ history: [] }));
+				const { year, month } = this.getState('date');
 				const response = await setLoadingInRequest(async () => {
-					return await getCurrentHistory(prevYear, prevMonth);
+					return await getCurrentHistory(year, month);
 				});
 				store.dispatch(action.getCurrentMonthData(response));
-				store.dispatch(action.changeDate({ year: prevYear, month: prevMonth }));
-			} else if (event.target.closest('.month-controller__next-button')) {
-				const [nextYear, nextMonth] = getNextYearAndMonth(year, month);
-				const response = await setLoadingInRequest(async () => {
-					return await getCurrentHistory(nextYear, nextMonth);
-				});
-				store.dispatch(action.getCurrentMonthData(response));
-				store.dispatch(action.changeDate({ year: nextYear, month: nextMonth }));
+				store.dispatch(action.changeDate({ year, month }));
 			} else if (event.target.closest('nav [is=custom-link]')) {
 				changeActiveNavElement();
 			}

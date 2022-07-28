@@ -10,7 +10,10 @@ import '@styles/Donut.css';
 import '@styles/LineChart.css';
 import '@styles/Analytics.css';
 import '@styles/Loading.css';
-import createRouter, { changeActiveNavElement } from './core/router.js';
+import createRouter, {
+	changeActiveNavElement,
+	getYearAndMonthFromURLParams,
+} from './core/router.js';
 import Header from './components/Header.js';
 import Main from './components/Main.js';
 import Loading from './components/commons/Loading.js';
@@ -24,6 +27,23 @@ import renderCalendar from './pages/calendar';
 import renderHome from './pages/home';
 import setLoadingInRequest from './utils/request_loader.js';
 
+function isStoreDateSameWithURL() {
+	const { year: yearFromURL, month: monthFromURL } =
+		getYearAndMonthFromURLParams();
+	const { year, month } = store.getState('date');
+
+	return year === yearFromURL && month === monthFromURL;
+}
+
+async function setNewHistory() {
+	const { year: yearFromURL, month: monthFromURL } =
+		getYearAndMonthFromURLParams();
+	const history = await setLoadingInRequest(async () => {
+		return await getCurrentHistory(yearFromURL, monthFromURL);
+	});
+	store.dispatch(action.getCurrentMonthData(history));
+}
+
 function setRouter(container) {
 	customElements.define('custom-link', CustomLink, { extends: 'a' });
 	const routes = {
@@ -33,7 +53,10 @@ function setRouter(container) {
 	};
 	const router = createRouter(routes, container);
 
-	window.addEventListener('popstate', () => {
+	window.addEventListener('popstate', async () => {
+		if (!isStoreDateSameWithURL()) {
+			await setNewHistory();
+		}
 		router.render(window.location.pathname);
 		changeActiveNavElement();
 	});
