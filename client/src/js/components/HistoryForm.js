@@ -258,41 +258,7 @@ class HistoryForm extends Component {
 					{
 						isPaymentMethod: true,
 						onClear,
-						onClick: (event) => {
-							const dropdownItem = event.target;
-							if (dropdownItem.className === 'payment-method-add') {
-								new Modal({
-									title: '추가하실 결제수단을 적어주세요.',
-									content: '',
-									modalType: MODAL_TYPE.add,
-									onSubmit: async (value) => {
-										const res = await addPaymentMethod(value);
-										store.dispatch(
-											action.addPaymentMethod({
-												id: res.id,
-												name: value,
-											})
-										);
-									},
-								});
-							} else if (dropdownItem.className === 'payment-method-delete') {
-								const li = dropdownItem.closest('li');
-								const id = li.dataset.id;
-								const content = li.querySelector('span').innerText;
-
-								new Modal({
-									title: '해당 결제수단을 삭제하시겠습니까?',
-									content,
-									modalType: MODAL_TYPE.remove,
-									onSubmit: async () => {
-										const res = await deletePaymentMethod(id);
-										store.dispatch(action.deletePaymentMethod({ id: res.id }));
-									},
-								});
-							} else {
-								addPaymentMethodToInput(paymentMethodLabel, dropdownItem);
-							}
-						},
+						onClick: showPaymentMethodModal,
 					}
 				);
 				this.setChild(this.paymentMethodDropdown);
@@ -331,6 +297,42 @@ function addPaymentMethodToInput(label, dropdownItem) {
 		input.value = dropdownItem.innerText || '';
 
 		input.closest('form').dispatchEvent(new Event('input'));
+	}
+}
+
+function showPaymentMethodModal(event) {
+	const dropdownItem = event.target;
+	if (dropdownItem.className === 'payment-method-add') {
+		new Modal({
+			title: '추가하실 결제수단을 적어주세요.',
+			content: '',
+			modalType: MODAL_TYPE.add,
+			onSubmit: async (value) => {
+				const res = await addPaymentMethod(value);
+				store.dispatch(
+					action.addPaymentMethod({
+						id: res.id,
+						name: value,
+					})
+				);
+			},
+		});
+	} else if (dropdownItem.className === 'payment-method-delete') {
+		const li = dropdownItem.closest('li');
+		const id = li.dataset.id;
+		const content = li.querySelector('span').innerText;
+
+		new Modal({
+			title: '해당 결제수단을 삭제하시겠습니까?',
+			content,
+			modalType: MODAL_TYPE.remove,
+			onSubmit: async () => {
+				const res = await deletePaymentMethod(id);
+				store.dispatch(action.deletePaymentMethod({ id: res.id }));
+			},
+		});
+	} else {
+		addPaymentMethodToInput(paymentMethodLabel, dropdownItem);
 	}
 }
 
