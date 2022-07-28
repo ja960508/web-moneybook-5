@@ -8,7 +8,7 @@ class Modal {
 		this.props = props;
 		this.isDelete = Boolean(this.props.modalType === MODAL_TYPE.remove);
 
-		this.toggleBodyOverflow();
+		this.hideBodyOverflow();
 		document.body.appendChild(this.DOMElement);
 		this.render();
 	}
@@ -34,12 +34,12 @@ class Modal {
 		`;
 	}
 
-	toggleBodyOverflow() {
-		if (document.body.style.overflow === 'hidden') {
-			document.body.style.overflow = '';
-		} else {
-			document.body.style.overflow = 'hidden';
-		}
+	hideBodyOverflow() {
+		document.body.style.overflow = 'hidden';
+	}
+
+	resetBodyOverflow() {
+		document.body.style.overflow = '';
 	}
 
 	setEvent() {
@@ -49,7 +49,7 @@ class Modal {
 		this.DOMElement.addEventListener('click', (event) => {
 			if (event.target === this.DOMElement) {
 				this.DOMElement.remove();
-				this.toggleBodyOverflow();
+				this.resetBodyOverflow();
 			}
 		});
 
@@ -64,14 +64,14 @@ class Modal {
 				await this.props.onSubmit(event.target.modalContent.value);
 			});
 
-			this.toggleBodyOverflow();
+			this.resetBodyOverflow();
 			this.DOMElement.remove();
 		});
 
 		modal.addEventListener('click', (event) => {
-			if (event.target.classList.contains('cancel')) {
+			if (event.target.closest('.cancel')) {
 				this.DOMElement.remove();
-				this.toggleBodyOverflow();
+				this.resetBodyOverflow();
 			}
 
 			return;
