@@ -212,7 +212,6 @@ class HistoryForm extends Component {
 		const priceInput = this.DOMElement.querySelector('.history__form-price');
 
 		categoryLabel.addEventListener('click', (e) => {
-			console.log(this);
 			e.preventDefault();
 			e.stopPropagation();
 			if (e.target.closest('.history__form-dropdown')) {
