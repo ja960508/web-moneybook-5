@@ -40,7 +40,7 @@ class Analytics extends Component {
 		});
 
 		const lineChart = new LineChart({ categoryColor, recentHistory });
-		const historyList = new HistoryList({ filteredHistory, hideTotal: true });
+		const historyList = new HistoryList({ filteredHistory, inAnalytics: true });
 
 		this.setChild(lineChart);
 		this.setChild(historyList);

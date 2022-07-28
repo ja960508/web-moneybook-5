@@ -213,58 +213,93 @@ class HistoryForm extends Component {
 
 		categoryLabel.addEventListener('click', (e) => {
 			e.preventDefault();
+			e.stopPropagation();
 			if (e.target.closest('.history__form-dropdown')) {
 				return;
 			}
-
 			const onClear = () => {
-				this.clearChild(this.categoryDropdown);
-				this.categoryDropdown = undefined;
+				if (this.categoryDropdown) {
+					this.clearChild(this.categoryDropdown);
+					this.categoryDropdown = undefined;
+				}
+
+				return;
+			};
+
+			const dropdownCloseEvent = (e) => {
+				if (e.target.closest('.history-from-dropdown')) {
+					return;
+				}
+
+				onClear();
 			};
 
 			if (this.categoryDropdown) {
 				onClear();
-			} else {
-				this.categoryDropdown = new HistoryFormDropdown(
-					document.querySelector('.history__form-dropdown-category'),
-					{
-						isPaymentMethod: false,
-						onClear,
-						onClick: (event) => {
-							const dropdownItem = event.target.closest('li');
-							addCategoryToInput(categoryLabel, dropdownItem);
-						},
-					}
-				);
-				this.setChild(this.categoryDropdown);
+
+				return;
 			}
+
+			document.body.addEventListener('click', dropdownCloseEvent.bind(this), {
+				once: true,
+			});
+			this.categoryDropdown = new HistoryFormDropdown(
+				document.querySelector('.history__form-dropdown-category'),
+				{
+					isPaymentMethod: false,
+					onClear,
+					onClick: (event) => {
+						const dropdownItem = event.target.closest('li');
+						addCategoryToInput(categoryLabel, dropdownItem);
+					},
+				}
+			);
+			this.setChild(this.categoryDropdown);
 		});
 
 		paymentMethodLabel.addEventListener('click', (e) => {
 			e.preventDefault();
+			e.stopPropagation();
 			if (e.target.closest('.history__form-dropdown')) {
 				return;
 			}
 
 			const onClear = () => {
-				this.clearChild(this.paymentMethodDropdown);
-				this.paymentMethodDropdown = undefined;
+				if (this.paymentMethodDropdown) {
+					this.clearChild(this.paymentMethodDropdown);
+					this.paymentMethodDropdown = undefined;
+				}
+
+				return;
+			};
+
+			const dropdownCloseEvent = (e) => {
+				if (e.target.closest('.history-from-dropdown')) {
+					return;
+				}
+
+				onClear();
 			};
 
 			if (this.paymentMethodDropdown) {
 				onClear();
-			} else {
-				this.paymentMethodDropdown = new HistoryFormDropdown(
-					document.querySelector('.history__form-dropdown-payment'),
-					{
-						isPaymentMethod: true,
-						onClear,
-						onClick: (event) =>
-							showPaymentMethodModal(event, paymentMethodLabel),
-					}
-				);
-				this.setChild(this.paymentMethodDropdown);
+
+				return;
 			}
+
+			document.body.addEventListener('click', dropdownCloseEvent.bind(this), {
+				once: true,
+			});
+
+			this.paymentMethodDropdown = new HistoryFormDropdown(
+				document.querySelector('.history__form-dropdown-payment'),
+				{
+					isPaymentMethod: true,
+					onClear,
+					onClick: (event) => showPaymentMethodModal(event, paymentMethodLabel),
+				}
+			);
+			this.setChild(this.paymentMethodDropdown);
 		});
 
 		incomeToggleButton.addEventListener('click', () => {
@@ -337,6 +372,7 @@ function showPaymentMethodModal(event, paymentMethodLabel) {
 				const res = await deletePaymentMethod(id);
 				store.dispatch(action.deletePaymentMethod({ id: res.id }));
 				store.dispatch(action.deletePaymentMethodInHistory({ value }));
+				document.getElementById('historyPaymentMethod').value = '';
 			},
 		});
 	} else {

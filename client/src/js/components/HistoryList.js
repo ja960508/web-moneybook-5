@@ -31,7 +31,9 @@ class HistoryList extends Component {
 	}
 
 	makeHistoryItems(item) {
-		return `<li class="history__item bold-medium" data-id="${item.id}">
+		return `<li class="history__item bold-medium ${
+			this.props.inAnalytics ? 'analytics-list' : ''
+		}" data-id="${item.id}" >
 		<div class="history__item-inside">
 			<div>
 				<span class="category ${category[item.category]} bold-small">${
@@ -57,12 +59,12 @@ class HistoryList extends Component {
 		return `
     ${this.getSortedDayList(filteredHistory)
 			.map(
-				(day) => `<li class="history__day bold-medium">
+				(day) => `<li class="history__day bold-medium ">
         <div class="history__day-meta">
           <div>${month}월 ${day}일</div>
           <div class="history__day-total">
             ${
-							this.props.hideTotal
+							this.props.inAnalytics
 								? ''
 								: this.getDailyTotalMoney(filteredHistory, day)
 						}
