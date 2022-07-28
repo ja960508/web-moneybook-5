@@ -97,6 +97,17 @@ export default function reducer(state = initialState, action) {
 				loading: false,
 			};
 		}
+		case 'DELETE_PAYMENT_METHOD_IN_HISTORY': {
+			const history = state.history.map((item) => {
+				if (item.paymentMethod === action.payload.value) {
+					return { ...item, paymentMethod: '' };
+				}
+
+				return item;
+			});
+
+			return { ...state, history };
+		}
 		default:
 			return state;
 	}

@@ -86,6 +86,13 @@ function resetHistoryFormData() {
 	};
 }
 
+function deletePaymentMethodInHistory(payload) {
+	return {
+		type: 'DELETE_PAYMENT_METHOD_IN_HISTORY',
+		payload,
+	};
+}
+
 export default {
 	getCurrentMonthData,
 	getAllCategory,
@@ -100,4 +107,5 @@ export default {
 	deleteHistory,
 	updateHistoryFormData,
 	resetHistoryFormData,
+	deletePaymentMethodInHistory,
 };

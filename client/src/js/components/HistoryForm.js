@@ -10,6 +10,7 @@ import Component from '../core/Component';
 import setLoadingInRequest from '../utils/request_loader';
 import { addPaymentMethod, deletePaymentMethod } from '../api/payment_method';
 import HistoryFormDropdown from './HistoryFormDropdown';
+import { IsPaymentMethodExist } from '../utils/payment_method';
 
 class HistoryForm extends Component {
 	constructor() {
@@ -309,7 +310,12 @@ function showPaymentMethodModal(event, paymentMethodLabel) {
 			content: '',
 			modalType: MODAL_TYPE.add,
 			onSubmit: async (value) => {
+				if (IsPaymentMethodExist(value)) {
+					return;
+				}
+
 				const res = await addPaymentMethod(value);
+
 				store.dispatch(
 					action.addPaymentMethod({
 						id: res.id,
@@ -327,9 +333,10 @@ function showPaymentMethodModal(event, paymentMethodLabel) {
 			title: '해당 결제수단을 삭제하시겠습니까?',
 			content,
 			modalType: MODAL_TYPE.remove,
-			onSubmit: async () => {
+			onSubmit: async (value) => {
 				const res = await deletePaymentMethod(id);
 				store.dispatch(action.deletePaymentMethod({ id: res.id }));
+				store.dispatch(action.deletePaymentMethodInHistory({ value }));
 			},
 		});
 	} else {
