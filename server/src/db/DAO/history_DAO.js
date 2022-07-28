@@ -83,10 +83,27 @@ async function getRecentHistory(year, month, categoryId) {
   }
 }
 
+async function deletePaymentMethodInHistory(value) {
+  try {
+    const [rows] = await promisePool.execute(
+      `
+      UPDATE HISTORY
+      SET paymentMethod = ""
+      WHERE paymentMethod = "${value}"
+      `
+    );
+
+    return rows;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
 export default {
   insertHistory,
   readHistoryByYearMonth,
   deleteHistoryById,
   updateHistoryById,
   getRecentHistory,
+  deletePaymentMethodInHistory,
 };

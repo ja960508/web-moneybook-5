@@ -1,3 +1,4 @@
+import historyDAO from '../../db/DAO/history_DAO.js';
 import paymentMethodDAO from '../../db/DAO/payment_method_DAO.js';
 
 export async function getPaymentMethods(req, res) {
@@ -14,7 +15,12 @@ export async function addPaymentMethod(req, res) {
 
 export async function removePaymentMethod(req, res) {
   const { id } = req.params;
-  await paymentMethodDAO.deletePaymentMethodById(id);
+  const value = await paymentMethodDAO.getPaymentMethodById(id);
+
+  await Promise.all([
+    paymentMethodDAO.deletePaymentMethodById(id),
+    historyDAO.deletePaymentMethodInHistory(value[0].name),
+  ]);
 
   res.status(200).json({ id });
 }

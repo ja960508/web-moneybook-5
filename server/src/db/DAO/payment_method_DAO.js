@@ -2,6 +2,17 @@ import pool from '../loader.js';
 
 const promisePool = pool.promise();
 
+async function getPaymentMethodById(id) {
+  try {
+    const [rows] = await promisePool.execute(`SELECT name FROM PAYMENT_METHOD
+    WHERE id = ${id}`);
+
+    return rows;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
 async function readPaymentMethod() {
   try {
     const [rows] = await promisePool.execute(`SELECT * FROM PAYMENT_METHOD`);
@@ -42,4 +53,5 @@ export default {
   readPaymentMethod,
   insertPaymentMethod,
   deletePaymentMethodById,
+  getPaymentMethodById,
 };
