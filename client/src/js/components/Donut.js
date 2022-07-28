@@ -55,9 +55,12 @@ class Donut extends Component {
 		donutHistory.addEventListener('click', (event) => {
 			const donutHistoryItem = event.target.closest('.donut__history-item');
 
+			const categoryText =
+				donutHistoryItem.querySelector('.category').innerText;
+			const categoryColor = categoryBgColors[categoryObj[categoryText]];
 			const categoryId = Number(donutHistoryItem.dataset.categoryId);
 
-			this.props.onClick(categoryId);
+			this.props.onClick(categoryId, categoryColor);
 		});
 	}
 

@@ -5,6 +5,7 @@ import {
 	CELL_WIDTH,
 	X_PADDING,
 	Y_PADDING,
+	CANVAS_SCALE,
 } from '../constants/line_chart.js';
 import { MAX_MONTH } from '../constants/date';
 import Component from '../core/Component.js';
@@ -64,7 +65,7 @@ class LineChart extends Component {
 	drawLineChartColumns(context, chartHeight, months) {
 		context.fillStyle = '#8D9393';
 		context.textAlign = 'center';
-		context.font = '10pt Do Hyeon';
+		context.font = `${10 * CANVAS_SCALE}pt Do Hyeon`;
 
 		for (let col = 0; col <= NUM_OF_COLOUMNS; col++) {
 			const x = col * CELL_WIDTH + X_PADDING;
@@ -76,7 +77,7 @@ class LineChart extends Component {
 			context.fillText(
 				value,
 				CELL_WIDTH * (idx * 2 + 1) + X_PADDING,
-				chartHeight + 20
+				chartHeight + 20 * CANVAS_SCALE
 			)
 		);
 	}
@@ -123,52 +124,76 @@ class LineChart extends Component {
 		return points;
 	}
 
-	drawLine(context, points) {
-		context.beginPath();
-		context.moveTo(points[0].x, points[0].y);
+	drawLineAnimation(context, start, end) {
+		const xDistance = Math.floor(end.x - start.x);
+		const dy = (end.y - start.y) / xDistance;
 
-		for (let i = 1; i < points.length; i++) {
-			context.lineTo(points[i].x, points[i].y);
+		if (xDistance === 0) {
+			return;
 		}
 
-		context.lineWidth = 2;
-		context.strokeStyle = '#A0E1E0';
-		context.stroke();
+		const [nextX, nextY] = [
+			start.x + 1 * CANVAS_SCALE,
+			start.y + dy * CANVAS_SCALE,
+		];
+		context.beginPath();
+		requestAnimationFrame(() => {
+			context.moveTo(start.x, start.y);
+			context.lineTo(nextX, nextY);
+			context.lineWidth = 3 * CANVAS_SCALE;
+			context.strokeStyle = this.props.categoryColor;
+			context.stroke();
+			this.drawLineAnimation(context, { x: nextX, y: nextY }, end);
+		});
+	}
+
+	drawLine(context, points) {
+		for (let i = 1; i < points.length; i++) {
+			this.drawLineAnimation(context, { ...points[i - 1] }, { ...points[i] });
+		}
 	}
 
 	drawPoints(context, values, points) {
 		context.textAlign = 'center';
-		context.font = '10pt Do Hyeon';
+		context.font = `${10 * CANVAS_SCALE}pt Do Hyeon`;
 
 		for (let i = 0; i < points.length; i++) {
 			const point = points[i];
 			const value = values[i].toLocaleString();
 			context.fillStyle = '#626666';
-			context.fillText(value, point.x, point.y - 15);
-			context.fillStyle = '#2AC1BC';
+			context.fillText(value, point.x, point.y - 15 * CANVAS_SCALE);
+
+			context.fillStyle = this.props.categoryColor;
 			context.beginPath();
-			context.arc(point.x, point.y, 4, 0, 2 * Math.PI);
+			context.arc(point.x, point.y, 6 * CANVAS_SCALE, 0, 2 * Math.PI);
 			context.fill();
 		}
 	}
 
-	drawLineChart() {
+	initCanvas() {
 		const canvas = this.DOMElement.querySelector('.line-chart');
 		const context = canvas.getContext('2d'); // 배경 렌더링
-		const [values, months] = this.getExpenseValues();
 		canvas.width = NUM_OF_COLOUMNS * CELL_WIDTH + 2 * X_PADDING;
 		canvas.height = NUM_OF_ROWS * CELL_HEIGHT + 2 * Y_PADDING;
-		const chartWidth = canvas.width - X_PADDING;
-		const chartHeight = canvas.height - Y_PADDING;
+		canvas.style.width = `${canvas.width / CANVAS_SCALE}px`;
+		canvas.style.height = `${canvas.height / CANVAS_SCALE}px`;
+
 		context.beginPath();
 		context.fillStyle = '#FCFCFC';
 		context.fillRect(0, 0, canvas.width, canvas.height);
 
-		this.drawLineChartAxes({ chartWidth, chartHeight, months, context });
+		return [canvas, context];
+	}
 
+	drawLineChart() {
+		const [canvas, context] = this.initCanvas();
+		const chartWidth = canvas.width - X_PADDING;
+		const chartHeight = canvas.height - Y_PADDING;
+		const [values, months] = this.getExpenseValues();
 		const maxVal = this.getMaxValueForScaling(values);
 		const points = this.getLineChartPointsLocation(values, chartHeight, maxVal);
 
+		this.drawLineChartAxes({ chartWidth, chartHeight, months, context });
 		this.drawLine(context, points);
 		this.drawPoints(context, values, points);
 	}

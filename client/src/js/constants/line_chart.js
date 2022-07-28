@@ -1,3 +1,4 @@
+export const CANVAS_SCALE = 4;
 export const [NUM_OF_COLOUMNS, NUM_OF_ROWS] = [24, 12];
-export const [CELL_WIDTH, CELL_HEIGHT] = [33, 26];
-export const [X_PADDING, Y_PADDING] = [32, 30];
+export const [CELL_WIDTH, CELL_HEIGHT] = [33 * CANVAS_SCALE, 26 * CANVAS_SCALE];
+export const [X_PADDING, Y_PADDING] = [32 * CANVAS_SCALE, 30 * CANVAS_SCALE];

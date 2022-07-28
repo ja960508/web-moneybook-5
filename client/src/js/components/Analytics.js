@@ -19,7 +19,7 @@ class Analytics extends Component {
 		this.render();
 	}
 
-	async showLineChart(categoryId) {
+	async showLineChart(categoryId, categoryColor) {
 		const { year, month } = this.getState('date');
 		const history = this.getState('history');
 
@@ -39,7 +39,7 @@ class Analytics extends Component {
 			}
 		});
 
-		const lineChart = new LineChart({ categoryId, recentHistory });
+		const lineChart = new LineChart({ categoryColor, recentHistory });
 		const historyList = new HistoryList({ filteredHistory, hideTotal: true });
 
 		this.setChild(lineChart);
