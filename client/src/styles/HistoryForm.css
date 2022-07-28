@@ -72,7 +72,6 @@
 .history__form label .history__form-dropdown {
 	overflow: hidden;
 	position: absolute;
-	display: none;
 	width: 100%;
 	top: 5rem;
 	left: 0;
@@ -80,10 +79,6 @@
 	border: 1px solid var(--color-gray-200);
 	box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1), 0px 4px 20px rgba(0, 0, 0, 0.1);
 	border-radius: 10px;
-}
-
-.history__form label .history__form-dropdown.show {
-	display: block;
 }
 
 .payment-method-delete::after {
