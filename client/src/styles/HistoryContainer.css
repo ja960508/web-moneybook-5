@@ -100,7 +100,7 @@
 	font-weight: bold;
 }
 
-.history__item:hover .delete-button {
+.history__item:not(.analytics-list):hover .delete-button {
 	display: block;
 }
 
