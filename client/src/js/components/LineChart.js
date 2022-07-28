@@ -133,9 +133,10 @@ class LineChart extends Component {
 		}
 
 		const [nextX, nextY] = [
-			start.x + 1 * CANVAS_SCALE,
-			start.y + dy * CANVAS_SCALE,
+			start.x + 2 * CANVAS_SCALE,
+			start.y + 2 * dy * CANVAS_SCALE,
 		];
+
 		context.beginPath();
 		requestAnimationFrame(() => {
 			context.moveTo(start.x, start.y);

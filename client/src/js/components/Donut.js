@@ -80,12 +80,39 @@ class Donut extends Component {
 		ctx.strokeStyle = categoryBgColors[categoryLabel];
 	}
 
+	drawDonutChartPartialAnimation({ ctx, startAngle, endAngle, d, category }) {
+		if (startAngle >= endAngle) {
+			return;
+		}
+
+		requestAnimationFrame(() => {
+			ctx.beginPath();
+			const { width, height } = this.getCanvasElement();
+			ctx.arc(width / 2, height / 2, 120, startAngle, startAngle + d + 0.1);
+			this.setStrokeColor({ ctx, category });
+			ctx.stroke();
+
+			this.drawDonutChartPartialAnimation({
+				ctx,
+				startAngle: startAngle + d,
+				endAngle,
+				d,
+				category,
+			});
+		});
+	}
+
 	drawDonutChartPartial({ ctx, startAngle, angle, category }) {
-		ctx.beginPath();
-		const { width, height } = this.getCanvasElement();
-		ctx.arc(width / 2, height / 2, 120, startAngle, startAngle + angle);
-		this.setStrokeColor({ ctx, category });
-		ctx.stroke();
+		const endAngle = startAngle + angle;
+		const d = (endAngle - startAngle) / 30;
+
+		this.drawDonutChartPartialAnimation({
+			ctx,
+			startAngle,
+			endAngle,
+			d,
+			category,
+		});
 	}
 
 	drawDonutChart(expenseSumList) {
