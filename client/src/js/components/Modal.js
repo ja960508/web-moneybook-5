@@ -71,8 +71,8 @@ class Modal {
 		modal.addEventListener('click', (event) => {
 			if (event.target.classList.contains('cancel')) {
 				this.DOMElement.remove();
+				this.toggleBodyOverflow();
 			}
-			this.toggleBodyOverflow();
 
 			return;
 		});
