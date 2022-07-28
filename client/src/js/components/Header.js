@@ -70,7 +70,7 @@ class Header extends Component {
 				});
 				store.dispatch(action.getCurrentMonthData(response));
 				store.dispatch(action.changeDate({ year, month }));
-			} else if (event.target.closest('nav [is=custom-link]')) {
+			} else if (event.target.closest('[is=custom-link]')) {
 				changeActiveNavElement();
 			}
 		});
