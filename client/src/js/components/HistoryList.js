@@ -1,4 +1,5 @@
 import category from '../constants/category';
+import icons from '../constants/icons';
 import Component from '../core/Component';
 
 class HistoryList extends Component {
@@ -59,22 +60,19 @@ class HistoryList extends Component {
 		return `
     ${this.getSortedDayList(filteredHistory)
 			.map(
-				(day) => `<li class="history__day bold-medium ">
-        <div class="history__day-meta">
-          <div>${month}월 ${day}일</div>
-          <div class="history__day-total">
-            ${
-							this.props.inAnalytics
-								? ''
-								: this.getDailyTotalMoney(filteredHistory, day)
-						}
-          </div>
-        </div>
-        <ul>
-          ${filteredHistory[day].history
-						.map((item) => this.makeHistoryItems(item))
-						.join('')}
-        </ul>
+				(day) => `<li class="history__day bold-medium">
+					<div class="history__day-meta">
+						<a href="#${month}-${day}" class="hash-link">${icons.link}</a>
+						<div>${month}월 ${day}일</div>
+						<div class="history__day-total">
+							${this.props.hideTotal ? '' : this.getDailyTotalMoney(filteredHistory, day)}
+						</div>
+					</div>
+					<ul>
+						${filteredHistory[day].history
+							.map((item) => this.makeHistoryItems(item))
+							.join('')}
+					</ul>
       </li>`
 			)
 			.join('')}

@@ -26,6 +26,7 @@ import renderAnalytics from './pages/analytics';
 import renderCalendar from './pages/calendar';
 import renderHome from './pages/home';
 import setLoadingInRequest from './utils/request_loader.js';
+import { moveScrollToHitoryItem } from './utils/move_scroll';
 
 function isStoreDateSameWithURL() {
 	const { year: yearFromURL, month: monthFromURL } =
@@ -52,12 +53,21 @@ function setRouter(container) {
 		'/analytics': renderAnalytics,
 	};
 	const router = createRouter(routes, container);
+	window.prevPathname = window.location.pathname;
 
 	window.addEventListener('popstate', async () => {
+		const { hash, pathname } = window.location;
+
+		if (hash && pathname === window.prevPathname) {
+			moveScrollToHitoryItem({ hash });
+			return;
+		}
+
 		if (!isStoreDateSameWithURL()) {
 			await setNewHistory();
 		}
-		router.render(window.location.pathname);
+		router.render(pathname);
+		window.prevPathname = pathname;
 		changeActiveNavElement();
 	});
 
@@ -79,6 +89,9 @@ async function initStore() {
 		store.dispatch(action.getCurrentMonthData(history));
 		store.dispatch(action.getAllCategory(category));
 		store.dispatch(action.getAllPaymentMethod(paymentMethod));
+
+		const { hash } = window.location;
+		moveScrollToHitoryItem({ hash, highlight: true });
 	});
 }
 

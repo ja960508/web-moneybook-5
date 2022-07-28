@@ -53,6 +53,11 @@ class Calendar extends Component {
 			<td class="bold-medium ${isToday(year, month, nowDate) ? ' now' : ''}">
 				${nowHistory ? this.makeHistoryByNowHistory(nowHistory) : ''}
 				<div class="bold-small date body-small">${nowDate}</div>
+				${
+					nowHistory?.incomeSum || nowHistory?.expenseSum
+						? `<a is="custom-link" href="/#${month}-${nowDate}" class="history-link">상세 내역 보기</a>`
+						: ''
+				}
 			</td>
 		`;
 	}

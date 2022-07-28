@@ -1,8 +1,10 @@
 import render404 from '../pages/404';
 import action from '../store/action';
 import store from '../store/store';
+import { moveScrollToHitoryItem } from '../utils/move_scroll';
+import { getPathnameFromHref } from '../utils/url_path';
 
-function replaceURLIfYearAndMonthIsInvalid() {
+function replaceURLIfYearAndMonthIsInvalid(hash) {
 	const { year: yearFromURL, month: monthFromURL } =
 		getYearAndMonthFromURLParams();
 
@@ -15,14 +17,14 @@ function replaceURLIfYearAndMonthIsInvalid() {
 		window.history.replaceState(
 			{},
 			null,
-			`${window.location.pathname}?year=${nowYear}&month=${nowMonth}`
+			`${window.location.pathname}?year=${nowYear}&month=${nowMonth}${hash}`
 		);
 	}
 }
 
 export default function createRouter(routes, container) {
 	function render(path) {
-		const pathname = path.split('?')[0] || window.location.pathname;
+		const pathname = getPathnameFromHref(path) || window.location.pathname;
 		const renderPage = routes[pathname];
 
 		container.DOMElement.innerHTML = '';
@@ -34,12 +36,14 @@ export default function createRouter(routes, container) {
 			return;
 		}
 
-		replaceURLIfYearAndMonthIsInvalid();
+		const { hash } = window.location;
+		replaceURLIfYearAndMonthIsInvalid(hash);
 
 		const { year, month } = getYearAndMonthFromURLParams();
 		store.dispatch(action.changeDate({ year, month }));
 
 		renderPage(container);
+		moveScrollToHitoryItem({ hash, highlight: true });
 	}
 
 	return {
