@@ -25,13 +25,15 @@ class Component {
 	}
 
 	clearChildren() {
-		this.childComponents.forEach((childComponent) => {
-			childComponent.unsubscribe.forEach((u) => u());
-			childComponent.clearChildren();
-			childComponent.DOMElement.remove();
-		});
-
+		this.childComponents.forEach(clear);
 		this.childComponents = [];
+	}
+
+	clearChild(childComponent) {
+		clear(childComponent);
+		this.childComponents = this.childComponents.filter(
+			(component) => component !== childComponent
+		);
 	}
 
 	clearSelf() {
@@ -39,6 +41,12 @@ class Component {
 		this.unsubscribe.forEach((u) => u());
 		this.clearChildren();
 	}
+}
+
+function clear(childComponent) {
+	childComponent.unsubscribe.forEach((u) => u());
+	childComponent.clearChildren();
+	childComponent.DOMElement.remove();
 }
 
 export default Component;

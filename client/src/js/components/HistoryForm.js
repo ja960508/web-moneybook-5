@@ -9,14 +9,13 @@ import action from '../store/action';
 import Component from '../core/Component';
 import setLoadingInRequest from '../utils/request_loader';
 import { addPaymentMethod, deletePaymentMethod } from '../api/payment_method';
+import HistoryFormDropdown from './HistoryFormDropdown';
 
 class HistoryForm extends Component {
 	constructor() {
 		super();
 		this.DOMElement = document.createElement('form');
 		this.DOMElement.className = 'history__form';
-		this.subscribe('paymentMethod', this.render.bind(this));
-		this.subscribe('category', this.render.bind(this));
 		this.subscribe('historyFormData', this.render.bind(this));
 		this.setFormEvent();
 		this.render();
@@ -28,31 +27,6 @@ class HistoryForm extends Component {
 
 	disableSubmitButton() {
 		this.DOMElement.querySelector('.history__form--submit').disabled = true;
-	}
-
-	setDropdownElement({ isPaymentMethod }) {
-		const state = isPaymentMethod ? 'paymentMethod' : 'category';
-
-		const dropdownContent = this.getState(state);
-
-		return `
-	<ul class="history__form-dropdown">
-		${dropdownContent
-			.map(
-				(item) => `<li data-id=${item.id} ${
-					isPaymentMethod ? '' : `data-is-income=${item.isIncome}`
-				}>
-			<span>${item.name}</span>
-			${
-				isPaymentMethod
-					? `<button class="payment-method-delete" type="button"></button>`
-					: ''
-			}
-		</li>`
-			)
-			.join('')}
-		${isPaymentMethod ? `<li class="payment-method-add">추가하기</li>` : ''}
-	</ul>`;
 	}
 
 	setFormEvent() {
@@ -157,7 +131,7 @@ class HistoryForm extends Component {
 				<span class="arrow">
 					${icons.arrow}
 				</span>
-				${this.setDropdownElement({ isPaymentMethod: false })}
+				<div class="history__form-dropdown-category"></div>
 			</label>
 			<label for="historyContent" class="box23">
 				<span class="bold-small">내용</span>
@@ -184,7 +158,7 @@ class HistoryForm extends Component {
 				<span class="arrow">
 					${icons.arrow}
 				</span>
-				${this.setDropdownElement({ isPaymentMethod: true })}
+				<div class="history__form-dropdown-payment"></div>
 			</label>
 			<label for="historyPrice" class="box23">
 				<span class="bold-small">금액</span>
@@ -231,12 +205,6 @@ class HistoryForm extends Component {
 		const paymentMethodLabel = this.DOMElement.querySelector(
 			'label[for="historyPaymentMethod"]'
 		);
-		const categroyDropdown = categoryLabel.querySelector(
-			'.history__form-dropdown'
-		);
-		const paymentMethodDropdown = paymentMethodLabel.querySelector(
-			'.history__form-dropdown'
-		);
 		const incomeToggleButton = this.DOMElement.querySelector(
 			'.history__form-income-toggle'
 		);
@@ -244,11 +212,31 @@ class HistoryForm extends Component {
 
 		categoryLabel.addEventListener('click', (e) => {
 			e.preventDefault();
-
 			if (e.target.closest('.history__form-dropdown')) {
 				return;
 			}
-			toggleDropdownElement(categoryLabel);
+
+			const onClear = () => {
+				this.clearChild(this.categoryDropdown);
+				this.categoryDropdown = undefined;
+			};
+
+			if (this.categoryDropdown) {
+				onClear();
+			} else {
+				this.categoryDropdown = new HistoryFormDropdown(
+					document.querySelector('.history__form-dropdown-category'),
+					{
+						isPaymentMethod: false,
+						onClear,
+						onClick: (event) => {
+							const dropdownItem = event.target.closest('li');
+							addCategoryToInput(categoryLabel, dropdownItem);
+						},
+					}
+				);
+				this.setChild(this.categoryDropdown);
+			}
 		});
 
 		paymentMethodLabel.addEventListener('click', (e) => {
@@ -256,48 +244,58 @@ class HistoryForm extends Component {
 			if (e.target.closest('.history__form-dropdown')) {
 				return;
 			}
-			toggleDropdownElement(paymentMethodLabel);
-		});
 
-		categroyDropdown.addEventListener('click', (event) => {
-			const dropdownItem = event.target.closest('li');
-			addCategoryToInput(categoryLabel, dropdownItem);
-		});
+			const onClear = () => {
+				this.clearChild(this.paymentMethodDropdown);
+				this.paymentMethodDropdown = undefined;
+			};
 
-		paymentMethodDropdown.addEventListener('click', ({ target }) => {
-			const dropdownItem = target;
-
-			if (dropdownItem.className === 'payment-method-add') {
-				new Modal({
-					title: '추가하실 결제수단을 적어주세요.',
-					content: '',
-					modalType: MODAL_TYPE.add,
-					onSubmit: async (value) => {
-						const res = await addPaymentMethod(value);
-						store.dispatch(
-							action.addPaymentMethod({
-								id: res.id,
-								name: value,
-							})
-						);
-					},
-				});
-			} else if (dropdownItem.className === 'payment-method-delete') {
-				const li = dropdownItem.closest('li');
-				const id = li.dataset.id;
-				const content = li.querySelector('span').innerText;
-
-				new Modal({
-					title: '해당 결제수단을 삭제하시겠습니까?',
-					content,
-					modalType: MODAL_TYPE.remove,
-					onSubmit: async () => {
-						const res = await deletePaymentMethod(id);
-						store.dispatch(action.deletePaymentMethod({ id: res.id }));
-					},
-				});
+			if (this.paymentMethodDropdown) {
+				onClear();
 			} else {
-				addPaymentMethodToInput(paymentMethodLabel, dropdownItem);
+				this.paymentMethodDropdown = new HistoryFormDropdown(
+					document.querySelector('.history__form-dropdown-payment'),
+					{
+						isPaymentMethod: true,
+						onClear,
+						onClick: (event) => {
+							const dropdownItem = event.target;
+							if (dropdownItem.className === 'payment-method-add') {
+								new Modal({
+									title: '추가하실 결제수단을 적어주세요.',
+									content: '',
+									modalType: MODAL_TYPE.add,
+									onSubmit: async (value) => {
+										const res = await addPaymentMethod(value);
+										store.dispatch(
+											action.addPaymentMethod({
+												id: res.id,
+												name: value,
+											})
+										);
+									},
+								});
+							} else if (dropdownItem.className === 'payment-method-delete') {
+								const li = dropdownItem.closest('li');
+								const id = li.dataset.id;
+								const content = li.querySelector('span').innerText;
+
+								new Modal({
+									title: '해당 결제수단을 삭제하시겠습니까?',
+									content,
+									modalType: MODAL_TYPE.remove,
+									onSubmit: async () => {
+										const res = await deletePaymentMethod(id);
+										store.dispatch(action.deletePaymentMethod({ id: res.id }));
+									},
+								});
+							} else {
+								addPaymentMethodToInput(paymentMethodLabel, dropdownItem);
+							}
+						},
+					}
+				);
+				this.setChild(this.paymentMethodDropdown);
 			}
 		});
 
@@ -323,7 +321,6 @@ function addCategoryToInput(label, dropdownItem) {
 	input.dataset.categoryId = dropdownItem.dataset.id;
 
 	input.closest('form').dispatchEvent(new Event('input'));
-	toggleDropdownElement(label);
 }
 
 function addPaymentMethodToInput(label, dropdownItem) {
@@ -334,16 +331,6 @@ function addPaymentMethodToInput(label, dropdownItem) {
 		input.value = dropdownItem.innerText || '';
 
 		input.closest('form').dispatchEvent(new Event('input'));
-		toggleDropdownElement(label);
-	}
-}
-
-function toggleDropdownElement(label) {
-	if (
-		label.htmlFor === 'historyCategory' ||
-		label.htmlFor === 'historyPaymentMethod'
-	) {
-		label.querySelector('.history__form-dropdown').classList.toggle('show');
 	}
 }
 
