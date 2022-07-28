@@ -258,7 +258,8 @@ class HistoryForm extends Component {
 					{
 						isPaymentMethod: true,
 						onClear,
-						onClick: showPaymentMethodModal,
+						onClick: (event) =>
+							showPaymentMethodModal(event, paymentMethodLabel),
 					}
 				);
 				this.setChild(this.paymentMethodDropdown);
@@ -300,7 +301,7 @@ function addPaymentMethodToInput(label, dropdownItem) {
 	}
 }
 
-function showPaymentMethodModal(event) {
+function showPaymentMethodModal(event, paymentMethodLabel) {
 	const dropdownItem = event.target;
 	if (dropdownItem.className === 'payment-method-add') {
 		new Modal({
