@@ -2,6 +2,7 @@ import categoryObj from '../constants/category';
 import { getExpenseSumListByCategory } from '../utils/history';
 import { categoryBgColors } from '../constants/colors';
 import Component from '../core/Component';
+import { DONUT_CHART_SCALE } from '../constants/donut_chart';
 
 class Donut extends Component {
 	constructor(props) {
@@ -9,6 +10,7 @@ class Donut extends Component {
 		this.DOMElement = document.createElement('div');
 		this.props = props;
 		this.DOMElement.className = 'donut';
+		this.partialDonuts = [];
 		this.render();
 	}
 
@@ -65,14 +67,16 @@ class Donut extends Component {
 	}
 
 	setInitialCanvasSize() {
-		const SIZE = 450;
+		const SIZE = 450 * DONUT_CHART_SCALE;
 		const canvasElement = this.getCanvasElement();
 		canvasElement.width = SIZE;
 		canvasElement.height = SIZE;
+		canvasElement.style.width = `${SIZE / DONUT_CHART_SCALE}px`;
+		canvasElement.style.height = `${SIZE / DONUT_CHART_SCALE}px`;
 	}
 
 	setStrokeWidth(ctx) {
-		ctx.lineWidth = 48;
+		ctx.lineWidth = 48 * DONUT_CHART_SCALE;
 	}
 
 	setStrokeColor({ ctx, category }) {
@@ -80,21 +84,36 @@ class Donut extends Component {
 		ctx.strokeStyle = categoryBgColors[categoryLabel];
 	}
 
-	drawDonutChartPartialAnimation({ ctx, startAngle, endAngle, d, category }) {
-		if (startAngle >= endAngle) {
+	drawDonutChartPartialAnimation({
+		ctx,
+		startAngle,
+		nextAngle,
+		endAngle,
+		d,
+		category,
+	}) {
+		if (nextAngle >= endAngle) {
 			return;
 		}
 
 		requestAnimationFrame(() => {
 			ctx.beginPath();
 			const { width, height } = this.getCanvasElement();
-			ctx.arc(width / 2, height / 2, 120, startAngle, startAngle + d + 0.1);
+
+			ctx.arc(
+				width / 2,
+				height / 2,
+				120 * DONUT_CHART_SCALE,
+				startAngle,
+				nextAngle + d
+			);
 			this.setStrokeColor({ ctx, category });
 			ctx.stroke();
 
 			this.drawDonutChartPartialAnimation({
 				ctx,
-				startAngle: startAngle + d,
+				startAngle,
+				nextAngle: nextAngle + d,
 				endAngle,
 				d,
 				category,
@@ -105,10 +124,12 @@ class Donut extends Component {
 	drawDonutChartPartial({ ctx, startAngle, angle, category }) {
 		const endAngle = startAngle + angle;
 		const d = (endAngle - startAngle) / 30;
+		const nextAngle = startAngle;
 
 		this.drawDonutChartPartialAnimation({
 			ctx,
 			startAngle,
+			nextAngle,
 			endAngle,
 			d,
 			category,
@@ -126,8 +147,10 @@ class Donut extends Component {
 		this.setStrokeWidth(ctx);
 
 		let startAngle = -MAX_ANGLE / 4;
+
 		categoryAndExpenseSumList.forEach(({ expenseSum, category }) => {
 			const angle = (expenseSum / totalExpense) * MAX_ANGLE;
+
 			this.drawDonutChartPartial({ ctx, startAngle, angle, category });
 			startAngle += angle;
 		});
