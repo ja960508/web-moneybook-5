@@ -1,4 +1,6 @@
+import { changeActiveNavElement } from '../core/router';
 import { router } from '../index';
+import { getPathnameFromHref } from '../utils/url_path';
 
 class CustomLink extends HTMLAnchorElement {
 	constructor() {
@@ -21,7 +23,9 @@ class CustomLink extends HTMLAnchorElement {
 		}
 
 		window.history.pushState({}, null, path);
+		window.prevPathname = getPathnameFromHref(path);
 		router.render(path);
+		changeActiveNavElement();
 	}
 }
 
