@@ -77,14 +77,17 @@
 }
 
 .history__item-inside {
-	cursor: pointer;
 	display: flex;
 	padding: 0.75rem 0.5rem;
 	border-top: 1px solid var(--color-gray-200);
 	transition: background-color 200ms;
 }
 
-.history__item-inside:hover {
+.history__item:not(.analytics-list) .history__item-inside {
+	cursor: pointer;
+}
+
+.history__item:not(.analytics-list) .history__item-inside:hover {
 	background-color: var(--color-gray-150);
 }
 
