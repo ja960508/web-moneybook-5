@@ -31,19 +31,22 @@ class HistoryList extends Component {
 	}
 
 	makeHistoryItems(item) {
-		return `<li class="history__item bold-medium">
-		<div>
-			<span class="category ${category[item.category]} bold-small">${
+		return `<li class="history__item bold-medium" data-id="${item.id}">
+		<div class="history__item-inside">
+			<div>
+				<span class="category ${category[item.category]} bold-small">${
 			item.category
 		}</span>
-			<span>${item.content}</span>
+				<span class="history__item-content">${item.content}</span>
+			</div>
+			<div>
+				${item.paymentMethod}
+			</div>
+			<div>
+				${item.isIncome ? '' : '-'}${item.price.toLocaleString()}원
+			</div>
 		</div>
-		<div>
-			${item.paymentMethod}
-		</div>
-		<div>
-			${item.isIncome ? '' : '-'}${item.price.toLocaleString()}원
-		</div>
+		<button class="delete-button">X</button>
 	</li>`;
 	}
 

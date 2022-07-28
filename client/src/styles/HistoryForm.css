@@ -65,6 +65,10 @@
 	position: relative;
 }
 
+.history__form-dropdown {
+	z-index: 1;
+}
+
 .history__form label .history__form-dropdown {
 	overflow: hidden;
 	position: absolute;
@@ -80,6 +84,10 @@
 
 .history__form label .history__form-dropdown.show {
 	display: block;
+}
+
+.payment-method-delete::after {
+	content: 'X';
 }
 
 .history__form:not(.income-mode)

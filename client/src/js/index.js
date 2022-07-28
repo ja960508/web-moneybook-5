@@ -5,7 +5,7 @@ import '@styles/HistoryContainer.css';
 import '@styles/Header.css';
 import '@styles/HistoryForm.css';
 import '@styles/Calendar.css';
-import '@styles/PaymentMethodModal.css';
+import '@styles/Modal.css';
 import '@styles/Donut.css';
 import '@styles/LineChart.css';
 import '@styles/Analytics.css';

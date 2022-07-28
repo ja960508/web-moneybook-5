@@ -19,17 +19,19 @@ export async function addHistory(req, res) {
   res.status(201).json({ id: insertId, ...history });
 }
 
-export function removeHistory(req, res) {
+export async function removeHistory(req, res) {
   const { id } = req.params;
+  await historyDAO.deleteHistoryById(id);
 
   res.status(200).json({ message: '성공적으로 삭제했습니다.' });
 }
 
-export function updateHistory(req, res) {
+export async function updateHistory(req, res) {
   const historyContent = req.body;
   const { id } = req.params;
+  await historyDAO.updateHistoryById(historyContent);
 
-  res.status(200).json({ id: 1, ...historyContent });
+  res.status(200).json({ id, ...historyContent });
 }
 
 export async function getRecentHistory(req, res) {

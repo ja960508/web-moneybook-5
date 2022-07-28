@@ -1,12 +1,14 @@
 import icons from '../constants/icons';
 import store from '../store/store';
-import paymentMethodType from '../constants/payment_method';
+import MODAL_TYPE from '../constants/modal';
+
 import { getPriceFormat } from '../utils/input_value_transformer';
-import PaymentMethodModal from './PaymentMethodModal';
-import { addHistory } from '../api/history';
+import Modal from './Modal';
+import { addHistory, updateHistory } from '../api/history';
 import action from '../store/action';
 import Component from '../core/Component';
 import setLoadingInRequest from '../utils/request_loader';
+import { addPaymentMethod, deletePaymentMethod } from '../api/payment_method';
 
 class HistoryForm extends Component {
 	constructor() {
@@ -15,15 +17,16 @@ class HistoryForm extends Component {
 		this.DOMElement.className = 'history__form';
 		this.subscribe('paymentMethod', this.render.bind(this));
 		this.subscribe('category', this.render.bind(this));
+		this.subscribe('historyFormData', this.render.bind(this));
 		this.setFormEvent();
 		this.render();
 	}
 
-	enalbeSubmitButton() {
+	enableSubmitButton() {
 		this.DOMElement.querySelector('.history__form--submit').disabled = false;
 	}
 
-	disalbeSubmitButton() {
+	disableSubmitButton() {
 		this.DOMElement.querySelector('.history__form--submit').disabled = true;
 	}
 
@@ -36,11 +39,13 @@ class HistoryForm extends Component {
 	<ul class="history__form-dropdown">
 		${dropdownContent
 			.map(
-				(item) => `<li data-id=${item.id} data-is-income=${item.isIncome}>
+				(item) => `<li data-id=${item.id} ${
+					isPaymentMethod ? '' : `data-is-income=${item.isIncome}`
+				}>
 			<span>${item.name}</span>
 			${
 				isPaymentMethod
-					? `<button class="payment-method-delete" type="button">X</button>`
+					? `<button class="payment-method-delete" type="button"></button>`
 					: ''
 			}
 		</li>`
@@ -55,9 +60,9 @@ class HistoryForm extends Component {
 			if (
 				checkAllInputs(Array.from(this.DOMElement.querySelectorAll('input')))
 			) {
-				this.enalbeSubmitButton();
+				this.enableSubmitButton();
 			} else {
-				this.disalbeSubmitButton();
+				this.disableSubmitButton();
 			}
 		});
 
@@ -81,38 +86,62 @@ class HistoryForm extends Component {
 			const price = Number(historyPrice.value.replace(/,/g, ''));
 
 			await setLoadingInRequest(async () => {
-				const newHistory = await addHistory({
+				this.DOMElement.reset();
+				this.disableSubmitButton();
+
+				const { id, isUpdateMode } = this.getState('historyFormData');
+				const historyParam = {
 					date,
 					categoryId,
 					content,
 					paymentMethod,
 					price,
-				});
+				};
 
-				this.DOMElement.reset();
-				this.disalbeSubmitButton();
+				const historyPayload = {
+					date,
+					category,
+					categoryId,
+					content,
+					paymentMethod,
+					isIncome,
+					price,
+				};
 
-				store.dispatch(
-					action.addHistory({
-						id: newHistory.id,
-						date,
-						category,
-						categoryId,
-						content,
-						paymentMethod,
-						isIncome,
-						price,
-					})
-				);
+				if (isUpdateMode) {
+					await setLoadingInRequest(async () => {
+						await updateHistory({ id, ...historyParam });
+						store.dispatch(action.updateHistory({ id, ...historyPayload }));
+					});
+				} else {
+					await setLoadingInRequest(async () => {
+						const newHistory = await addHistory(historyParam);
+						store.dispatch(
+							action.addHistory({ id: newHistory.id, ...historyPayload })
+						);
+					});
+				}
+
+				store.dispatch(action.resetHistoryFormData());
 			});
 		});
 	}
 
 	template() {
+		const {
+			date,
+			categoryId,
+			category,
+			content,
+			paymentMethod,
+			isIncome,
+			price,
+		} = this.getState('historyFormData');
+
 		return `
 			<label for="historyDate" class="box18">
 				<span class="bold-small">일자</span>
-				<input id="historyDate" type="date" class="body-regular" />
+				<input id="historyDate" type="date" class="body-regular" value="${date}" />
 			</label>
 			<label for="historyCategory" class="box18">
 				<span class="bold-small">분류</span>
@@ -122,6 +151,8 @@ class HistoryForm extends Component {
 					placeholder="선택하세요"
 					readonly
 					class="body-regular"
+					data-category-id="${categoryId}"
+					value="${category}"
 				/>
 				<span class="arrow">
 					${icons.arrow}
@@ -137,6 +168,7 @@ class HistoryForm extends Component {
 					class="body-regular"
 					maxlength="30"
 					autocomplete="off"
+					value="${content}"
 				/>
 			</label>
 			<label for="historyPaymentMethod" class="box18">
@@ -147,6 +179,7 @@ class HistoryForm extends Component {
 					placeholder="선택하세요"
 					readonly
 					class="body-regular"
+					value="${paymentMethod}"
 				/>
 				<span class="arrow">
 					${icons.arrow}
@@ -160,6 +193,7 @@ class HistoryForm extends Component {
 						id="historyIsIncome"
 						type="checkbox"
 						class="history__form-income-toggle"
+						${isIncome ? 'checked' : ''}
 					></input>
 					<input
 						id="historyPrice"
@@ -167,6 +201,7 @@ class HistoryForm extends Component {
 						placeholder="입력하세요"
 						class="history__form-price body-regular"
 						autocomplete="off"
+						value="${price}"
 					/>
 					<span class="body-regular">원</span>
 				</div>
@@ -180,6 +215,9 @@ class HistoryForm extends Component {
 	render() {
 		this.DOMElement.innerHTML = this.template();
 		this.setEvent();
+		const { isIncome } = this.getState('historyFormData');
+		if (isIncome) this.DOMElement.classList.add('income-mode');
+		else this.DOMElement.classList.remove('income-mode');
 	}
 
 	resetHistoryCategory() {
@@ -230,24 +268,34 @@ class HistoryForm extends Component {
 			const dropdownItem = target;
 
 			if (dropdownItem.className === 'payment-method-add') {
-				this.showPaymentMethodModal(
-					'추가하실 결제수단을 적어주세요.',
-					{ content: '' },
-					paymentMethodType.add
-				);
+				new Modal({
+					title: '추가하실 결제수단을 적어주세요.',
+					content: '',
+					modalType: MODAL_TYPE.add,
+					onSubmit: async (value) => {
+						const res = await addPaymentMethod(value);
+						store.dispatch(
+							action.addPaymentMethod({
+								id: res.id,
+								name: value,
+							})
+						);
+					},
+				});
 			} else if (dropdownItem.className === 'payment-method-delete') {
 				const li = dropdownItem.closest('li');
 				const id = li.dataset.id;
 				const content = li.querySelector('span').innerText;
 
-				this.showPaymentMethodModal(
-					'해당 결제수단을 삭제하시겠습니까?',
-					{
-						content,
-						id,
+				new Modal({
+					title: '해당 결제수단을 삭제하시겠습니까?',
+					content,
+					modalType: MODAL_TYPE.remove,
+					onSubmit: async () => {
+						const res = await deletePaymentMethod(id);
+						store.dispatch(action.deletePaymentMethod({ id: res.id }));
 					},
-					paymentMethodType.remove
-				);
+				});
 			} else {
 				addPaymentMethodToInput(paymentMethodLabel, dropdownItem);
 			}
@@ -261,10 +309,6 @@ class HistoryForm extends Component {
 		priceInput.addEventListener('input', ({ target }) => {
 			target.value = getPriceFormat(target.value);
 		});
-	}
-
-	showPaymentMethodModal(title = '', paymentMethod, paymentMethodType) {
-		new PaymentMethodModal({ title, paymentMethod, paymentMethodType });
 	}
 }
 
@@ -287,12 +331,7 @@ function addPaymentMethodToInput(label, dropdownItem) {
 		return;
 	} else {
 		const input = label.querySelector('input');
-
-		if (dropdownItem.tagName === 'SPAN') {
-			input.value = dropdownItem.innerText || '';
-		} else {
-			input.value = dropdownItem.querySelector('span').innerText || '';
-		}
+		input.value = dropdownItem.innerText || '';
 
 		input.closest('form').dispatchEvent(new Event('input'));
 		toggleDropdownElement(label);

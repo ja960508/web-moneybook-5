@@ -25,6 +25,34 @@ export async function addHistory(history) {
 }
 
 /**
+ * @param {object} history
+ */
+export async function updateHistory(history) {
+	return await fetchData(`${API_ENDPOINT}/history/${history.id}`, {
+		headers: {
+			Accept: 'application/json',
+			'Content-Type': 'application/json',
+		},
+		method: 'PATCH',
+		body: JSON.stringify(history),
+	});
+}
+
+/**
+ * @param {object} history
+ */
+export async function removeHistory(id) {
+	return await fetchData(`${API_ENDPOINT}/history/${id}`, {
+		headers: {
+			Accept: 'application/json',
+			'Content-Type': 'application/json',
+		},
+		method: 'DELETE',
+		body: JSON.stringify(history),
+	});
+}
+
+/**
  *
  * @param {number} year
  * @param {number} month

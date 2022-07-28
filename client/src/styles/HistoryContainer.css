@@ -73,32 +73,57 @@
 }
 
 .history__item {
+	position: relative;
+}
+
+.history__item-inside {
 	cursor: pointer;
 	display: flex;
-	padding: 0.75rem 0;
+	padding: 0.75rem 0.5rem;
 	border-top: 1px solid var(--color-gray-200);
 	transition: background-color 200ms;
 }
 
-.history__item:hover {
-	background-color: var(--color-gray-100);
+.history__item-inside:hover {
+	background-color: var(--color-gray-150);
 }
 
-.history__item:last-child {
+.history__item .delete-button {
+	position: absolute;
+	top: 4px;
+	right: 6px;
+	display: none;
+	color: red;
+}
+
+.history__item .delete-button:hover {
+	font-weight: bold;
+}
+
+.history__item:hover .delete-button {
+	display: block;
+}
+
+.history__item-inside:last-child {
 	border-bottom: 1px solid var(--color-gray-200);
 }
 
-.history__item > div {
+.history__item.updating .history__item-inside {
+	border: 1px dashed var(--color-black);
+	border-radius: 6px;
+}
+
+.history__item-inside > div {
 	flex: 1 1 30%;
 	display: flex;
 	align-items: center;
 }
 
-.history__item > div:nth-child(2) {
+.history__item-inside > div:nth-child(2) {
 	color: var(--color-gray-500);
 	justify-content: center;
 }
 
-.history__item > div:last-child {
+.history__item-inside > div:last-child {
 	justify-content: flex-end;
 }

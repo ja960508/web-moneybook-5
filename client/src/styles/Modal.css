@@ -1,5 +1,6 @@
 .modal-overlay {
-	position: absolute;
+	z-index: 999;
+	position: fixed;
 	top: 0;
 	width: 100vw;
 	height: 100vh;
@@ -41,7 +42,7 @@
 	display: flex;
 }
 
-.modal__submit-container button.cancle {
+.modal__submit-container button.cancel {
 	color: var(--color-gray-500);
 	justify-content: flex-start;
 }
